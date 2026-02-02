@@ -1,0 +1,22 @@
+package br.com.fiap.cheffy.domain.profile.entity;
+
+import java.util.Objects;
+
+public class Profile {
+
+    private final Long id;
+    private final String type;
+
+    public Profile(Long id, String type) {
+        this.id = Objects.requireNonNull(id);
+        this.type = Objects.requireNonNull(type);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+}
