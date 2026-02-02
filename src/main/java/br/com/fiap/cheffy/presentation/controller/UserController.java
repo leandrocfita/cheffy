@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.user.usecase.CreateUserUseCase;
+import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,17 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private CreateUserUseCase  createUserUseCase;
+    private CreateUserInput createUser;
     private final UserWebMapper mapper;
 
 
 
     public UserController(
             UserWebMapper mapper,
-            CreateUserUseCase createUserUseCase)
+            CreateUserInput createUser)
     {
         this.mapper = mapper;
-        this.createUserUseCase = createUserUseCase;
+        this.createUser = createUser;
     }
 
     @PostMapping
@@ -59,7 +60,7 @@ public class UserController {
     })
     public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO tbUserDTO) {
         log.info("UserController.createTbUser - START - Create user");
-        var createdId = createUserUseCase.execute(mapper.toCommand(tbUserDTO));
+        var createdId = createUser.execute(mapper.toCommand(tbUserDTO));
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
