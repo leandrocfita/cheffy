@@ -7,13 +7,14 @@ import br.com.fiap.cheffy.domain.profile.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION;
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.REGISTER_FAILED_EXCEPTION;
 
-public class CreateUserUseCase {
+public class CreateUserUseCase implements CreateUserInput {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
