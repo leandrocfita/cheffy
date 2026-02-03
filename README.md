@@ -31,6 +31,7 @@ Desenvolver um backend completo utilizando Spring Boot, implementando gestão de
 - **Spring Validation** - Validação de dados
 - **Hibernate** - ORM
 - **PostgreSQL** - Banco de dados relacional
+- **Flyway** - Versionamento e migração de banco de dados
 - **JWT (jjwt)** - Tokens de autenticação
 - **MapStruct** - Mapeamento de objetos
 - **Lombok** - Redução de boilerplate
@@ -82,6 +83,7 @@ Este comando irá:
 - Baixar a imagem do PostgreSQL 18.0
 - Construir a imagem da aplicação
 - Iniciar o banco de dados
+- Executar migrations do Flyway automaticamente
 - Iniciar a aplicação Spring Boot
 - Popular os perfis iniciais (CLIENT e OWNER)
 
@@ -147,6 +149,9 @@ docker compose down -v
 ### Swagger UI
 Acesse http://localhost:8080/swagger-ui.html para visualizar e testar todos os endpoints da API de forma interativa.
 
+### Database Migrations
+O projeto utiliza Flyway para versionamento do banco de dados. Consulte [Database Migrations Guide](src/main/resources/db/migration/README.md) para mais informações sobre como criar e gerenciar migrations.
+
 ### Collection Postman
 Importe o arquivo [Cheffy_API_Collection.json](https://github.com/thiagosslima/cheffy/blob/develop/src/main/resources/Cheffy_Postman_Collection.json) no Postman para testar todos os cenários:
 - Autenticação
@@ -156,18 +161,33 @@ Importe o arquivo [Cheffy_API_Collection.json](https://github.com/thiagosslima/c
 
 ## 🏗️ Arquitetura
 
-O projeto segue uma arquitetura em camadas:
+O projeto segue Clean Architecture com separação clara de responsabilidades:
 
 ```
 ┌─────────────────────────────────────┐
-│         Controller Layer            │  ← REST Controllers
+│      Presentation Layer             │  ← Controllers, DTOs, Mappers
 ├─────────────────────────────────────┤
-│          Service Layer              │  ← Business Logic
+│      Application Layer              │  ← Use Cases, Application DTOs
 ├─────────────────────────────────────┤
-│        Repository Layer             │  ← Data Access (JPA)
+│        Domain Layer                 │  ← Entities, Ports, Business Rules
 ├─────────────────────────────────────┤
-│         Database Layer              │  ← PostgreSQL
+│     Infrastructure Layer            │  ← JPA, Security, Flyway Config
+├─────────────────────────────────────┤
+│         Database Layer              │  ← PostgreSQL + Flyway Migrations
 └─────────────────────────────────────┘
+```
+
+### Estrutura de Diretórios
+```
+src/main/
+├── java/br/com/fiap/cheffy/
+│   ├── presentation/        # Controllers, DTOs Web
+│   ├── application/         # Use Cases
+│   ├── domain/              # Entities, Ports
+│   ├── infrastructure/      # JPA, Config, Security
+│   └── shared/              # Exceptions, Utils
+└── resources/
+    └── db/migration/        # Flyway Migrations
 ```
 
 ## 🔐 Segurança
