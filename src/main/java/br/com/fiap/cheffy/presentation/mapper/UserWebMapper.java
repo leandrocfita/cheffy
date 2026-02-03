@@ -14,7 +14,6 @@ public class UserWebMapper {
                 request.email(),
                 request.login(),
                 request.password(),
-                request.profileType(),
                 new AddressCommandPort(
                         request.address().streetName(),
                         request.address().number(),
