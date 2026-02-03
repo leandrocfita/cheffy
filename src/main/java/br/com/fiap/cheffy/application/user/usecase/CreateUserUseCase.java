@@ -33,7 +33,6 @@ public class CreateUserUseCase implements CreateUserInput {
 
     public String execute(UserCommandPort command){
         User user = createUserDomain(command);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         throwExceptionCaseLoginOrEmailAlreadyExists(user);
 
@@ -63,7 +62,7 @@ public class CreateUserUseCase implements CreateUserInput {
                 command.name(),
                 command.email(),
                 command.login(),
-                command.password(),
+                processPassword(command.password()),
                 findClientProfile()
         );
     }
@@ -74,6 +73,12 @@ public class CreateUserUseCase implements CreateUserInput {
         return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,
                         profileType));
+    }
+
+    private String processPassword(String rawPassword) {
+        User.validatePassword(rawPassword);
+
+        return passwordEncoder.encode(rawPassword);
     }
 
     private void throwExceptionCaseLoginOrEmailAlreadyExists(User user) {
