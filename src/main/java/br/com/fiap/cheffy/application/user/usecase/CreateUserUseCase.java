@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.profile.port.input.PasswordEncoderPort;
@@ -31,11 +32,7 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     public String execute(UserCommandPort command){
-        String profileType = command.profileType().name();
-
-        Profile profile = findProfileOrFail(profileType);
-
-        User user = createUserDomain(command, profile);
+        User user = createUserDomain(command);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         throwExceptionCaseLoginOrEmailAlreadyExists(user);
@@ -46,7 +43,7 @@ public class CreateUserUseCase implements CreateUserInput {
 
     }
 
-    private static void createAddressDomain(UserCommandPort command, User user) {
+    private void createAddressDomain(UserCommandPort command, User user) {
         user.addAddress(
                Address.create(
                         command.address().streetName(),
@@ -61,22 +58,22 @@ public class CreateUserUseCase implements CreateUserInput {
         );
     }
 
-    private static User createUserDomain(UserCommandPort command, Profile profile) {
-        User user = User.create(
+    private User createUserDomain(UserCommandPort command) {
+        return User.create(
                 command.name(),
                 command.email(),
                 command.login(),
                 command.password(),
-                profile
+                findClientProfile()
         );
-        return user;
     }
 
-    private Profile findProfileOrFail(String profileType) {
-        Profile profile = profileRepository.findByType(profileType)
+    private Profile findClientProfile() {
+        String profileType = ProfileType.CLIENT.getType();
+
+        return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,
                         profileType));
-        return profile;
     }
 
     private void throwExceptionCaseLoginOrEmailAlreadyExists(User user) {
