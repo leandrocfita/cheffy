@@ -26,5 +26,6 @@ public enum ExceptionsKeys {
 
     //Auth
     TOKEN_EXPIRED_EXCEPTION,
-    INVALID_PASSWORD_MSG
+    INVALID_PASSWORD_MSG,
+    INVALID_POSTAL_CODE_MSG
 }
