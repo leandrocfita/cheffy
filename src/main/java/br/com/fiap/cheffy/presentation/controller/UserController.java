@@ -1,6 +1,5 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.application.user.usecase.CreateUserUseCase;
 import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
@@ -25,17 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private CreateUserInput createUser;
+    private final CreateUserInput createUserInput;
     private final UserWebMapper mapper;
 
 
 
     public UserController(
             UserWebMapper mapper,
-            CreateUserInput createUser)
+            CreateUserInput createUserInput)
     {
         this.mapper = mapper;
-        this.createUser = createUser;
+        this.createUserInput = createUserInput;
     }
 
     @PostMapping
@@ -58,9 +57,9 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Conflito - Email ou Login já cadastrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO tbUserDTO) {
+    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
         log.info("UserController.createTbUser - START - Create user");
-        var createdId = createUser.execute(mapper.toCommand(tbUserDTO));
+        var createdId = createUserInput.execute(mapper.toCommand(userCreateDTO));
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
