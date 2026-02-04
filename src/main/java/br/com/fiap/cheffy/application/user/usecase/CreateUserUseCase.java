@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
+import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
@@ -34,7 +35,7 @@ public class CreateUserUseCase implements CreateUserInput {
     public String execute(UserCommandPort command){
         User user = createUserDomain(command);
 
-        throwExceptionCaseLoginOrEmailAlreadyExists(user);
+        checkLoginAndEmailAvailability(user);
 
         createAddressDomain(command, user);
 
@@ -43,15 +44,17 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     private void createAddressDomain(UserCommandPort command, User user) {
+        AddressCommandPort address = command.address();
+
         user.addAddress(
                Address.create(
-                        command.address().streetName(),
-                        command.address().number(),
-                        command.address().city(),
-                        command.address().postalCode(),
-                        command.address().neighborhood(),
-                        command.address().stateProvince(),
-                        command.address().addressLine(),
+                       address.streetName(),
+                       address.number(),
+                       address.city(),
+                       address.postalCode(),
+                       address.neighborhood(),
+                       address.stateProvince(),
+                       address.addressLine(),
                         true
                 )
         );
@@ -81,7 +84,7 @@ public class CreateUserUseCase implements CreateUserInput {
         return passwordEncoder.encode(rawPassword);
     }
 
-    private void throwExceptionCaseLoginOrEmailAlreadyExists(User user) {
+    private void checkLoginAndEmailAvailability(User user) {
         if (userRepository.existsByEmailOrLogin(user.getEmail(), user.getLogin())) {
             throw new RegisterFailedException(REGISTER_FAILED_EXCEPTION);
         }
