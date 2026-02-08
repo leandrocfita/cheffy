@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AddAdressUseCaseTest {
+class AddAddressUseCaseTest {
 
     @Mock
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ class AddAdressUseCaseTest {
     private UserServiceHelper userServiceHelper;
 
     @InjectMocks
-    private AddAdressUseCase addAdressUseCase;
+    private AddAddressUseCase addAdressUseCase;
 
     @Test
     void executeAddsAddressAndSavesUser() {
