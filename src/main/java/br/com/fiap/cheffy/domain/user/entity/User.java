@@ -73,6 +73,12 @@ public class User {
     ){
         Address address = findAddressByIdOrFail(id);
 
+        if(address.isMain() && Boolean.FALSE.equals(main)) {
+            throw new UserOperationNotAllowedException(
+                    "User must always have one main address"
+            );
+        }
+
         address.patch(
                 streetName,
                 number,
