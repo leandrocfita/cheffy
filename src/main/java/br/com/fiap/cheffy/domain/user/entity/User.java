@@ -10,8 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.ADDRESS_NOT_FOUND_EXCEPTION;
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.INVALID_PASSWORD_MSG;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 public class User {
 
@@ -73,6 +72,12 @@ public class User {
     ){
         Address address = findAddressByIdOrFail(id);
 
+        if(address.isMain() && Boolean.FALSE.equals(main)) {
+            throw new UserOperationNotAllowedException(
+                    USER_MUST_HAVE_AT_LEAST_ONE_ADDRESS
+            );
+        }
+
         address.patch(
                 streetName,
                 number,
@@ -125,7 +130,7 @@ public class User {
 
         if (addresses.isEmpty()) {
             throw new UserOperationNotAllowedException(
-                    "User must have at least one address"
+                    USER_MUST_HAVE_AT_LEAST_ONE_ADDRESS
             );
         }
 
