@@ -19,6 +19,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
     @EntityGraph(attributePaths = {"profiles", "addresses"})
     List<UserJpaEntity> findAll();
 
+    //FIXME - Trocar retorno para List<UserJpaEntity>
     @Query("""
             SELECT distinct u FROM UserJpaEntity u 
                     JOIN FETCH u.profiles
@@ -31,19 +32,10 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 
     boolean existsByEmailOrLogin(String email, String login);
 
-    @Query("""
-            SELECT distinct u FROM UserJpaEntity u 
-                    JOIN FETCH u.profiles
-                    LEFT JOIN FETCH u.addresses
-                WHERE u.id = :id 
-            """)
+    @EntityGraph(attributePaths = {"profiles", "addresses"})
     Optional<UserJpaEntity> findById(@Param("id") UUID id);
 
-    @Query("""
-            SELECT distinct u FROM UserJpaEntity u 
-                    JOIN FETCH u.profiles
-                WHERE u.login = :login 
-            """)
+    @EntityGraph(attributePaths = {"profiles", "addresses"})
     Optional<UserJpaEntity> findByLogin(@Param("login") String login);
 
 
