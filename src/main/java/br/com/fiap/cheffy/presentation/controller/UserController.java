@@ -1,7 +1,8 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.application.user.usecase.CreateUserUseCase;
+import br.com.fiap.cheffy.domain.user.port.input.AddAddressInput;
 import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
+import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,27 +16,29 @@ import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private CreateUserInput createUser;
+    private final CreateUserInput createUser;
+    private final AddAddressInput addAddress;
     private final UserWebMapper mapper;
 
 
 
     public UserController(
             UserWebMapper mapper,
-            CreateUserInput createUser)
+            CreateUserInput createUser,
+            AddAddressInput addAddress)
     {
         this.mapper = mapper;
         this.createUser = createUser;
+        this.addAddress = addAddress;
     }
 
     @PostMapping
@@ -64,5 +67,28 @@ public class UserController {
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    //ADDRESSES
+    @PostMapping("/{userId}/addresses")
+    @Operation(summary = "Adicionar novo endereço ao usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Long> addAddress(
+            @PathVariable UUID userId,
+            @RequestBody @Valid AddressCreateDTO dto) {
+
+        log.info("UserController.addAddress - START - User [{}]", userId);
+
+        addAddress.execute(mapper.toCommand(dto), userId);
+
+        log.info("UserController.addAddress - END");
+        MDC.clear();
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

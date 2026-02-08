@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface UserRepository {
 
-    UUID save(User user);
+    User save(User user);
 
     boolean existsByEmailOrLogin(String email, String login);
 
