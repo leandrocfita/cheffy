@@ -9,12 +9,12 @@ import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
 
 import java.util.UUID;
 
-public class AddAdressUseCase implements AddAddressInput {
+public class AddAddressUseCase implements AddAddressInput {
 
     private final UserRepository userRepository;
     private final UserServiceHelper userServiceHelper;
 
-    public AddAdressUseCase(
+    public AddAddressUseCase(
             UserRepository userRepository,
             UserServiceHelper userServiceHelper){
         this.userRepository = userRepository;
