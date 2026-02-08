@@ -57,7 +57,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()));
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -95,7 +96,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleAddressNotFoundException(AddressNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()) ) ;
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -114,7 +117,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleProfileNotFoundException(ProfileNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getType()) ) ;
+        String message = getMessage(ex.getMessage()) ;
+        message = String.format(message, ex.getType());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 
