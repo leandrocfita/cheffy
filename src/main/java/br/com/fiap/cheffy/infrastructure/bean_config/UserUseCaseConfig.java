@@ -2,10 +2,7 @@ package br.com.fiap.cheffy.infrastructure.bean_config;
 
 import br.com.fiap.cheffy.application.user.mapper.UserQueryMapper;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
-import br.com.fiap.cheffy.application.user.usecase.AddAdressUseCase;
-import br.com.fiap.cheffy.application.user.usecase.CreateUserUseCase;
-import br.com.fiap.cheffy.application.user.usecase.LoginUseCase;
-import br.com.fiap.cheffy.application.user.usecase.UpdateAddressUseCase;
+import br.com.fiap.cheffy.application.user.usecase.*;
 import br.com.fiap.cheffy.domain.user.port.input.AuthenticationManagerPort;
 import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -68,6 +65,17 @@ public class UserUseCaseConfig {
             UserServiceHelper userServiceHelper
     ) {
         return new UpdateAddressUseCase(
+                userServiceHelper,
+                userRepository
+        );
+    }
+
+    @Bean
+    public RemoveAddressUseCase removeAddressUseCase(
+            UserServiceHelper userServiceHelper,
+            UserRepository userRepository
+    ) {
+        return new RemoveAddressUseCase(
                 userServiceHelper,
                 userRepository
         );
