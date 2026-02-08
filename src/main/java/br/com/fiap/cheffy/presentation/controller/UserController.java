@@ -2,7 +2,9 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.domain.user.port.input.AddAddressInput;
 import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
+import br.com.fiap.cheffy.domain.user.port.input.UpdateAddressInput;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
+import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,8 +27,10 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
+    private final UpdateAddressInput updateAddressInput;
     private final CreateUserInput createUser;
     private final AddAddressInput addAddress;
+
     private final UserWebMapper mapper;
 
 
@@ -34,11 +38,13 @@ public class UserController {
     public UserController(
             UserWebMapper mapper,
             CreateUserInput createUser,
-            AddAddressInput addAddress)
+            AddAddressInput addAddress,
+            UpdateAddressInput updateAddressInput)
     {
         this.mapper = mapper;
         this.createUser = createUser;
         this.addAddress = addAddress;
+        this.updateAddressInput = updateAddressInput;
     }
 
     @PostMapping
@@ -90,5 +96,28 @@ public class UserController {
         MDC.clear();
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping("/{userId}/addresses/{addressId}")
+    @Operation(summary = "Atualizar parcialmente um endereço do usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Endereço atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário ou endereço não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> updateAddress(
+            @PathVariable UUID userId,
+            @PathVariable Long addressId,
+            @RequestBody @Valid AddressPatchDTO dto) {
+
+        log.info("UserController.updateAddress - START - User [{}] Address [{}]", userId, addressId);
+
+        updateAddressInput.execute(userId, addressId, mapper.toCommand(dto));
+
+        log.info("UserController.updateAddress - END");
+        MDC.clear();
+
+        return ResponseEntity.noContent().build();
     }
 }

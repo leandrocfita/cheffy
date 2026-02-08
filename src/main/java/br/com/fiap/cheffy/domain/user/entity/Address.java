@@ -4,17 +4,19 @@ import java.util.Objects;
 
 public class Address {
 
-    private final Long id;
-    private final String streetName;
-    private final Integer number;
-    private final String city;
-    private final String postalCode;
-    private final String neighborhood;
-    private final String stateProvince;
-    private final String addressLine;
+    private Long id;
+    private String streetName;
+    private Integer number;
+    private String city;
+    private String postalCode;
+    private String neighborhood;
+    private String stateProvince;
+    private String addressLine;
 
     private boolean main;
     private User user;
+
+    protected Address() {}
 
     public Address(
             Long id,
@@ -59,6 +61,26 @@ public class Address {
                 addressLine,
                 isMain
         );
+    }
+
+    public void patch(
+            String streetName,
+            Integer number,
+            String city,
+            String postalCode,
+            String neighborhood,
+            String stateProvince,
+            String addressLine,
+            Boolean main
+    ) {
+        if (streetName != null) this.streetName = streetName;
+        if (number != null) this.number = number;
+        if (city != null) this.city = city;
+        if (postalCode != null) this.postalCode = postalCode;
+        if (neighborhood != null) this.neighborhood = neighborhood;
+        if (stateProvince != null) this.stateProvince = stateProvince;
+        if (addressLine != null) this.addressLine = addressLine;
+        if (main != null) this.main = main;
     }
 
     /* Relationship control */

@@ -4,7 +4,6 @@ import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -26,6 +25,8 @@ public class User {
     private String password;
     private Set<Profile> profiles = new HashSet<>();
     private Set<Address> addresses = new HashSet<>();
+
+    protected User() {}
 
     public User(UUID id, String name, String email, String login, String password) {
         this.id = id;
@@ -59,13 +60,42 @@ public class User {
 
     /* Address behavior */
 
+    public void updateAddress(
+            Long id,
+            String streetName,
+            Integer number,
+            String city,
+            String postalCode,
+            String neighborhood,
+            String stateProvince,
+            String addressLine,
+            Boolean main
+    ){
+        Address address = findAddressByIdOrFail(id);
+
+        address.patch(
+                streetName,
+                number,
+                city,
+                postalCode,
+                neighborhood,
+                stateProvince,
+                addressLine,
+                main);
+
+        if (Boolean.TRUE.equals(address.isMain())) {
+            setMainAddress(address);
+        }
+
+    }
+
     public Address findAddressByIdOrFail(Long addressId) {
         return addresses.stream()
                 .filter(address -> address.getId().equals(addressId))
                 .findFirst()
                 .orElseThrow(() -> new AddressNotFoundException(
                         ADDRESS_NOT_FOUND_EXCEPTION,
-                        addressId.toString()
+                        addressId
                 ));
     }
 
@@ -112,7 +142,7 @@ public class User {
         if (!addresses.contains(address)) {
             throw new AddressNotFoundException(
                     ADDRESS_NOT_FOUND_EXCEPTION,
-                    address.getId().toString());
+                    address.getId());
         }
     }
 
