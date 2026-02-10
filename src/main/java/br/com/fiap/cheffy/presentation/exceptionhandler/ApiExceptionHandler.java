@@ -95,25 +95,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-
-        String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()));
-
-        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
-
-        Problem problem = createProblemBuilder(
-                httpStatusCode,
-                title,
-                message)
-                .userMessage(message)
-                .build();
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
-
-    }
-
     @ExceptionHandler(InvalidPasswordException.class)
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
 
