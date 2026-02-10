@@ -5,6 +5,7 @@ import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.domain.user.port.input.UpdateAddressInput;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
+import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +29,8 @@ import java.util.UUID;
 public class UserController {
 
     private final CreateUserInput createUserInput;
+    private final AddAddressInput addAddressInput;
     private final UpdateAddressInput updateAddressInput;
-    private final AddAddressInput addAddress;
 
     private final UserWebMapper mapper;
 
@@ -38,13 +39,13 @@ public class UserController {
     public UserController(
             UserWebMapper mapper,
             CreateUserInput createUserInput,
-            AddAddressInput addAddress,
+            AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput)
     {
         this.mapper = mapper;
-        this.addAddress = addAddress;
         this.updateAddressInput = updateAddressInput;
         this.createUserInput = createUserInput;
+        this.addAddressInput = addAddressInput;
     }
 
     @PostMapping
@@ -90,7 +91,7 @@ public class UserController {
 
         log.info("UserController.addAddress - START - User [{}]", userId);
 
-        addAddress.execute(mapper.toCommand(dto), userId);
+        addAddressInput.execute(mapper.toCommand(dto), userId);
 
         log.info("UserController.addAddress - END");
         MDC.clear();
