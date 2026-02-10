@@ -2,30 +2,33 @@ package br.com.fiap.cheffy.presentation.mapper;
 
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
+import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
+import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserWebMapper {
 
-    public UserCommandPort toCommand(UserCreateDTO request) {
+    public UserCommandPort toCommand(UserCreateDTO userCreateDTO) {
+        AddressCreateDTO address = userCreateDTO.address();
+
         return new UserCommandPort(
-                request.name(),
-                request.email(),
-                request.login(),
-                request.password(),
-                request.profileType(),
+                userCreateDTO.name(),
+                userCreateDTO.email(),
+                userCreateDTO.login(),
+                userCreateDTO.password(),
                 new AddressCommandPort(
-                        request.address().streetName(),
-                        request.address().number(),
-                        request.address().city(),
-                        request.address().postalCode(),
-                        request.address().neighborhood(),
-                        request.address().stateProvince(),
-                        request.address().addressLine(),
-                        request.address().main())
+                        address.streetName(),
+                        address.number(),
+                        address.city(),
+                        address.postalCode(),
+                        address.neighborhood(),
+                        address.stateProvince(),
+                        address.addressLine(),
+                        address.main())
         );
     }
 
