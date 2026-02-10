@@ -2,10 +2,10 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.domain.user.port.input.AddAddressInput;
 import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
+import br.com.fiap.cheffy.domain.user.port.input.RemoveAddressInput;
 import br.com.fiap.cheffy.domain.user.port.input.UpdateAddressInput;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
-import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +31,7 @@ public class UserController {
     private final CreateUserInput createUserInput;
     private final AddAddressInput addAddressInput;
     private final UpdateAddressInput updateAddressInput;
+    private final RemoveAddressInput removeAddress;
 
     private final UserWebMapper mapper;
 
@@ -40,12 +41,14 @@ public class UserController {
             UserWebMapper mapper,
             CreateUserInput createUserInput,
             AddAddressInput addAddressInput,
-            UpdateAddressInput updateAddressInput)
+            UpdateAddressInput updateAddressInput,
+            RemoveAddressInput removeAddress)
     {
         this.mapper = mapper;
         this.updateAddressInput = updateAddressInput;
         this.createUserInput = createUserInput;
         this.addAddressInput = addAddressInput;
+        this.removeAddress = removeAddress;
     }
 
     @PostMapping
@@ -117,6 +120,28 @@ public class UserController {
         updateAddressInput.execute(userId, addressId, mapper.toCommand(dto));
 
         log.info("UserController.updateAddress - END");
+        MDC.clear();
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{userId}/addresses/{addressId}")
+    @Operation(summary = "Remover endereço do usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Endereço removido com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário ou endereço não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Operação não permitida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> removeAddress(
+            @PathVariable UUID userId,
+            @PathVariable Long addressId) {
+
+        log.info("UserController.removeAddress - START - User [{}] Address [{}]", userId, addressId);
+
+        removeAddress.execute(userId, addressId);
+
+        log.info("UserController.removeAddress - END");
         MDC.clear();
 
         return ResponseEntity.noContent().build();
