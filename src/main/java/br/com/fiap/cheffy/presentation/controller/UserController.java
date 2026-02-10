@@ -6,7 +6,6 @@ import br.com.fiap.cheffy.domain.user.port.input.RemoveAddressInput;
 import br.com.fiap.cheffy.domain.user.port.input.UpdateAddressInput;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
-import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
