@@ -25,8 +25,8 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private final CreateUserInput createUser;
-    private final AddAddressInput addAddress;
+    private final CreateUserInput createUserInput;
+    private final AddAddressInput addAddressInput;
     private final UserWebMapper mapper;
 
 
@@ -37,8 +37,8 @@ public class UserController {
             AddAddressInput addAddress)
     {
         this.mapper = mapper;
-        this.createUser = createUser;
-        this.addAddress = addAddress;
+        this.createUserInput = createUser;
+        this.addAddressInput = addAddress;
     }
 
     @PostMapping
@@ -84,7 +84,7 @@ public class UserController {
 
         log.info("UserController.addAddress - START - User [{}]", userId);
 
-        addAddress.execute(mapper.toCommand(dto), userId);
+        addAddressInput.execute(mapper.toCommand(dto), userId);
 
         log.info("UserController.addAddress - END");
         MDC.clear();
