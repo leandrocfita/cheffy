@@ -2,10 +2,10 @@ package br.com.fiap.cheffy.infrastructure.persistence.user.adapter;
 
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
+import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,12 +19,12 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserPersistenceMapper mapper;
 
     @Override
-    public UUID save(User user) {
+    public User save(User user) {
         var jpaEntity = mapper.toJpa(user);
 
-        var saved = userJpaRepository.save(jpaEntity);
+        UserJpaEntity saved = userJpaRepository.save(jpaEntity);
 
-        return saved.getId();
+        return mapper.toDomain(saved);
     }
 
     @Override

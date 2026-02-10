@@ -29,4 +29,17 @@ public class UserWebMapper {
         );
     }
 
+    public AddressCommandPort toCommand(AddressCreateDTO request) {
+        return new AddressCommandPort(
+                request.streetName(),
+                request.number(),
+                request.city(),
+                request.postalCode(),
+                request.neighborhood(),
+                request.stateProvince(),
+                request.addressLine(),
+                request.main()
+        );
+    }
+
 }

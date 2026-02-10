@@ -5,7 +5,7 @@ import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.profile.port.input.PasswordEncoderPort;
+import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
@@ -37,27 +37,24 @@ public class CreateUserUseCase implements CreateUserInput {
 
         checkLoginAndEmailAvailability(user);
 
-        createAddressDomain(command, user);
+        Address address = createAddressDomain(command);
+        user.addAddress(address);
 
-        return userRepository.save(user).toString();
+        return userRepository.save(user).getId().toString();
 
     }
 
-    private void createAddressDomain(UserCommandPort command, User user) {
-        AddressCommandPort address = command.address();
-
-        user.addAddress(
-               Address.create(
-                       address.streetName(),
-                       address.number(),
-                       address.city(),
-                       address.postalCode(),
-                       address.neighborhood(),
-                       address.stateProvince(),
-                       address.addressLine(),
+    private Address createAddressDomain(UserCommandPort command) {
+               return Address.create(
+                        command.address().streetName(),
+                        command.address().number(),
+                        command.address().city(),
+                        command.address().postalCode(),
+                        command.address().neighborhood(),
+                        command.address().stateProvince(),
+                        command.address().addressLine(),
                         true
-                )
-        );
+                );
     }
 
     private User createUserDomain(UserCommandPort command) {
