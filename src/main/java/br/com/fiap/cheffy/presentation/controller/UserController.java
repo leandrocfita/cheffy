@@ -27,8 +27,8 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
+    private final CreateUserInput createUserInput;
     private final UpdateAddressInput updateAddressInput;
-    private final CreateUserInput createUser;
     private final AddAddressInput addAddress;
 
     private final UserWebMapper mapper;
@@ -37,14 +37,15 @@ public class UserController {
 
     public UserController(
             UserWebMapper mapper,
+            CreateUserInput createUserInput)
             CreateUserInput createUser,
             AddAddressInput addAddress,
             UpdateAddressInput updateAddressInput)
     {
         this.mapper = mapper;
-        this.createUser = createUser;
         this.addAddress = addAddress;
         this.updateAddressInput = updateAddressInput;
+        this.createUserInput = createUserInput;
     }
 
     @PostMapping
@@ -67,9 +68,9 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Conflito - Email ou Login já cadastrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO tbUserDTO) {
+    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
         log.info("UserController.createTbUser - START - Create user");
-        var createdId = createUser.execute(mapper.toCommand(tbUserDTO));
+        var createdId = createUserInput.execute(mapper.toCommand(userCreateDTO));
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);

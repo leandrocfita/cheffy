@@ -40,17 +40,15 @@ public class User {
             String name,
             String email,
             String login,
-            String rawPassword,
+            String encodedPassword,
             Profile profile
     ) {
-        validatePassword(rawPassword);
-
         User user = new User(
                 null,
                 name,
                 email,
                 login,
-                rawPassword
+                encodedPassword
         );
 
         user.addProfile(profile);

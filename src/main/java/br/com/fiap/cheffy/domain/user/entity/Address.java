@@ -1,8 +1,13 @@
 package br.com.fiap.cheffy.domain.user.entity;
 
+import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
+
 import java.util.Objects;
 
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.INVALID_POSTAL_CODE_MSG;
+
 public class Address {
+    private static final int MIN_POSTAL_CODE_LENGTH = 8; //TODO parametrizar
 
     private Long id;
     private String streetName;
@@ -50,6 +55,8 @@ public class Address {
             String addressLine,
             boolean isMain
     ) {
+        validatePostalCode(postalCode);
+
         return new Address(
                 null,
                 streetName,
@@ -81,6 +88,16 @@ public class Address {
         if (stateProvince != null) this.stateProvince = stateProvince;
         if (addressLine != null) this.addressLine = addressLine;
         if (main != null) this.main = main;
+    }
+
+    public static void validatePostalCode(String postalCode) {
+        boolean allDigits = postalCode.chars().allMatch(Character::isDigit);
+
+        if (!(postalCode.length() == MIN_POSTAL_CODE_LENGTH
+                && allDigits)) {
+            throw new InvalidPostalCodeException(
+                    INVALID_POSTAL_CODE_MSG, MIN_POSTAL_CODE_LENGTH);
+        }
     }
 
     /* Relationship control */
