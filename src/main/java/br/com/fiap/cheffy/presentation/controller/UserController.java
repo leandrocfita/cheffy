@@ -37,8 +37,7 @@ public class UserController {
 
     public UserController(
             UserWebMapper mapper,
-            CreateUserInput createUserInput)
-            CreateUserInput createUser,
+            CreateUserInput createUserInput,
             AddAddressInput addAddress,
             UpdateAddressInput updateAddressInput)
     {
