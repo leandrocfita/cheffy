@@ -4,6 +4,8 @@ import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
+import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
+import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
@@ -53,6 +55,45 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ERROR_ON_DESERIALIZATION = ExceptionsKeys.ERROR_ON_DESERIALIZATION.toString();
     private static final String INVALID_FORMAT_ERROR = ExceptionsKeys.INVALID_FORMAT_ERROR.toString();
     private static final String PROPERTY_BINDING_ERROR = ExceptionsKeys.PROPERTY_BINDING_ERROR.toString();
+
+    @ExceptionHandler(UserOperationNotAllowedException.class)
+    private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
@@ -113,7 +154,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleAddressNotFoundException(AddressNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()) ) ;
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -132,7 +175,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleProfileNotFoundException(ProfileNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getType()) ) ;
+        String message = getMessage(ex.getMessage()) ;
+        message = String.format(message, ex.getType());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 

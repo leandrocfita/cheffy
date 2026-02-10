@@ -17,5 +17,7 @@ public @interface PostalCode {
 
     Class<?>[] groups() default {};
 
+    boolean required() default true;
+
     Class<? extends Payload>[] payload() default {};
 }

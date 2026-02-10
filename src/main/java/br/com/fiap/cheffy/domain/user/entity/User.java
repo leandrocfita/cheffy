@@ -10,8 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.ADDRESS_NOT_FOUND_EXCEPTION;
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.INVALID_PASSWORD_MSG;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 public class User {
 
@@ -25,6 +24,8 @@ public class User {
     private String password;
     private Set<Profile> profiles = new HashSet<>();
     private Set<Address> addresses = new HashSet<>();
+
+    protected User() {}
 
     public User(UUID id, String name, String email, String login, String password) {
         this.id = id;
@@ -56,13 +57,48 @@ public class User {
 
     /* Address behavior */
 
+    public void updateAddress(
+            Long id,
+            String streetName,
+            Integer number,
+            String city,
+            String postalCode,
+            String neighborhood,
+            String stateProvince,
+            String addressLine,
+            Boolean main
+    ){
+        Address address = findAddressByIdOrFail(id);
+
+        if(address.isMain() && Boolean.FALSE.equals(main)) {
+            throw new UserOperationNotAllowedException(
+                    USER_MUST_HAVE_AT_LEAST_ONE_ADDRESS
+            );
+        }
+
+        address.patch(
+                streetName,
+                number,
+                city,
+                postalCode,
+                neighborhood,
+                stateProvince,
+                addressLine,
+                main);
+
+        if (Boolean.TRUE.equals(address.isMain())) {
+            setMainAddress(address);
+        }
+
+    }
+
     public Address findAddressByIdOrFail(Long addressId) {
         return addresses.stream()
                 .filter(address -> address.getId().equals(addressId))
                 .findFirst()
                 .orElseThrow(() -> new AddressNotFoundException(
                         ADDRESS_NOT_FOUND_EXCEPTION,
-                        addressId.toString()
+                        addressId
                 ));
     }
 
@@ -92,7 +128,7 @@ public class User {
 
         if (addresses.isEmpty()) {
             throw new UserOperationNotAllowedException(
-                    "User must have at least one address"
+                    USER_MUST_HAVE_AT_LEAST_ONE_ADDRESS
             );
         }
 
@@ -109,7 +145,7 @@ public class User {
         if (!addresses.contains(address)) {
             throw new AddressNotFoundException(
                     ADDRESS_NOT_FOUND_EXCEPTION,
-                    address.getId().toString());
+                    address.getId());
         }
     }
 
