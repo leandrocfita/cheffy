@@ -4,7 +4,6 @@ import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -40,17 +39,15 @@ public class User {
             String name,
             String email,
             String login,
-            String rawPassword,
+            String encodedPassword,
             Profile profile
     ) {
-        validatePassword(rawPassword);
-
         User user = new User(
                 null,
                 name,
                 email,
                 login,
-                rawPassword
+                encodedPassword
         );
 
         user.addProfile(profile);

@@ -1,6 +1,8 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
+import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
@@ -31,14 +33,9 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     public String execute(UserCommandPort command){
-        String profileType = command.profileType().name();
+        User user = createUserDomain(command);
 
-        Profile profile = findProfileOrFail(profileType);
-
-        User user = createUserDomain(command, profile);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        throwExceptionCaseLoginOrEmailAlreadyExists(user);
+        checkLoginAndEmailAvailability(user);
 
         Address address = createAddressDomain(command);
         user.addAddress(address);
@@ -60,23 +57,31 @@ public class CreateUserUseCase implements CreateUserInput {
                 );
     }
 
-    private static User createUserDomain(UserCommandPort command, Profile profile) {
+    private User createUserDomain(UserCommandPort command) {
         return User.create(
                 command.name(),
                 command.email(),
                 command.login(),
-                command.password(),
-                profile
+                processPassword(command.password()),
+                findClientProfile()
         );
     }
 
-    private Profile findProfileOrFail(String profileType) {
+    private Profile findClientProfile() {
+        String profileType = ProfileType.CLIENT.getType();
+
         return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,
                         profileType));
     }
 
-    private void throwExceptionCaseLoginOrEmailAlreadyExists(User user) {
+    private String processPassword(String rawPassword) {
+        User.validatePassword(rawPassword);
+
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    private void checkLoginAndEmailAvailability(User user) {
         if (userRepository.existsByEmailOrLogin(user.getEmail(), user.getLogin())) {
             throw new RegisterFailedException(REGISTER_FAILED_EXCEPTION);
         }

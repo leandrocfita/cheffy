@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
+import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
@@ -89,6 +90,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
+    }
+
+    @ExceptionHandler(InvalidPostalCodeException.class)
+    private ResponseEntity<Object> handleInvalidPostalCodeException(InvalidPostalCodeException ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(String.format(ex.getMessage(), ex.getMinPostalCodeLength()));
+
+        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return  handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
 
     @ExceptionHandler(AddressNotFoundException.class)
