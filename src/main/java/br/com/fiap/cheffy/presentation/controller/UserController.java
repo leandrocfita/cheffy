@@ -71,7 +71,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Conflito - Email ou Login já cadastrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
         log.info("UserController.createTbUser - START - Create user");
         var createdId = createUserInput.execute(mapper.toCommand(userCreateDTO));
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
