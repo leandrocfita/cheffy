@@ -175,9 +175,9 @@ public class User {
         this.password = password;
     }
 
-    public void changePassword(String rawPassword) {
-        validatePassword(rawPassword);
-        this.password = Objects.requireNonNull(rawPassword);
+    public void changePassword(String password) {
+        validatePassword(password);
+        this.password = Objects.requireNonNull(password);
     }
 
     public static void validatePassword(String password) {
