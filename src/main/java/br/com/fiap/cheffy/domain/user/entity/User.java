@@ -55,6 +55,18 @@ public class User {
         return user;
     }
 
+    /* Update/Patch methods */
+
+    public void patch(
+            String name,
+            String email,
+            String login
+    ) {
+        if (name != null) this.name = name;
+        if (email != null) this.email = email;
+        if (login != null) this.login = login;
+    }
+
     /* Address behavior */
 
     public void updateAddress(
