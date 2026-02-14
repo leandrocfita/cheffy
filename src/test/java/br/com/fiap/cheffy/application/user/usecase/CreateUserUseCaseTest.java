@@ -53,11 +53,11 @@ class CreateUserUseCaseTest {
     @Test
     void executeCreatesUserWithAddressAndEncodesPassword() {
         UserCommandPort command = buildCommand();
-        Profile profile = new Profile(7L, command.profileType().name());
+        Profile profile = new Profile(7L, ProfileType.CLIENT.getType());
         String encodedPassword = "encoded-password";
         User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword);
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.of(profile));
+        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn(encodedPassword);
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -90,7 +90,7 @@ class CreateUserUseCaseTest {
     void executeThrowsWhenProfileIsMissing() {
         UserCommandPort command = buildCommand();
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.empty());
+        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.empty());
 
         assertThrows(ProfileNotFoundException.class, () -> createUserUseCase.execute(command));
 
@@ -100,9 +100,9 @@ class CreateUserUseCaseTest {
     @Test
     void executeThrowsWhenEmailOrLoginAlreadyExists() {
         UserCommandPort command = buildCommand();
-        Profile profile = new Profile(7L, command.profileType().name());
+        Profile profile = new Profile(7L, ProfileType.CLIENT.getType());
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.of(profile));
+        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn("encoded-password");
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(true);
 
@@ -116,7 +116,7 @@ class CreateUserUseCaseTest {
                 "Rua A",
                 123,
                 "Sao Paulo",
-                "01000-000",
+                "01000000",
                 "Centro",
                 "SP",
                 "Ap 11",
@@ -128,7 +128,6 @@ class CreateUserUseCaseTest {
                 "jane.doe@example.com",
                 "jane.doe",
                 "ValidPass1!X",
-                ProfileType.CLIENT,
                 address
         );
     }
