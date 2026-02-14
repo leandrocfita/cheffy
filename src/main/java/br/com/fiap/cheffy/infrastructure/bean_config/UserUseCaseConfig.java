@@ -40,6 +40,15 @@ public class UserUseCaseConfig {
     }
 
     @Bean
+    public UpdateUserPasswordUseCase updateUserPasswordUseCase(
+            UserRepository userRepository
+    ) {
+        return new UpdateUserPasswordUseCase(
+                userRepository
+        );
+    }
+
+    @Bean
     public UserServiceHelper userServiceHelper(
             UserRepository userRepository,
             UserQueryMapper mapper
