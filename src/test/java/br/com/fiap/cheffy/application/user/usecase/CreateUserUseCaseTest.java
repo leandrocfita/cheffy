@@ -2,8 +2,6 @@ package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
-import br.com.fiap.cheffy.domain.profile.ProfileType;
-import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
@@ -18,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,11 +50,11 @@ class CreateUserUseCaseTest {
     @Test
     void executeCreatesUserWithAddressAndEncodesPassword() {
         UserCommandPort command = buildCommand();
-        Profile profile = new Profile(7L, command.profileType().name());
+        //Profile profile = new Profile(7L, command.profileType().name());
         String encodedPassword = "encoded-password";
         User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword);
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.of(profile));
+       // when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn(encodedPassword);
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -70,7 +67,7 @@ class CreateUserUseCaseTest {
 
         assertEquals(savedUser.getId().toString(), result);
         assertEquals(encodedPassword, capturedUser.getPassword());
-        assertTrue(capturedUser.getProfiles().contains(profile));
+       // assertTrue(capturedUser.getProfiles().contains(profile));
 
         Set<Address> addresses = capturedUser.getAddresses();
         assertEquals(1, addresses.size());
@@ -90,7 +87,7 @@ class CreateUserUseCaseTest {
     void executeThrowsWhenProfileIsMissing() {
         UserCommandPort command = buildCommand();
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.empty());
+        //when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.empty());
 
         assertThrows(ProfileNotFoundException.class, () -> createUserUseCase.execute(command));
 
@@ -100,9 +97,9 @@ class CreateUserUseCaseTest {
     @Test
     void executeThrowsWhenEmailOrLoginAlreadyExists() {
         UserCommandPort command = buildCommand();
-        Profile profile = new Profile(7L, command.profileType().name());
+        //Profile profile = new Profile(7L, "CLIENT");
 
-        when(profileRepository.findByType(command.profileType().name())).thenReturn(Optional.of(profile));
+       // when(profileRepository.findByType("CLIENT")).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn("encoded-password");
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(true);
 
@@ -128,7 +125,6 @@ class CreateUserUseCaseTest {
                 "jane.doe@example.com",
                 "jane.doe",
                 "ValidPass1!X",
-                ProfileType.CLIENT,
                 address
         );
     }

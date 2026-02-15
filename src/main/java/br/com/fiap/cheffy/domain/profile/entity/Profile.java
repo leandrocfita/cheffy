@@ -7,9 +7,13 @@ public class Profile {
     private final Long id;
     private final String type;
 
-    public Profile(Long id, String type) {
-        this.id = Objects.requireNonNull(id);
+    private Profile(Long id, String type) {
+        this.id = id;
         this.type = Objects.requireNonNull(type);
+    }
+
+    public static Profile create(Long id, String profileType){
+        return new Profile(id, profileType);
     }
 
     public Long getId() {

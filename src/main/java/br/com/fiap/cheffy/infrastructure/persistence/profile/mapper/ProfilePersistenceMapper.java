@@ -14,6 +14,6 @@ public class ProfilePersistenceMapper {
     }
 
     public Profile toDomain(ProfileJpaEntity jpa) {
-        return new Profile(jpa.getId(), jpa.getType());
+        return Profile.create(jpa.getId(), jpa.getType());
     }
 }
