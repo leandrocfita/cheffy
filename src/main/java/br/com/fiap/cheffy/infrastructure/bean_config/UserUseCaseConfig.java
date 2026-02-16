@@ -84,4 +84,15 @@ public class UserUseCaseConfig {
                 userRepository
         );
     }
+
+    @Bean
+    public FindUserByIdUseCase findUserByIdUseCase(
+            UserRepository userRepository,
+            UserQueryMapper mapper
+    ) {
+        return new FindUserByIdUseCase(
+                userRepository,
+                mapper
+        );
+    }
 }
