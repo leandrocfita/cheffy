@@ -19,6 +19,15 @@ import org.springframework.context.annotation.Configuration;
 public class UserUseCaseConfig {
 
     @Bean
+    public UpdateUserUseCase updateUserUseCase(
+            UserRepository userRepository
+    ) {
+        return new UpdateUserUseCase(
+                userRepository
+        );
+    }
+
+    @Bean
     public CreateUserUseCase createUserUseCase(
             UserRepository userRepository,
             ProfileRepository profileRepository,

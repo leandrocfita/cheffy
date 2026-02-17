@@ -127,7 +127,7 @@ class CreateUserUseCaseTest {
                 "Jane Doe",
                 "jane.doe@example.com",
                 "jane.doe",
-                "ValidPass1!X",
+                "ValidPass1!XX",
                 address
         );
     }
