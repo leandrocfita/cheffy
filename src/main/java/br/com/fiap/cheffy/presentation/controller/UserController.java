@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
+import br.com.fiap.cheffy.presentation.dto.UserUpdateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class UserController {
 
     private final CreateUserInput createUserInput;
+    private final UpdateUserInput updateUserInput;
     private final AddAddressInput addAddressInput;
     private final UpdateAddressInput updateAddressInput;
     private final RemoveAddressInput removeAddress;
@@ -37,15 +39,17 @@ public class UserController {
     public UserController(
             UserWebMapper mapper,
             CreateUserInput createUserInput,
+            UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput,
             RemoveAddressInput removeAddress,
             FindUserByIdInput findUserByIdInput)
     {
-        this.mapper = mapper;
-        this.updateAddressInput = updateAddressInput;
         this.createUserInput = createUserInput;
+        this.updateUserInput = updateUserInput;
+        this.mapper = mapper;
         this.addAddressInput = addAddressInput;
+        this.updateAddressInput = updateAddressInput;
         this.removeAddress = removeAddress;
         this.findUserByIdInput = findUserByIdInput;
     }
@@ -70,12 +74,34 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Conflito - Email ou Login já cadastrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    public ResponseEntity<String> createTbUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
         log.info("UserController.createTbUser - START - Create user");
         var createdId = createUserInput.execute(mapper.toCommand(userCreateDTO));
         log.info("UserController.createTbUser - END - User created with id [{}]", createdId);
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(
+            summary = "Atualizar usuário",
+            description = "Atualização parcial - apenas campos enviados são modificados"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuário atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados de atualização inválidos"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Conflito - Email já cadastrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> updateUser(@PathVariable final UUID id,
+                                           @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
+        log.info("UserController.updateUser - START - Update user");
+        updateUserInput.execute(id, mapper.toCommand(userUpdateDTO));
+        log.info("UserController.updateUser - END - User updated [{}]", id);
+        return ResponseEntity.noContent().build();
     }
 
     //ADDRESSES

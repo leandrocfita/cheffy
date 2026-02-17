@@ -28,7 +28,8 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
             """)
     Optional<UserJpaEntity> findByName(@Param("name") String name);
 
-    Optional<UserJpaEntity> findByEmail(String email);
+    @EntityGraph(attributePaths = {"profiles", "addresses"})
+    Optional<UserJpaEntity> findByEmail(@Param("email") String email);
 
     boolean existsByEmailOrLogin(String email, String login);
 
