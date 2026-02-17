@@ -41,10 +41,12 @@ public class UserUseCaseConfig {
 
     @Bean
     public UpdateUserPasswordUseCase updateUserPasswordUseCase(
-            UserRepository userRepository
+            UserRepository userRepository,
+            PasswordEncoderPort passwordEncoderPort
     ) {
         return new UpdateUserPasswordUseCase(
-                userRepository
+                userRepository,
+                passwordEncoderPort
         );
     }
 
