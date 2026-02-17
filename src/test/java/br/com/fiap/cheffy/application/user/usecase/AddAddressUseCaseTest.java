@@ -38,7 +38,7 @@ class AddAddressUseCaseTest {
                 "Main Street",
                 123,
                 "Sao Paulo",
-                "01000-000",
+                "01000000",
                 "Centro",
                 "SP",
                 "Apt 1",
@@ -56,7 +56,7 @@ class AddAddressUseCaseTest {
         assertThat(address.getStreetName()).isEqualTo("Main Street");
         assertThat(address.getNumber()).isEqualTo(123);
         assertThat(address.getCity()).isEqualTo("Sao Paulo");
-        assertThat(address.getPostalCode()).isEqualTo("01000-000");
+        assertThat(address.getPostalCode()).isEqualTo("01000000");
         assertThat(address.getNeighborhood()).isEqualTo("Centro");
         assertThat(address.getStateProvince()).isEqualTo("SP");
         assertThat(address.getAddressLine()).isEqualTo("Apt 1");
@@ -72,7 +72,7 @@ class AddAddressUseCaseTest {
                 "Old Street",
                 10,
                 "Sao Paulo",
-                "02000-000",
+                "02000000",
                 "Centro",
                 "SP",
                 "House",
@@ -84,7 +84,7 @@ class AddAddressUseCaseTest {
                 "New Street",
                 200,
                 "Sao Paulo",
-                "03000-000",
+                "03000000",
                 "Centro",
                 "SP",
                 "Apt 2",
