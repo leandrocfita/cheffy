@@ -180,8 +180,6 @@ public class UserController {
 
         log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
 
-        MDC.clear();
-
         return ResponseEntity.ok(users);
     }
 }
