@@ -1,6 +1,8 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.domain.user.port.input.*;
+import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
+import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
@@ -15,6 +17,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +39,7 @@ public class UserController {
     private final AddAddressInput addAddressInput;
     private final UpdateAddressInput updateAddressInput;
     private final RemoveAddressInput removeAddress;
+    private final ListAllUsersInput listAllUsersInput;
 
     private final UserWebMapper mapper;
 
@@ -45,15 +52,16 @@ public class UserController {
             UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput,
-            RemoveAddressInput removeAddress)
+            RemoveAddressInput removeAddress, ListAllUsersInput listAllUsersInput)
     {
         this.updateUserPasswordInput = updateUserPasswordInput;
         this.createUserInput = createUserInput;
         this.updateUserInput = updateUserInput;
         this.mapper = mapper;
-        this.addAddressInput = addAddressInput;
         this.updateAddressInput = updateAddressInput;
+        this.addAddressInput = addAddressInput;
         this.removeAddress = removeAddress;
+        this.listAllUsersInput = listAllUsersInput;
     }
 
     @PostMapping
@@ -190,5 +198,37 @@ public class UserController {
         MDC.clear();
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "Listar todos os usuários",
+            description = "Retorna lista paginada de todos os usuários cadastrados"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de usuários retornada com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<?> listAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+
+        log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]", page, size, sortBy, direction);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<UserQueryPort> users = listAllUsersInput.execute(pageable);
+
+        log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
+
+        return ResponseEntity.ok(users);
     }
 }
