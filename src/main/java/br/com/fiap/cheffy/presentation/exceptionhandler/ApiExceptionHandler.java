@@ -3,7 +3,6 @@ package br.com.fiap.cheffy.presentation.exceptionhandler;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
-import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
@@ -93,25 +92,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
     }*/
-
-    @ExceptionHandler(UserNotFoundException.class)
-    private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-
-        String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()));
-
-        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
-
-        Problem problem = createProblemBuilder(
-                httpStatusCode,
-                title,
-                message)
-                .userMessage(message)
-                .build();
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
-
-    }
 
     @ExceptionHandler(InvalidPasswordException.class)
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
