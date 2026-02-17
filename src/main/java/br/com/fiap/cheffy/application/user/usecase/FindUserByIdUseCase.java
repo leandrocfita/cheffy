@@ -23,7 +23,6 @@ public class FindUserByIdUseCase implements FindUserByIdInput {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserQueryPort execute(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION, id));
