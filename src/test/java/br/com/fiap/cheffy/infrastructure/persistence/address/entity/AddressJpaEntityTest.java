@@ -1,5 +1,6 @@
-package br.com.fiap.cheffy.infrastructure.persistence.user.entity;
+package br.com.fiap.cheffy.infrastructure.persistence.address.entity;
 
+import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;

@@ -1,9 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.mapper;
 
-import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.infrastructure.persistence.address.mapper.AddressPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.mapper.ProfilePersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.AddressJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +12,13 @@ import java.util.stream.Collectors;
 public class UserPersistenceMapper {
 
     private final ProfilePersistenceMapper profileMapper;
+    private final AddressPersistenceMapper addressMapper;
 
-    public UserPersistenceMapper(ProfilePersistenceMapper profileMapper) {
+    public UserPersistenceMapper(
+            ProfilePersistenceMapper profileMapper,
+            AddressPersistenceMapper addressMapper) {
         this.profileMapper = profileMapper;
+        this.addressMapper = addressMapper;
     }
 
     public UserJpaEntity toJpa(User user) {
@@ -35,7 +38,7 @@ public class UserPersistenceMapper {
 
         jpa.setAddresses(
                 user.getAddresses().stream()
-                        .map(address -> toJpa(address, jpa))
+                        .map(address -> addressMapper.toJpa(address, jpa))
                         .collect(Collectors.toSet())
         );
 
@@ -56,40 +59,9 @@ public class UserPersistenceMapper {
         );
 
         jpa.getAddresses().forEach(a ->
-                user.addAddress(toDomain(a))
+                user.addAddress(addressMapper.toDomain(a))
         );
 
         return user;
-    }
-
-    private AddressJpaEntity toJpa(Address address, UserJpaEntity userJpa) {
-        AddressJpaEntity jpa = new AddressJpaEntity();
-
-        jpa.setId(address.getId());
-        jpa.setStreetName(address.getStreetName());
-        jpa.setNumber(address.getNumber());
-        jpa.setCity(address.getCity());
-        jpa.setPostalCode(address.getPostalCode());
-        jpa.setNeighborhood(address.getNeighborhood());
-        jpa.setStateProvince(address.getStateProvince());
-        jpa.setAddressLine(address.getAddressLine());
-        jpa.setMain(address.isMain());
-        jpa.setUser(userJpa);
-
-        return jpa;
-    }
-
-    private Address toDomain(AddressJpaEntity jpa) {
-        return new Address(
-                jpa.getId(),
-                jpa.getStreetName(),
-                jpa.getNumber(),
-                jpa.getCity(),
-                jpa.getPostalCode(),
-                jpa.getNeighborhood(),
-                jpa.getStateProvince(),
-                jpa.getAddressLine(),
-                jpa.getMain()
-        );
     }
 }

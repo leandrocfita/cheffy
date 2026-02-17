@@ -1,13 +1,12 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.entity;
 
+import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.entity.ProfileJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
