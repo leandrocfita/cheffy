@@ -175,12 +175,18 @@ public class User {
         this.password = password;
     }
 
-    public void changePassword(String rawPassword) {
-        validatePassword(rawPassword);
-        this.password = Objects.requireNonNull(rawPassword);
+    public void changePassword(String password) {
+        validatePassword(password);
+        setPassword(password);
     }
 
     public static void validatePassword(String password) {
+
+        if (password == null) {
+            throw new InvalidPasswordException(
+                    INVALID_PASSWORD_MSG, MIN_PASSWORD_LENGTH
+            );
+        }
 
         boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
         boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
