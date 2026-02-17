@@ -20,6 +20,5 @@ public interface UserRepository {
 
     Optional<User> findById(UUID id);
 
-    @EntityGraph(attributePaths = {"profiles", "addresses"})
     Page<User> findAll(Pageable pageable);
 }

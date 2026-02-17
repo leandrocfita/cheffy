@@ -1,6 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.repository;
 
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,5 +41,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
     @EntityGraph(attributePaths = {"profiles", "addresses"})
     Optional<UserJpaEntity> findByLogin(@Param("login") String login);
 
-
+    @EntityGraph(attributePaths = {"profiles", "addresses"})
+    Page<UserJpaEntity> findAll(Pageable pageable);
 }
