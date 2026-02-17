@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Profile", description = "Operations related to user profiles")
 public class ProfileController {
 
@@ -32,7 +32,7 @@ public class ProfileController {
         this.profileCreateInput = profileCreateInput;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @Operation(summary = "Create a new profile", description = "Creates a new user profile based on the provided type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Profile created successfully"),

@@ -1,6 +1,6 @@
 # --- 1. Etapa de Build ---
-# Usa uma imagem completa do JDK para compilar o projeto com Maven
-FROM amazoncorretto:21.0.3-alpine3.19 as build
+# Usa uma imagem com Maven ja instalado para compilar o projeto
+FROM maven:3.9.9-amazoncorretto-21-alpine as build
 
 ARG POSTGRES_PASSWORD_ARG
 ARG DB_HOST_ARG
@@ -13,19 +13,12 @@ ENV DB_PORT=$DB_PORT_ARG
 WORKDIR /app
 
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
 COPY src ./src
 
-#Executa uma substituição de quebra de linhas caso o sistema operacional seja windows
-RUN sed -i 's/\r$//' mvnw
-
-RUN chmod +x mvnw
-RUN ./mvnw dependency:go-offline
-
+RUN mvn dependency:go-offline
 
 # Compila o projeto e cria o JAR. Os testes são pulados, pois não temos um banco de dados aqui.
-RUN ./mvnw package -DskipTests
+RUN mvn package -DskipTests
 
 # --- 2. Etapa Final ---
 # Usa uma imagem JRE (Java Runtime Environment) muito menor, apenas para executar a aplicação

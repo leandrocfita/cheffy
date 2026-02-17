@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
+import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
@@ -53,6 +54,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ERROR_ON_DESERIALIZATION = ExceptionsKeys.ERROR_ON_DESERIALIZATION.toString();
     private static final String INVALID_FORMAT_ERROR = ExceptionsKeys.INVALID_FORMAT_ERROR.toString();
     private static final String PROPERTY_BINDING_ERROR = ExceptionsKeys.PROPERTY_BINDING_ERROR.toString();
+    private static final String PROFILE_ALREADY_EXIST = ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION.toString();
+
+    static class ApiExceptionHandlerService {
+
+    }
 
     @ExceptionHandler(UserOperationNotAllowedException.class)
     private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
@@ -246,6 +252,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
     }
+
+    @ExceptionHandler(ProfileAlreadyExistException.class)
+    public ResponseEntity<Object> handleProfileAlreadyExist(ProfileAlreadyExistException ex, WebRequest request){
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+
 
     @Override
     @Nullable
