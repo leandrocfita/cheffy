@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
@@ -13,7 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -171,9 +174,9 @@ public class UserController {
 
         log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]", page, size, sortBy, direction);
 
-        var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        var users = listAllUsersInput.execute(pageable);
+        Page<UserQueryPort> users = listAllUsersInput.execute(pageable);
 
         log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
 
