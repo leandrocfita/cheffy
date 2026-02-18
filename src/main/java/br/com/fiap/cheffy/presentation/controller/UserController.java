@@ -40,6 +40,7 @@ public class UserController {
     private final UpdateAddressInput updateAddressInput;
     private final RemoveAddressInput removeAddress;
     private final ListAllUsersInput listAllUsersInput;
+    private final FindUserByNameInput findUserByNameInput;
 
     private final UserWebMapper mapper;
 
@@ -52,7 +53,7 @@ public class UserController {
             UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput,
-            RemoveAddressInput removeAddress, ListAllUsersInput listAllUsersInput)
+            RemoveAddressInput removeAddress, ListAllUsersInput listAllUsersInput, FindUserByNameInput findUserByNameInput)
     {
         this.updateUserPasswordInput = updateUserPasswordInput;
         this.createUserInput = createUserInput;
@@ -62,6 +63,7 @@ public class UserController {
         this.addAddressInput = addAddressInput;
         this.removeAddress = removeAddress;
         this.listAllUsersInput = listAllUsersInput;
+        this.findUserByNameInput = findUserByNameInput;
     }
 
     @PostMapping
@@ -228,6 +230,42 @@ public class UserController {
         Page<UserQueryPort> users = listAllUsersInput.execute(pageable);
 
         log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
+
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping(params = "name")
+    @Operation(
+            summary = "Buscar usuários por nome",
+            description = "Retorna lista paginada de usuários filtrados pelo nome"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuários encontrados com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ),
+            @ApiResponse(responseCode = "400", description = "Parâmetro inválido"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<?> searchUsersByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+
+        log.info("UserController.searchUsersByName - START - Searching users [name={}, page={}, size={}, sortBy={}, direction={}]",
+                name, page, size, sortBy, direction);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<UserQueryPort> users = findUserByNameInput.execute(name, pageable);
+
+        log.info("UserController.searchUsersByName - END - Found [{}] users with name [{}]",
+                users.getNumberOfElements(), name);
 
         return ResponseEntity.ok(users);
     }

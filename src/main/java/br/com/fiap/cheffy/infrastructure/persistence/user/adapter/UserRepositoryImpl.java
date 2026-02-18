@@ -60,4 +60,11 @@ public class UserRepositoryImpl implements UserRepository {
                 .map(mapper::toDomain);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<User> findByName(String name, Pageable pageable) {
+        return userJpaRepository.findByNameContainingIgnoreCase(name, pageable)
+                .map(mapper::toDomain);
+    }
+
 }
