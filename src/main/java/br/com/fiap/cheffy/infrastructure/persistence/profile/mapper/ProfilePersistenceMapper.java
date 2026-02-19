@@ -10,6 +10,7 @@ public class ProfilePersistenceMapper {
     public ProfileJpaEntity toJpaReference(Profile profile) {
         ProfileJpaEntity jpa = new ProfileJpaEntity();
         jpa.setId(profile.getId());
+        jpa.setType(profile.getType());
         return jpa;
     }
 

@@ -259,6 +259,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
 
+        message = String.format(message, ex.getType());
+
         HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();

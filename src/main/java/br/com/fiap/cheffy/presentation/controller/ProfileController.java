@@ -42,20 +42,11 @@ public class ProfileController {
     })
     public ResponseEntity<Object> createProfile(@RequestBody @Valid ProfileInputDto profileInputDto) {
 
-        try {
-
             ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
             Long id = profileCreateInput.create(profileInputPort);
 
             ProfileCreateReponseDto profileCreateReponseDto = new ProfileCreateReponseDto(id, profileInputDto.profileNameType(), "Profile created successfully");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(profileCreateReponseDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (ProfileAlreadyExistException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
     }
 }
