@@ -42,6 +42,9 @@ public class Menu {
     }
 
     boolean hasActiveItems() {
-        return items.stream().allMatch(item -> item.isActive());
+
+        return items != null
+                && !items.isEmpty()
+                && items.stream().anyMatch(FoodItem::isActive);
     }
 }
