@@ -104,4 +104,15 @@ public class UserUseCaseConfig {
                 userRepository
         );
     }
+
+    @Bean
+    public ListAllUsersUseCase listAllUsersUseCase(
+            UserRepository userRepository,
+            UserQueryMapper mapper
+    ) {
+        return new ListAllUsersUseCase(
+                userRepository,
+                mapper
+        );
+    }
 }

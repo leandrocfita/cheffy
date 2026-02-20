@@ -6,7 +6,10 @@ import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -49,4 +52,12 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findById(id)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<User> findAll(Pageable pageable) {
+        return userJpaRepository.findAll(pageable)
+                .map(mapper::toDomain);
+    }
+
 }
