@@ -2,10 +2,7 @@ package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
-import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
+import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
@@ -80,7 +77,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-   /* @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
@@ -98,7 +95,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
-    }*/
+    }
 
     @ExceptionHandler(InvalidPasswordException.class)
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
