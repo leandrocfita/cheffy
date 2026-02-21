@@ -16,7 +16,7 @@ class UserTest {
 
     @Test
     void createUserWithProfile() {
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         
         User user = User.create("John", "john@test.com", "john", "encoded", profile);
         
@@ -168,7 +168,7 @@ class UserTest {
     @Test
     void addProfileAddsToSet() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         
         user.addProfile(profile);
         
@@ -178,7 +178,7 @@ class UserTest {
     @Test
     void removeProfileRemovesFromSet() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         user.addProfile(profile);
         
         user.removeProfile(profile);

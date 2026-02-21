@@ -26,7 +26,7 @@ class ProfilePersistenceMapperTest {
 
     @Test
     void toJpaReferenceMapsProfileToJpaEntity() {
-        Profile profile = new Profile(2L, "OWNER");
+        Profile profile = Profile.create(2L, "OWNER");
 
         ProfileJpaEntity result = mapper.toJpaReference(profile);
 

@@ -9,7 +9,7 @@ class ProfileTest {
 
     @Test
     void createProfile() {
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         
         assertThat(profile.getId()).isEqualTo(1L);
         assertThat(profile.getType()).isEqualTo(ProfileType.CLIENT.getType());

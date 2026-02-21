@@ -1,13 +1,10 @@
 package br.com.fiap.cheffy.presentation.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.customizers.OperationCustomizer;
-import org.springframework.web.method.HandlerMethod;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 class SwaggerConfigTest {
 
