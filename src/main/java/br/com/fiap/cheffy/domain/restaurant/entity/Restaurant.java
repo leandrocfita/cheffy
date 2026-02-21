@@ -126,7 +126,7 @@ public class Restaurant {
         }
 
         Duration duration = Duration.between(openingTime, closingTime);
-        if (duration.compareTo(Duration.ZERO) <= 1) {
+        if (duration.toHours() < 1) {
             throw new UserOperationNotAllowedException(WORKING_TIME_TOO_SHORT);
         }
     }
