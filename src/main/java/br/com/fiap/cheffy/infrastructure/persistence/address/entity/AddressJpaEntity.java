@@ -55,7 +55,7 @@ public class AddressJpaEntity {
     private Boolean main;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private UserJpaEntity user;
 
     @CreationTimestamp

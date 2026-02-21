@@ -43,7 +43,7 @@ public class RestaurantJpaEntity {
     @Column(name = "closing_time")
     private OffsetTime closingTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private AddressJpaEntity address;
 
