@@ -119,7 +119,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidPostalCodeException.class)
     private ResponseEntity<Object> handleInvalidPostalCodeException(InvalidPostalCodeException ex, WebRequest request) {
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getMinPostalCodeLength()));
+
+        String message = getMessage(ex.getMessage());
+        message = MessageFormat.format(message, ex.getMinPostalCodeLength());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 
