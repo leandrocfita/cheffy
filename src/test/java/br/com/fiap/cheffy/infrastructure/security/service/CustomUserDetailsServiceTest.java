@@ -32,7 +32,7 @@ class CustomUserDetailsServiceTest {
     @Test
     void loadUserByUsernameReturnsUserDetails() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        user.addProfile(new Profile(1L, ProfileType.CLIENT.getType()));
+        user.addProfile(Profile.create(1L, ProfileType.CLIENT.getType()));
         when(userRepository.findByLogin("login")).thenReturn(Optional.of(user));
 
         UserDetails result = userDetailsService.loadUserByUsername("login");
@@ -54,7 +54,7 @@ class CustomUserDetailsServiceTest {
     void loadUserByIdReturnsUser() {
         UUID id = UUID.randomUUID();
         User user = new User(id, "Name", "email@test.com", "login", "pass");
-        user.addProfile(new Profile(1L, ProfileType.CLIENT.getType()));
+        user.addProfile(Profile.create(1L, ProfileType.CLIENT.getType()));
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
         SpringAuthenticatedUser result = userDetailsService.loadUserById(id);

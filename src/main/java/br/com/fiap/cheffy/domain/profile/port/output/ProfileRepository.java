@@ -8,4 +8,5 @@ public interface ProfileRepository {
 
     Optional<Profile> findById(Long id);
     Optional<Profile> findByType(String type);
+    Long save(Profile profile);
 }

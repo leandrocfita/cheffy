@@ -2,7 +2,6 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
-import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
@@ -40,7 +39,7 @@ public class UserController {
     private final UpdateAddressInput updateAddressInput;
     private final RemoveAddressInput removeAddress;
     private final ListAllUsersInput listAllUsersInput;
-
+    private final FindUserByIdInput findUserByIdInput;
     private final UserWebMapper mapper;
 
 
@@ -52,7 +51,9 @@ public class UserController {
             UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput,
-            RemoveAddressInput removeAddress, ListAllUsersInput listAllUsersInput)
+            RemoveAddressInput removeAddress,
+            ListAllUsersInput listAllUsersInput,
+            FindUserByIdInput findUserByIdInput)
     {
         this.updateUserPasswordInput = updateUserPasswordInput;
         this.createUserInput = createUserInput;
@@ -62,6 +63,7 @@ public class UserController {
         this.addAddressInput = addAddressInput;
         this.removeAddress = removeAddress;
         this.listAllUsersInput = listAllUsersInput;
+        this.findUserByIdInput = findUserByIdInput;
     }
 
     @PostMapping
@@ -230,5 +232,32 @@ public class UserController {
         log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
 
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Buscar usuário por ID",
+            description = "Retorna os dados completos de um usuário específico"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuário encontrado com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<?> findUserById(@PathVariable UUID id) {
+        log.info("UserController.findUserById - START - Finding user [{}]", id);
+
+        var user = findUserByIdInput.execute(id);
+
+        log.info("UserController.findUserById - END - User found [{}]", id);
+        MDC.clear();
+
+        return ResponseEntity.ok(user);
     }
 }

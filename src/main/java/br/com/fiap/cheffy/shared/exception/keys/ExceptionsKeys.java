@@ -12,6 +12,8 @@ public enum ExceptionsKeys {
 
     //Profile
     PROFILE_NOT_FOUND_EXCEPTION,
+    PROFILE_ALREADY_EXIST_EXCEPTION,
+
 
     //Adress
     ADDRESS_NOT_FOUND_EXCEPTION,

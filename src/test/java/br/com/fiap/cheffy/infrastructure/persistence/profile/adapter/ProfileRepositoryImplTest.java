@@ -30,7 +30,7 @@ class ProfileRepositoryImplTest {
 
     @Test
     void findById() {
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
         when(jpaRepository.findById(1L)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(profile);
@@ -43,7 +43,7 @@ class ProfileRepositoryImplTest {
 
     @Test
     void findByType() {
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
         when(jpaRepository.findByType("cliente")).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(profile);
