@@ -2,10 +2,7 @@ package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
-import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
+import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
@@ -34,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -79,12 +77,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-   /* @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
-        message = String.format(message, ex.getId());
+        message = MessageFormat.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -97,7 +95,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
-    }*/
+    }
 
     @ExceptionHandler(InvalidPasswordException.class)
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
