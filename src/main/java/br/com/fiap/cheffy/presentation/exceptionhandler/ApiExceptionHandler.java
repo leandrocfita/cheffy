@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -84,7 +85,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
-        message = String.format(message, ex.getId());
+        message = MessageFormat.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
