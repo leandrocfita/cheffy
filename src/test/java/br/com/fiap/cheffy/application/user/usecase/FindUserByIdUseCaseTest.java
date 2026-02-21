@@ -86,7 +86,7 @@ class FindUserByIdUseCaseTest {
     }
 
     private User createUser(String name, String email) {
-        Profile profile = new Profile(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         User user = User.create(
                 name,
                 email,
