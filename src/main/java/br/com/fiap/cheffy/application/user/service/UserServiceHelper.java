@@ -28,6 +28,10 @@ public class UserServiceHelper {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION, id));
     }
 
+    public User saveUser(User user){
+        return userRepository.save(user);
+    }
+
     public UserQueryPort userToQueryPort(User user){
         return mapper.toQuery(user);
     }

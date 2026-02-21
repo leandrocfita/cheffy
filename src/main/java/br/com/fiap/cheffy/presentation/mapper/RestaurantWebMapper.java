@@ -1,0 +1,31 @@
+package br.com.fiap.cheffy.presentation.mapper;
+
+import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
+import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
+import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RestaurantWebMapper {
+
+    public RestaurantCommandPort toCommand(RestaurantCreateDTO dto) {
+        return new RestaurantCommandPort(
+                dto.name(),
+                dto.culinary(),
+                dto.cnpj(),
+                dto.openingTime(),
+                dto.closingTime(),
+                new AddressCommandPort(
+                        dto.address().streetName(),
+                        dto.address().number(),
+                        dto.address().city(),
+                        dto.address().postalCode(),
+                        dto.address().neighborhood(),
+                        dto.address().stateProvince(),
+                        dto.address().addressLine(),
+                        null
+                )
+
+        );
+    }
+}

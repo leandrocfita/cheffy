@@ -1,4 +1,4 @@
-package br.com.fiap.cheffy.domain.restaurant.port;
+package br.com.fiap.cheffy.domain.restaurant.port.input;
 
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 

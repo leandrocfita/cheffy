@@ -1,7 +1,9 @@
 package br.com.fiap.cheffy.domain.fooditem.entity;
 
+import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.valueobject.Money;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,16 +12,101 @@ public class FoodItem {
     private final UUID id;
 
     private String name;
+    private String description;
     private Money price;
+    private String photoKey;
+    private Restaurant restaurant;
+    private boolean deliveryAvailable;
     private boolean available;
     private boolean active;
 
-    public FoodItem(UUID id, String name, Money price) {
+    FoodItem(
+            UUID id,
+            String name,
+            String description,
+            BigDecimal price,
+            String photoKey,
+            boolean deliveryAvailable,
+            boolean available
+            ) {
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.available = true;
+        this.name = Objects.requireNonNull(name);
+        this.description = Objects.requireNonNull(description);
+        this.price = new Money(Objects.requireNonNull(price));
+        this.photoKey = Objects.requireNonNull(photoKey);
+        this.deliveryAvailable = deliveryAvailable;
+        this.available = available;
         this.active = true;
+    }
+
+    FoodItem(
+            UUID id,
+            String name,
+            String description,
+            BigDecimal price,
+            String photoKey,
+            boolean deliveryAvailable,
+            boolean available,
+            boolean active
+    ) {
+        this.id = id;
+        this.name = Objects.requireNonNull(name);
+        this.description = Objects.requireNonNull(description);
+        this.price = new Money(Objects.requireNonNull(price));
+        this.photoKey = Objects.requireNonNull(photoKey);
+        this.deliveryAvailable = deliveryAvailable;
+        this.available = available;
+        this.active = active;
+    }
+
+    public static FoodItem create(
+            String name,
+            String description,
+            BigDecimal price,
+            String photoKey,
+            boolean deliveryAvailable,
+            boolean available,
+            Restaurant restaurant
+    ) {
+        FoodItem foodItem = new FoodItem(
+                null,
+                name,
+                description,
+                price,
+                photoKey,
+                deliveryAvailable,
+                available
+                );
+
+        foodItem.setRestaurant(restaurant);
+
+        return foodItem;
+    }
+
+    public static FoodItem reconstitute(
+            UUID id,
+            String name,
+            String description,
+            BigDecimal price,
+            String photoKey,
+            boolean deliveryAvailable,
+            boolean available,
+            boolean active
+    ) {
+        return new FoodItem(
+                id,
+                name,
+                description,
+                price,
+                photoKey,
+                deliveryAvailable,
+                available,
+                active
+        );
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
     public void disable() {
@@ -40,6 +127,30 @@ public class FoodItem {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public String getPhotoKey() {
+        return photoKey;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public boolean isDeliveryAvailable() {
+        return deliveryAvailable;
     }
 
     @Override

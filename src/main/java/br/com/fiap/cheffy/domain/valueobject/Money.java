@@ -20,15 +20,12 @@ public final class Money {
         this.amount = amount.setScale(SCALE, RoundingMode.HALF_UP);
     }
 
-    public static Money zero() {
-        return new Money(BigDecimal.ZERO);
-    }
-
     public BigDecimal value() {
         return amount;
     }
 
     public Money add(Money other) {
+
         return new Money(this.amount.add(other.amount));
     }
 
@@ -50,6 +47,7 @@ public final class Money {
     }
 
     public boolean isGreaterThan(Money other) {
+
         return this.amount.compareTo(other.amount) > 0;
     }
 

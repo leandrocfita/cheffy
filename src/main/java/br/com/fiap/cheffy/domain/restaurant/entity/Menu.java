@@ -12,18 +12,28 @@ public class Menu {
     private final Set<FoodItem> items = new HashSet<>();
     private boolean active = true;
 
+    public Menu(Set<FoodItem> items) {
+        this.items.addAll(items);
+    }
+
     void addItem(FoodItem item) {
         if (!active) {
             throw new IllegalStateException("Cannot add items to inactive menu");
         }
         items.add(item);
+
     }
 
-    void removeItem(UUID id) {
-        boolean removed = items.removeIf(item -> item.getId().equals(id));
-        if (!removed) {
-            throw new IllegalArgumentException("Food item not found in menu");
-        }
+    public FoodItem removeItem(UUID id) {
+
+        FoodItem item = items.stream()
+                .filter(i -> i.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Food item not found"));
+
+        items.remove(item);
+
+        return item;
     }
 
     Set<FoodItem> availableItems() {
@@ -46,5 +56,9 @@ public class Menu {
         return items != null
                 && !items.isEmpty()
                 && items.stream().anyMatch(FoodItem::isActive);
+    }
+
+    public Set<FoodItem> getItems() {
+        return items;
     }
 }
