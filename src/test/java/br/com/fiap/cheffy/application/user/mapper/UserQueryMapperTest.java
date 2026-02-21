@@ -24,7 +24,7 @@ class UserQueryMapperTest {
     @Test
     void shouldMapUserToQuery() {
         User user = new User(UUID.randomUUID(), "John", "john@email.com", "john", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
         user.addAddress(new Address(1L, "Street", 123, "City", "12345678", "Neighborhood", "SP", null, true));
         
         UserQueryPort query = mapper.toQuery(user);
@@ -39,8 +39,8 @@ class UserQueryMapperTest {
     @Test
     void shouldMapMultipleProfiles() {
         User user = new User(UUID.randomUUID(), "John", "john@email.com", "john", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
-        user.addProfile(new Profile(2L, "OWNER"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
+        user.addProfile(Profile.create(2L, "OWNER"));
         
         UserQueryPort query = mapper.toQuery(user);
         
@@ -80,7 +80,7 @@ class UserQueryMapperTest {
     @Test
     void shouldMapUserWithNoAddresses() {
         User user = new User(UUID.randomUUID(), "John", "john@email.com", "john", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
         
         UserQueryPort query = mapper.toQuery(user);
         

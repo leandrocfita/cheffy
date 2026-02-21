@@ -40,6 +40,17 @@ public class UserUseCaseConfig {
     }
 
     @Bean
+    public UpdateUserPasswordUseCase updateUserPasswordUseCase(
+            UserRepository userRepository,
+            PasswordEncoderPort passwordEncoderPort
+    ) {
+        return new UpdateUserPasswordUseCase(
+                userRepository,
+                passwordEncoderPort
+        );
+    }
+
+    @Bean
     public UserServiceHelper userServiceHelper(
             UserRepository userRepository,
             UserQueryMapper mapper
@@ -91,6 +102,17 @@ public class UserUseCaseConfig {
         return new RemoveAddressUseCase(
                 userServiceHelper,
                 userRepository
+        );
+    }
+
+    @Bean
+    public ListAllUsersUseCase listAllUsersUseCase(
+            UserRepository userRepository,
+            UserQueryMapper mapper
+    ) {
+        return new ListAllUsersUseCase(
+                userRepository,
+                mapper
         );
     }
 
