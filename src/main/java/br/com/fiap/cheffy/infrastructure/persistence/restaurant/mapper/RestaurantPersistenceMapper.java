@@ -12,6 +12,7 @@ import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.Restauran
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ public class RestaurantPersistenceMapper {
         entity.setOpeningTime(restaurant.getOpeningTime());
         entity.setClosingTime(restaurant.getClosingTime());
         entity.setOpen24hours(restaurant.isOpen24hours());
+        entity.setZoneId(restaurant.getZoneId().getId());
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
@@ -79,6 +81,7 @@ public class RestaurantPersistenceMapper {
                 entity.getName(),
                 entity.getCnpj(),
                 entity.getCulinary(),
+                ZoneId.of(entity.getZoneId()),
                 entity.getOpeningTime(),
                 entity.getClosingTime(),
                 entity.isOpen24hours(),

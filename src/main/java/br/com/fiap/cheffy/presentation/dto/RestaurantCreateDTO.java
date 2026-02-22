@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
 
+import java.time.LocalTime;
 import java.time.OffsetTime;
 
 public record RestaurantCreateDTO(
@@ -22,13 +23,19 @@ public record RestaurantCreateDTO(
         @CNPJ(message = "O CNPJ deve estar em um formato válido")
         String cnpj,
 
-        @NotNull
-        @JsonFormat(pattern = "HH:mm:ssXXX")
-        OffsetTime openingTime,
+        @JsonFormat(pattern = "HH:mm")
+        LocalTime openingTime,
+
+        @JsonFormat(pattern = "HH:mm")
+        LocalTime closingTime,
+
+        //ex: "America/Sao_Paulo"
+        @NotBlank
+        @Size(max =50)
+        String zoneId,
 
         @NotNull
-        @JsonFormat(pattern = "HH:mm:ssXXX")
-        OffsetTime closingTime,
+        boolean open24hours,
 
         @NotNull
         RestaurantAddressCreateDTO address

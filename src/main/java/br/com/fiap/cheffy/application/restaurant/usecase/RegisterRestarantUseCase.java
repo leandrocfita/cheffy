@@ -13,6 +13,7 @@ import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
@@ -93,15 +94,18 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
     }
 
     private Restaurant createRestaurantDomain(RestaurantCommandPort restaurant, User user) {
+        ZoneId zoneId = ZoneId.of(restaurant.zoneId());
         return restaurant.open24hours() ? Restaurant.create24h(
                 restaurant.name(),
                 restaurant.cnpj(),
                 restaurant.culinary(),
+                zoneId,
                 user
         ) : Restaurant.createWithWorkingHours(
                 restaurant.name(),
                 restaurant.cnpj(),
                 restaurant.culinary(),
+                zoneId,
                 restaurant.openingTime(),
                 restaurant.closingTime(),
                 user

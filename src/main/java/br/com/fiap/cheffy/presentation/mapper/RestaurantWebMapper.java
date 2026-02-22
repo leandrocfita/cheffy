@@ -15,6 +15,8 @@ public class RestaurantWebMapper {
                 dto.cnpj(),
                 dto.openingTime(),
                 dto.closingTime(),
+                dto.zoneId(),
+                dto.open24hours(),
                 new AddressCommandPort(
                         dto.address().streetName(),
                         dto.address().number(),

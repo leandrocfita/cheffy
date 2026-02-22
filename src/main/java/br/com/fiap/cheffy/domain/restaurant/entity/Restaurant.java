@@ -4,7 +4,10 @@ import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.restaurant.valueobject.WorkingHours;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
-import java.time.OffsetTime;
+
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,8 +19,10 @@ public class Restaurant {
     private String name;
     private String cnpj;
     private WorkingHours workingHours;
+    private ZoneId zoneId;
     private String culinary;
     private Address address;
+
     private User user;
 
     private Menu menu;
@@ -28,12 +33,15 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
-            WorkingHours workingHours) {
+            ZoneId zoneId,
+            WorkingHours workingHours
+            ) {
         this.id = id;
         this.name = Objects.requireNonNull(name);
         this.cnpj = Objects.requireNonNull(cnpj);
         this.culinary = Objects.requireNonNull(culinary);
         this.workingHours = Objects.requireNonNull(workingHours);
+        this.zoneId = Objects.requireNonNull(zoneId);
         this.menu = new Menu(new HashSet<>());
         this.active = true;
     }
@@ -42,12 +50,14 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
+            ZoneId zoneId,
             User user
     ) {
         return Restaurant.createRestaurant(
                 name,
                 cnpj,
                 culinary,
+                zoneId,
                 WorkingHours.open24Hours(),
                 user
         );
@@ -57,14 +67,16 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
-            OffsetTime opening,
-            OffsetTime closing,
+            ZoneId zoneId,
+            LocalTime opening,
+            LocalTime closing,
             User user
     ) {
         return Restaurant.createRestaurant(
                 name,
                 cnpj,
                 culinary,
+                zoneId,
                 WorkingHours.of(opening, closing),
                 user
         );
@@ -74,6 +86,7 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
+            ZoneId zoneId,
             WorkingHours workingHours,
             User user
     ){
@@ -82,6 +95,7 @@ public class Restaurant {
                 name,
                 cnpj,
                 culinary,
+                zoneId,
                 workingHours
         );
         restaurant.setOwner(user);
@@ -94,6 +108,7 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
+            ZoneId zoneId,
             WorkingHours workingHours,
             boolean active,
             Address address,
@@ -104,6 +119,7 @@ public class Restaurant {
         this.name = name;
         this.cnpj = cnpj;
         this.culinary = culinary;
+        this.zoneId = zoneId;
         this.workingHours = workingHours;
         this.active = active;
         this.address = address;
@@ -116,8 +132,9 @@ public class Restaurant {
             String name,
             String cnpj,
             String culinary,
-            OffsetTime openingTime,
-            OffsetTime closingTime,
+            ZoneId zoneId,
+            LocalTime openingTime,
+            LocalTime closingTime,
             boolean open24hours,
             boolean active,
             Address address,
@@ -131,6 +148,7 @@ public class Restaurant {
                 name,
                 cnpj,
                 culinary,
+                zoneId,
                 WorkingHours.reconstitute(openingTime, closingTime, open24hours),
                 active,
                 address,
@@ -138,6 +156,22 @@ public class Restaurant {
                 menu);
 
         return restaurant;
+    }
+
+    public boolean isOpenAt(Instant instant) {
+
+        if (!active) {
+            return false;
+        }
+
+        LocalTime localTime =
+                instant.atZone(zoneId).toLocalTime();
+
+        return workingHours.isOpenAt(localTime);
+    }
+
+    public boolean isOpenNow() {
+        return isOpenAt(Instant.now());
     }
 
     public void setOwner(User user) {
@@ -177,12 +211,16 @@ public class Restaurant {
         return cnpj;
     }
 
-    public OffsetTime getOpeningTime() {
+    public LocalTime getOpeningTime() {
         return workingHours.getOpeningTime();
     }
 
-    public OffsetTime getClosingTime() {
+    public LocalTime getClosingTime() {
         return workingHours.getClosingTime();
+    }
+
+    public ZoneId getZoneId() {
+        return zoneId;
     }
 
     public boolean isOpen24hours() {

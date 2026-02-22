@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashSet;
@@ -38,13 +39,16 @@ public class RestaurantJpaEntity {
     private String culinary;
 
     @Column(name = "opening_time")
-    private OffsetTime openingTime;
+    private LocalTime openingTime;
 
     @Column(name = "closing_time")
-    private OffsetTime closingTime;
+    private LocalTime closingTime;
 
     @Column(name = "open_24_hours", nullable = false)
     private boolean open24hours;
+
+    @Column(name = "zone_id", nullable = false)
+    private String zoneId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
