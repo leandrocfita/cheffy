@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.restaurant.usecase;
 
+import br.com.fiap.cheffy.application.restaurant.RestaurantCommandPortTestBuilder;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
@@ -10,6 +11,7 @@ import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.shared.exception.InvalidDataException;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +51,8 @@ class RegisterRestarantUseCaseTest {
 
     @Test
     void executeRegistersRestaurantAndAssignsOwnerProfileWhenMissing() {
-        RestaurantCommandPort command = buildCommand();
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
+
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
         Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
@@ -81,7 +81,8 @@ class RegisterRestarantUseCaseTest {
 
     @Test
     void executeDoesNotAssignOwnerProfileWhenUserAlreadyHasOwner() {
-        RestaurantCommandPort command = buildCommand();
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
+
         UUID userId = UUID.randomUUID();
         UUID savedRestaurantId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
@@ -106,7 +107,7 @@ class RegisterRestarantUseCaseTest {
 
     @Test
     void executeThrowsWhenRestaurantAlreadyExists() {
-        RestaurantCommandPort command = buildCommand();
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
 
         when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(true);
 
@@ -118,7 +119,8 @@ class RegisterRestarantUseCaseTest {
 
     @Test
     void executeThrowsWhenOwnerProfileIsMissing() {
-        RestaurantCommandPort command = buildCommand();
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
+
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
 
@@ -137,25 +139,20 @@ class RegisterRestarantUseCaseTest {
         verify(userServiceHelper, never()).saveUser(any(User.class));
     }
 
-    private RestaurantCommandPort buildCommand() {
-        return new RestaurantCommandPort(
-                "Restaurante Legal",
-                "Italiana",
-                "27865757000102",
-                LocalTime.parse("09:00"),
-                LocalTime.parse("18:00"),
-                "America/Sao_Paulo",
-                false,
-                new AddressCommandPort(
-                        "Rua A",
-                        123,
-                        "Sao Paulo",
-                        "01001000",
-                        "Centro",
-                        "SP",
-                        "Loja 1",
-                        null
-                )
-        );
+    @Test
+    void executeThrowsWhenZoneIdIsInvalid() {
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand()
+                .withZoneId("Invalid")
+                .build();
+        UUID userId = UUID.randomUUID();
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
+
+        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(false);
+        when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
+
+        assertThrows(InvalidDataException.class, () -> useCase.execute(command, userId));
+
+        verify(userServiceHelper, never()).saveUser(any(User.class));
     }
+
 }
