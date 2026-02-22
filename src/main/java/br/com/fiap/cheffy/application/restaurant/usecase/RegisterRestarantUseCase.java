@@ -11,8 +11,11 @@ import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.shared.exception.BusinessException;
+import br.com.fiap.cheffy.shared.exception.InvalidDataException;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
+import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.UUID;
 
@@ -94,7 +97,7 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
     }
 
     private Restaurant createRestaurantDomain(RestaurantCommandPort restaurant, User user) {
-        ZoneId zoneId = ZoneId.of(restaurant.zoneId());
+        ZoneId zoneId = extractZoneId(restaurant);
         return restaurant.open24hours() ? Restaurant.create24h(
                 restaurant.name(),
                 restaurant.cnpj(),
@@ -110,5 +113,13 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
                 restaurant.closingTime(),
                 user
         );
+    }
+
+    private static ZoneId extractZoneId(RestaurantCommandPort restaurant) {
+        try {
+            return ZoneId.of(restaurant.zoneId());
+        } catch (DateTimeException ex) {
+            throw new InvalidDataException(ZONE_ID_DO_NOT_EXIST);
+        }
     }
 }
