@@ -52,6 +52,7 @@ public class RestaurantController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou malformados"),
             @ApiResponse(responseCode = "401", description = "Token expirado"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "409", description = "Estabelecimento já cadastrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
     public ResponseEntity<String> registerRestaurant(

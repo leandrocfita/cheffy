@@ -19,7 +19,7 @@ public record RestaurantCreateDTO(
         String culinary,
 
         @NotBlank
-        @CNPJ(message = "O CNPJ deve estar em um fomrato válido")
+        @CNPJ(message = "O CNPJ deve estar em um formato válido")
         String cnpj,
 
         @NotNull

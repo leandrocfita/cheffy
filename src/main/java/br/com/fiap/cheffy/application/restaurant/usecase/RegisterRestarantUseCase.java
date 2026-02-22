@@ -11,10 +11,11 @@ import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 public class RegisterRestarantUseCase implements RegisterRestaurantInput {
 
@@ -34,17 +35,38 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
 
     @Override
     public String execute(RestaurantCommandPort restaurant, UUID userId) {
+
+        throwExceptionCaseRestaurantAlreadyRegistered(restaurant);
+
         User user = userServiceHelper.getUserOrFail(userId);
-        user.addProfile(getOwnerProfileOrFail());
 
         Restaurant restaurantDomain = createRestaurantDomain(restaurant, user);
         Address address = createAddressDomain(restaurant);
         restaurantDomain.addAddress(address);
 
         String savedId = restaurantRepository.save(restaurantDomain).getId().toString();
-        userServiceHelper.saveUser(user);
+
+        if(hasntOwnerProfile(user)){
+            assignOwnerProfileAndSave(user);
+        }
 
         return savedId;
+    }
+
+    private void throwExceptionCaseRestaurantAlreadyRegistered(RestaurantCommandPort restaurant) {
+        boolean exists = restaurantRepository.existsByNameAndCnpj(restaurant.name(), restaurant.cnpj());
+        if (exists) {
+            throw new RegisterFailedException(RESTAURANT_ALREADY_EXIST);
+        }
+    }
+
+    private void assignOwnerProfileAndSave(User user) {
+        user.addProfile(getOwnerProfileOrFail());
+        userServiceHelper.saveUser(user);
+    }
+
+    private static boolean hasntOwnerProfile(User user) {
+        return !user.getProfiles().stream().anyMatch(profile -> profile.getType().equals(ProfileType.OWNER));
     }
 
     private Profile getOwnerProfileOrFail() {

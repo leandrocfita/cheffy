@@ -24,4 +24,9 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
         return restaurantMapper.toDomain(saved);
     }
+
+    @Override
+    public boolean existsByNameAndCnpj(String restaurantName, String cnpj) {
+        return restaurantJpaRepository.existsByNameAndCnpj(restaurantName, cnpj);
+    }
 }
