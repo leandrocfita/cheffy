@@ -3,7 +3,7 @@ package br.com.fiap.cheffy.domain.profile.entity;
 public class Profile {
 
     private final Long id;
-    private final String type;
+    private String type;
 
     private Profile(Long id, String type) {
         validateProfile(type);
@@ -21,10 +21,16 @@ public class Profile {
 
     public String getType() {return type;}
 
+    public void patch(String name){
+        validateProfile(name);
+        this.type = name;
+    }
+
     private void validateProfile(String profileType) throws IllegalArgumentException {
 
         if (profileType == null || profileType.isBlank()) {
             throw new IllegalArgumentException("Profile type cannot be null or empty");
         }
     }
+
 }
