@@ -1,0 +1,102 @@
+name: Java CI Pipeline
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+# Map GitHub Secrets to environment variables available to all jobs
+env:
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_PORT: ${{ secrets.DB_PORT }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'corretto'
+        cache: 'maven'
+
+    - name: Build Application
+      run: mvn -B package -DskipTests
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    
+    # Create a temporary Postgres DB inside the runner for tests
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: cheffy_db # Ensure this matches your application.properties
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'corretto'
+        cache: 'maven'
+
+    - name: Run Tests
+      run: mvn -B verify
+
+    - name: 'Qodana Scan'
+      uses: JetBrains/qodana-action@v2025.2
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        args: --linter,jetbrains/qodana-jvm-community:2025.2
+        pr-mode: true
+        use-caches: true
+        post-pr-comment: true
+        use-annotations: true
+        upload-result: true
+
+  docker-build:
+    needs: [build,test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+      - name: Build Docker Image
+        run: docker compose build
