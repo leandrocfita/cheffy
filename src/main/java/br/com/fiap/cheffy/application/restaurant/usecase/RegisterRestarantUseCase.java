@@ -93,7 +93,12 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
     }
 
     private Restaurant createRestaurantDomain(RestaurantCommandPort restaurant, User user) {
-        return Restaurant.createRestaurant(
+        return restaurant.open24hours() ? Restaurant.create24h(
+                restaurant.name(),
+                restaurant.cnpj(),
+                restaurant.culinary(),
+                user
+        ) : Restaurant.createWithWorkingHours(
                 restaurant.name(),
                 restaurant.cnpj(),
                 restaurant.culinary(),

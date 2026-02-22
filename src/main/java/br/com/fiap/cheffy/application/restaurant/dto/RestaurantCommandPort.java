@@ -10,6 +10,7 @@ public record RestaurantCommandPort(
         String cnpj,
         OffsetTime openingTime,
         OffsetTime closingTime,
+        boolean open24hours,
         AddressCommandPort address
 ) {
 }

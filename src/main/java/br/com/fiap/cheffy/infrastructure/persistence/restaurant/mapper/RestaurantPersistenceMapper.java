@@ -41,6 +41,7 @@ public class RestaurantPersistenceMapper {
         entity.setCulinary(restaurant.getCulinary());
         entity.setOpeningTime(restaurant.getOpeningTime());
         entity.setClosingTime(restaurant.getClosingTime());
+        entity.setOpen24hours(restaurant.isOpen24hours());
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
@@ -80,6 +81,7 @@ public class RestaurantPersistenceMapper {
                 entity.getCulinary(),
                 entity.getOpeningTime(),
                 entity.getClosingTime(),
+                entity.isOpen24hours(),
                 entity.getActive(),
                 address,
                 owner,

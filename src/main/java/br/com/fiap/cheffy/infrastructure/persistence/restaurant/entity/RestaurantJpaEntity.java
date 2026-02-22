@@ -43,6 +43,9 @@ public class RestaurantJpaEntity {
     @Column(name = "closing_time")
     private OffsetTime closingTime;
 
+    @Column(name = "open_24_hours", nullable = false)
+    private boolean open24hours;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private AddressJpaEntity address;
