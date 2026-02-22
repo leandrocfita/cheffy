@@ -66,7 +66,9 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
     }
 
     private static boolean hasntOwnerProfile(User user) {
-        return !user.getProfiles().stream().anyMatch(profile -> profile.getType().equals(ProfileType.OWNER.getType()));
+        return !user.getProfiles()
+                .stream()
+                .anyMatch(profile -> profile.getType().equals(ProfileType.OWNER.getType()));
     }
 
     private Profile getOwnerProfileOrFail() {
