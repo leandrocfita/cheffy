@@ -18,7 +18,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,12 +48,15 @@ class RestaurantPersistenceMapperTest {
     @Test
     void toJpaMapsRestaurantIncludingAddressAndUser() {
         User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678");
-        Restaurant restaurant = Restaurant.createRestaurant(
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+
+        Restaurant restaurant = Restaurant.createWithWorkingHours(
                 "Restaurante",
                 "27865757000102",
                 "Brasileira",
-                OffsetTime.parse("09:00:00-03:00"),
-                OffsetTime.parse("18:00:00-03:00"),
+                zoneId,
+                LocalTime.parse("09:00"),
+                LocalTime.parse("18:00"),
                 owner
         );
         restaurant.addAddress(new Address(1L, "Rua A", 10, "São Paulo", "01001000", "Centro", "SP", "Casa", true));
@@ -74,8 +79,9 @@ class RestaurantPersistenceMapperTest {
         entity.setName("Restaurante");
         entity.setCnpj("27865757000102");
         entity.setCulinary("Brasileira");
-        entity.setOpeningTime(OffsetTime.parse("09:00:00-03:00"));
-        entity.setClosingTime(OffsetTime.parse("18:00:00-03:00"));
+        entity.setZoneId("America/Sao_Paulo");
+        entity.setOpeningTime(LocalTime.parse("09:00"));
+        entity.setClosingTime(LocalTime.parse("18:00"));
         entity.setActive(true);
         entity.setAddress(new AddressJpaEntity());
         entity.setUser(new UserJpaEntity());

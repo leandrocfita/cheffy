@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -141,8 +142,10 @@ class RegisterRestarantUseCaseTest {
                 "Restaurante Legal",
                 "Italiana",
                 "27865757000102",
-                OffsetTime.parse("09:00:00-03:00"),
-                OffsetTime.parse("18:00:00-03:00"),
+                LocalTime.parse("09:00"),
+                LocalTime.parse("18:00"),
+                "America/Sao_Paulo",
+                false,
                 new AddressCommandPort(
                         "Rua A",
                         123,

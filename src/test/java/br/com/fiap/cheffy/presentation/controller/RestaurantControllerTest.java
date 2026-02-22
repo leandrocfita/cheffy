@@ -14,7 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,8 +43,10 @@ class RestaurantControllerTest {
                 "Restaurante",
                 "Brasileira",
                 "27865757000102",
-                OffsetTime.parse("09:00:00-03:00"),
-                OffsetTime.parse("18:00:00-03:00"),
+                LocalTime.parse("09:00"),
+                LocalTime.parse("18:00"),
+                "America/Sao_Paulo",
+                false,
                 new RestaurantAddressCreateDTO("Rua B", 10, "São Paulo", "01001000", "Centro", "SP", "Casa")
         );
         AddressCommandPort addressCommandPort = new AddressCommandPort(
@@ -57,7 +61,14 @@ class RestaurantControllerTest {
         );
 
         RestaurantCommandPort command = new RestaurantCommandPort(
-                dto.name(), dto.culinary(), dto.cnpj(), dto.openingTime(), dto.closingTime(), addressCommandPort
+                dto.name(),
+                dto.culinary(),
+                dto.cnpj(),
+                dto.openingTime(),
+                dto.closingTime(),
+                dto.zoneId(),
+                dto.open24hours(),
+                addressCommandPort
         );
 
         when(mapper.toCommand(dto)).thenReturn(command);

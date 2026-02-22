@@ -5,6 +5,7 @@ import br.com.fiap.cheffy.presentation.dto.RestaurantAddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalTime;
 import java.time.OffsetTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,8 +20,10 @@ class RestaurantWebMapperTest {
                 "Restaurante Legal",
                 "Italiana",
                 "27865757000102",
-                OffsetTime.parse("09:00:00-03:00"),
-                OffsetTime.parse("18:00:00-03:00"),
+                LocalTime.parse("09:00"),
+                LocalTime.parse("18:00"),
+                "America/Sao_Paulo",
+                false,
                 new RestaurantAddressCreateDTO(
                         "Rua A",
                         100,
