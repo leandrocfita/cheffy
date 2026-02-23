@@ -1,12 +1,8 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
+import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
-import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import br.com.fiap.cheffy.domain.user.exception.UserNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
+import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
@@ -35,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +52,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ERROR_ON_DESERIALIZATION = ExceptionsKeys.ERROR_ON_DESERIALIZATION.toString();
     private static final String INVALID_FORMAT_ERROR = ExceptionsKeys.INVALID_FORMAT_ERROR.toString();
     private static final String PROPERTY_BINDING_ERROR = ExceptionsKeys.PROPERTY_BINDING_ERROR.toString();
+    private static final String PROFILE_ALREADY_EXIST = ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION.toString();
+
+    static class ApiExceptionHandlerService {
+
+    }
 
     @ExceptionHandler(UserOperationNotAllowedException.class)
     private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
@@ -80,7 +82,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
-        message = String.format(message, ex.getId());
+        message = MessageFormat.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -248,6 +250,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
     }
+
+    @ExceptionHandler(ProfileAlreadyExistException.class)
+    public ResponseEntity<Object> handleProfileAlreadyExist(ProfileAlreadyExistException ex, WebRequest request){
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+
 
     @Override
     @Nullable

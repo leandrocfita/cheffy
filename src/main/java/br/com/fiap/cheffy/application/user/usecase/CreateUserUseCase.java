@@ -1,6 +1,5 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
-import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;

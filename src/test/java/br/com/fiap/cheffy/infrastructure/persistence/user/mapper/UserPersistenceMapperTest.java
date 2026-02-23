@@ -1,6 +1,5 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.mapper;
 
-import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
@@ -34,7 +33,7 @@ class UserPersistenceMapperTest {
     @Test
     void toJpaMapsUserToJpaEntity() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
         when(profileMapper.toJpaReference(any())).thenReturn(new ProfileJpaEntity());
 
         UserJpaEntity result = mapper.toJpa(user);
@@ -47,7 +46,7 @@ class UserPersistenceMapperTest {
     @Test
     void toJpaMapsUserWithAddresses() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
         user.addAddress(new Address(1L, "Street", 123, "City", "12345678", "Neighborhood", "SP", null, true));
         when(profileMapper.toJpaReference(any())).thenReturn(new ProfileJpaEntity());
 
@@ -62,7 +61,7 @@ class UserPersistenceMapperTest {
     @Test
     void toJpaMapsUserWithProfiles() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
-        user.addProfile(new Profile(1L, "CLIENT"));
+        user.addProfile(Profile.create(1L, "CLIENT"));
         ProfileJpaEntity profileJpa = new ProfileJpaEntity();
         when(profileMapper.toJpaReference(any())).thenReturn(profileJpa);
 
@@ -131,7 +130,7 @@ class UserPersistenceMapperTest {
         profileJpa.setType("CLIENT");
         entity.setProfiles(Set.of(profileJpa));
         
-        Profile profile = new Profile(1L, "CLIENT");
+        Profile profile = Profile.create(1L, "CLIENT");
         when(profileMapper.toDomain(any())).thenReturn(profile);
 
         User result = mapper.toDomain(entity);
