@@ -26,7 +26,13 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public boolean existsByNameAndCnpj(String restaurantName, String cnpj) {
-        return restaurantJpaRepository.existsByNameAndCnpj(restaurantName, cnpj);
+    public boolean existsByCnpj(String cnpj) {
+        return restaurantJpaRepository.existsByCnpj(cnpj);
     }
+
+    @Override
+    public boolean existsByName(String restaurantName) {
+        return restaurantJpaRepository.existsByName(restaurantName);
+    }
+
 }

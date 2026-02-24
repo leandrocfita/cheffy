@@ -58,7 +58,8 @@ public class RegisterRestarantUseCase implements RegisterRestaurantInput {
     }
 
     private void throwExceptionCaseRestaurantAlreadyRegistered(RestaurantCommandPort restaurant) {
-        boolean exists = restaurantRepository.existsByNameAndCnpj(restaurant.name(), restaurant.cnpj());
+        boolean exists = restaurantRepository.existsByCnpj(restaurant.cnpj())
+                || restaurantRepository.existsByName(restaurant.name());
         if (exists) {
             throw new RegisterFailedException(RESTAURANT_ALREADY_EXIST);
         }
