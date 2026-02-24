@@ -1,12 +1,15 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.mapper;
 
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
+import br.com.fiap.cheffy.infrastructure.persistence.address.mapper.AddressPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.entity.ProfileJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.mapper.ProfilePersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.AddressJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,8 +30,18 @@ class UserPersistenceMapperTest {
     @Mock
     private ProfilePersistenceMapper profileMapper;
 
-    @InjectMocks
+    private AddressPersistenceMapper addressPersistenceMapper;
+
     private UserPersistenceMapper mapper;
+
+    @BeforeEach
+    void setup() {
+        addressPersistenceMapper = new AddressPersistenceMapper();
+        mapper = new UserPersistenceMapper(
+                profileMapper,
+                addressPersistenceMapper
+        );
+    }
 
     @Test
     void toJpaMapsUserToJpaEntity() {
@@ -47,7 +60,8 @@ class UserPersistenceMapperTest {
     void toJpaMapsUserWithAddresses() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
         user.addProfile(Profile.create(1L, "CLIENT"));
-        user.addAddress(new Address(1L, "Street", 123, "City", "12345678", "Neighborhood", "SP", null, true));
+        Address address1 = new Address(1L, "Street", 123, "City", "12345678", "Neighborhood", "SP", null, true);
+        user.addAddress(address1);
         when(profileMapper.toJpaReference(any())).thenReturn(new ProfileJpaEntity());
 
         UserJpaEntity result = mapper.toJpa(user);

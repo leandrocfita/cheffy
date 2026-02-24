@@ -7,10 +7,7 @@ import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
 import br.com.fiap.cheffy.presentation.exceptionhandler.model.Problem;
-import br.com.fiap.cheffy.shared.exception.InvalidOperationException;
-import br.com.fiap.cheffy.shared.exception.LoginFailedException;
-import br.com.fiap.cheffy.shared.exception.OperationNotAllowedException;
-import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
+import br.com.fiap.cheffy.shared.exception.*;
 import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -58,6 +55,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidDataException.class)
+    private ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(GENERIC_ERROR_MESSAGE) ;
+        String detail = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.UNAUTHORIZED;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                detail)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
+
     @ExceptionHandler(UserOperationNotAllowedException.class)
     private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
 
@@ -82,7 +99,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
-        message = MessageFormat.format(message, ex.getId());
+        message = String.format(message, ex.getId().toString());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -119,7 +136,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidPostalCodeException.class)
     private ResponseEntity<Object> handleInvalidPostalCodeException(InvalidPostalCodeException ex, WebRequest request) {
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getMinPostalCodeLength()));
+
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getMinPostalCodeLength());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 
