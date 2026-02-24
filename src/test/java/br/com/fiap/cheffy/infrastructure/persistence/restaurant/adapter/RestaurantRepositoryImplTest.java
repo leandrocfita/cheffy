@@ -46,12 +46,22 @@ class RestaurantRepositoryImplTest {
     }
 
     @Test
-    void existsByNameAndCnpjDelegatesToJpaRepository() {
-        when(restaurantJpaRepository.existsByNameAndCnpj("Rest", "27865757000102")).thenReturn(true);
+    void existsByCnpjDelegatesToJpaRepository() {
+        when(restaurantJpaRepository.existsByCnpj( "27865757000102")).thenReturn(true);
 
-        boolean result = repository.existsByNameAndCnpj("Rest", "27865757000102");
+        boolean result = repository.existsByCnpj("27865757000102");
 
         assertThat(result).isTrue();
-        verify(restaurantJpaRepository).existsByNameAndCnpj("Rest", "27865757000102");
+        verify(restaurantJpaRepository).existsByCnpj( "27865757000102");
+    }
+
+    @Test
+    void existsByNameDelegatesToJpaRepository() {
+        when(restaurantJpaRepository.existsByName( "Name")).thenReturn(true);
+
+        boolean result = repository.existsByName("Name");
+
+        assertThat(result).isTrue();
+        verify(restaurantJpaRepository).existsByName(( "Name"));
     }
 }

@@ -57,7 +57,8 @@ class RegisterRestarantUseCaseTest {
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
         Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
 
-        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(false);
+        when(restaurantRepository.existsByName(command.name())).thenReturn(false);
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
         when(profileRepository.findByType(ProfileType.OWNER.getType())).thenReturn(Optional.of(ownerProfile));
 
@@ -89,7 +90,8 @@ class RegisterRestarantUseCaseTest {
         Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
         user.addProfile(ownerProfile);
 
-        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(false);
+        when(restaurantRepository.existsByName(command.name())).thenReturn(false);
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
 
         Restaurant savedRestaurant = mock(Restaurant.class);
@@ -106,10 +108,22 @@ class RegisterRestarantUseCaseTest {
 
 
     @Test
-    void executeThrowsWhenRestaurantAlreadyExists() {
+    void executeThrowsWhenRestaurantAlreadyExistsByName() {
         RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
 
-        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(true);
+        when(restaurantRepository.existsByName(command.name())).thenReturn(true);
+
+        assertThrows(RegisterFailedException.class, () -> useCase.execute(command, UUID.randomUUID()));
+
+        verify(userServiceHelper, never()).getUserOrFail(any());
+        verify(restaurantRepository, never()).save(any());
+    }
+
+    @Test
+    void executeThrowsWhenRestaurantAlreadyExistsByCnpj() {
+        RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
+
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(true);
 
         assertThrows(RegisterFailedException.class, () -> useCase.execute(command, UUID.randomUUID()));
 
@@ -124,7 +138,8 @@ class RegisterRestarantUseCaseTest {
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
 
-        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(false);
+        when(restaurantRepository.existsByName(command.name())).thenReturn(false);
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
 
         UUID savedRestaurantId = UUID.randomUUID();
@@ -147,7 +162,8 @@ class RegisterRestarantUseCaseTest {
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
 
-        when(restaurantRepository.existsByNameAndCnpj(command.name(), command.cnpj())).thenReturn(false);
+        when(restaurantRepository.existsByName(command.name())).thenReturn(false);
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
 
         assertThrows(InvalidDataException.class, () -> useCase.execute(command, userId));
