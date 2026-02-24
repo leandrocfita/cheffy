@@ -155,14 +155,19 @@ public class FoodItem {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FoodItem foodItem = (FoodItem) o;
-        return Objects.equals(id, foodItem.id);
+
+        FoodItem that = (FoodItem) o;
+
+        if (this.id == null || that.id == null) return false;
+
+        return this.id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return (id != null) ? id.hashCode() : System.identityHashCode(this);
     }
 }
 
