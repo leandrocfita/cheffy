@@ -2,10 +2,7 @@ package br.com.fiap.cheffy.presentation.mapper;
 
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
-import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.presentation.dto.*;
-import br.com.fiap.cheffy.presentation.dto.*;
-import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import org.springframework.stereotype.Component;
 
 @Component

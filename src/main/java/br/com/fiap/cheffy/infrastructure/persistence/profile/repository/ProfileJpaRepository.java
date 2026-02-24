@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface ProfileJpaRepository extends JpaRepository<ProfileJpaEntity, Long> {
 
     Optional<ProfileJpaEntity> findByType(String type);
+
     Optional<ProfileJpaEntity> findById(Long id);
+
     ProfileJpaEntity save(ProfileJpaEntity entity);
 
 
