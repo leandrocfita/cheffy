@@ -2,6 +2,7 @@ package br.com.fiap.cheffy.application.profile.usecase;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -27,16 +28,25 @@ public class UpdateProfileUseCase implements ProfileUpdateInput {
 
         String newProfileType = profileInputPort.name();
 
-        Profile profileFound = profileRepository.findById(id).orElse(null);
+        Profile profileFoundById = profileRepository.findById(id).orElse(null);
 
-        if (profileFound == null) {
+        if (profileFoundById == null) {
             logger.log(Level.WARNING, "Profile with id {0} not found, aborting the profile type update", id);
             throw  new ProfileNotFoundException(ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION, id.toString());
         }
+        
+        Profile profileNameAlreadyExist = profileRepository.findByType(profileInputPort.name()).orElse(null);
+        
+        if (profileNameAlreadyExist != null){
+            String msg = String.format("Profile with name: %s, Already exist in database, aborting the profile type update", profileInputPort.name());
+            logger.severe(msg);
+            throw new ProfileAlreadyExistException(ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION, profileInputPort.name());
+        }
+        
+        
+        profileFoundById.patch(newProfileType);
 
-        profileFound.patch(newProfileType);
-
-        profileRepository.save(profileFound);
+        profileRepository.save(profileFoundById);
 
         logger.info("End of UpdateProfileUseCase: Profile updated complete");
 
@@ -50,16 +60,17 @@ public class UpdateProfileUseCase implements ProfileUpdateInput {
 
         String newProfileType = profileInputPort.name();
 
-        Profile profileFound = profileRepository.findByType(nameType).orElse(null);
+        Profile profileFoundById = profileRepository.findByType(nameType).orElse(null);
 
-        if (profileFound == null) {
+        if (profileFoundById == null) {
             logger.log(Level.WARNING, "Profile with nameType {0} not found, aborting the profile type update", nameType);
             throw  new ProfileNotFoundException(ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION, nameType);
         }
+        
 
-        profileFound.patch(newProfileType);
+        profileFoundById.patch(newProfileType);
 
-        profileRepository.save(profileFound);
+        profileRepository.save(profileFoundById);
 
         logger.info("End of UpdateProfileUseCase: Profile updated complete");
 

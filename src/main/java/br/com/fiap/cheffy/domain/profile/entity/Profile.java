@@ -1,5 +1,8 @@
 package br.com.fiap.cheffy.domain.profile.entity;
 
+import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
+import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
+
 public class Profile {
 
     private final Long id;
@@ -26,10 +29,10 @@ public class Profile {
         this.type = name;
     }
 
-    private void validateProfile(String profileType) throws IllegalArgumentException {
+    private void validateProfile(String profileType) throws UserOperationNotAllowedException {
 
         if (profileType == null || profileType.isBlank()) {
-            throw new IllegalArgumentException("Profile type cannot be null or empty");
+            throw new UserOperationNotAllowedException(ExceptionsKeys.PROFILE_DATA_NOT_VALID);
         }
     }
 

@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.domain.profile.entity;
 
 import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,12 +20,12 @@ class ProfileTest {
     @Test
     void createProfileWithInvalidType() {
         assertThatThrownBy(() -> Profile.create(1L, ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Profile type cannot be null or empty");
+                .isInstanceOf(UserOperationNotAllowedException.class)
+                .hasMessage("PROFILE_DATA_NOT_VALID");
 
         assertThatThrownBy(() -> Profile.create(1L, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Profile type cannot be null or empty");
+                .isInstanceOf(UserOperationNotAllowedException.class)
+                .hasMessage("PROFILE_DATA_NOT_VALID");
     }
 
     @Test
@@ -40,11 +41,11 @@ class ProfileTest {
         Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
 
         assertThatThrownBy(() -> profile.patch(""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Profile type cannot be null or empty");
+                .isInstanceOf(UserOperationNotAllowedException.class)
+                .hasMessage("PROFILE_DATA_NOT_VALID");
 
         assertThatThrownBy(() -> profile.patch(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Profile type cannot be null or empty");
+                .isInstanceOf(UserOperationNotAllowedException.class)
+                .hasMessage("PROFILE_DATA_NOT_VALID");
     }
 }
