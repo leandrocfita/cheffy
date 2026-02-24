@@ -99,7 +99,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
-        message = String.format(message, ex.getId());
+        message = String.format(message, ex.getId().toString());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
