@@ -1,6 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
-import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestarantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
@@ -25,7 +25,7 @@ class RestaurantUseCaseConfigTest {
     void registerRestarantUseCaseCreatesBean() {
         RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
 
-        RegisterRestarantUseCase useCase = config.registerRestarantUseCase(
+        RegisterRestaurantUseCase useCase = config.registerRestarantUseCase(
                 userServiceHelper,
                 restaurantRepository,
                 profileRepository

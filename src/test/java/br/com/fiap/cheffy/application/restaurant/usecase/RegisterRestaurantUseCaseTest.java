@@ -2,7 +2,6 @@ package br.com.fiap.cheffy.application.restaurant.usecase;
 
 import br.com.fiap.cheffy.application.restaurant.RestaurantCommandPortTestBuilder;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
-import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
@@ -31,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RegisterRestarantUseCaseTest {
+class RegisterRestaurantUseCaseTest {
 
     @Mock
     private UserServiceHelper userServiceHelper;
@@ -42,11 +41,11 @@ class RegisterRestarantUseCaseTest {
     @Mock
     private ProfileRepository profileRepository;
 
-    private RegisterRestarantUseCase useCase;
+    private RegisterRestaurantUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new RegisterRestarantUseCase(userServiceHelper, restaurantRepository, profileRepository);
+        useCase = new RegisterRestaurantUseCase(userServiceHelper, restaurantRepository, profileRepository);
     }
 
     @Test

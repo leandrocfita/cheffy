@@ -11,7 +11,6 @@ import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
-import br.com.fiap.cheffy.shared.exception.BusinessException;
 import br.com.fiap.cheffy.shared.exception.InvalidDataException;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
@@ -21,13 +20,13 @@ import java.util.UUID;
 
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
-public class RegisterRestarantUseCase implements RegisterRestaurantInput {
+public class RegisterRestaurantUseCase implements RegisterRestaurantInput {
 
     private final UserServiceHelper userServiceHelper;
     private final RestaurantRepository restaurantRepository;
     private final ProfileRepository profileRepository;
 
-    public RegisterRestarantUseCase(
+    public RegisterRestaurantUseCase(
             UserServiceHelper userServiceHelper,
             RestaurantRepository restaurantRepository,
             ProfileRepository profileRepository
