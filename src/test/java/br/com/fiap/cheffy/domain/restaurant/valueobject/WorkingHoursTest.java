@@ -101,6 +101,20 @@ class WorkingHoursTest {
     }
 
     @Test
+    void shouldThrowWhenOpen24HoursWithWorkingHoursDeclared() {
+        assertThrows(UserOperationNotAllowedException.class, () ->
+                WorkingHours.of(null, null)
+        );
+    }
+
+    @Test
+    void shouldThrowWhenNullOpeningOrClosingTime() {
+        assertThrows(UserOperationNotAllowedException.class, () ->
+                WorkingHours.of(null, LocalTime.parse("18:00"))
+        );
+    }
+
+    @Test
     void shouldIncludeOpeningTimeAndExcludeClosingTime() {
         WorkingHours wh = WorkingHours.of(
                 LocalTime.parse("09:00"),

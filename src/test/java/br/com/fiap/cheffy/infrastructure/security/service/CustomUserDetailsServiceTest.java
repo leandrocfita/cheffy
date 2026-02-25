@@ -31,7 +31,7 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsernameReturnsUserDetails() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         user.addProfile(Profile.create(1L, ProfileType.CLIENT.getType()));
         when(userRepository.findByLogin("login")).thenReturn(Optional.of(user));
 
@@ -53,7 +53,7 @@ class CustomUserDetailsServiceTest {
     @Test
     void loadUserByIdReturnsUser() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Name", "email@test.com", "login", "pass");
+        User user = new User(id, "Name", "email@test.com", "login", "pass", true);
         user.addProfile(Profile.create(1L, ProfileType.CLIENT.getType()));
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 

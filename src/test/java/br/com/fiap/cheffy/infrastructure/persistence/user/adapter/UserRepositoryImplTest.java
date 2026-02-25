@@ -30,7 +30,7 @@ class UserRepositoryImplTest {
 
     @Test
     void saveUser() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         UserJpaEntity jpaEntity = new UserJpaEntity();
         when(mapper.toJpa(user)).thenReturn(jpaEntity);
         when(jpaRepository.save(jpaEntity)).thenReturn(jpaEntity);
@@ -52,7 +52,7 @@ class UserRepositoryImplTest {
 
     @Test
     void findByLogin() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         UserJpaEntity jpaEntity = new UserJpaEntity();
         when(jpaRepository.findByLogin("login")).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(user);
@@ -65,7 +65,7 @@ class UserRepositoryImplTest {
 
     @Test
     void findByEmail() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         UserJpaEntity jpaEntity = new UserJpaEntity();
         when(jpaRepository.findByEmail("email@test.com")).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(user);
@@ -79,7 +79,7 @@ class UserRepositoryImplTest {
     @Test
     void findById() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Name", "email@test.com", "login", "pass");
+        User user = new User(id, "Name", "email@test.com", "login", "pass", true);
         UserJpaEntity jpaEntity = new UserJpaEntity();
         when(jpaRepository.findById(id)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(user);
@@ -88,5 +88,21 @@ class UserRepositoryImplTest {
 
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(user);
+    }
+
+    @Test
+    void findAll() {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 10);
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
+        UserJpaEntity jpaEntity = new UserJpaEntity();
+        org.springframework.data.domain.Page<UserJpaEntity> jpaPage =
+                new org.springframework.data.domain.PageImpl<>(java.util.List.of(jpaEntity));
+        when(jpaRepository.findAll(pageable)).thenReturn(jpaPage);
+        when(mapper.toDomain(jpaEntity)).thenReturn(user);
+
+        org.springframework.data.domain.Page<User> result = userRepository.findAll(pageable);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0)).isEqualTo(user);
     }
 }

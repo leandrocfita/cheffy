@@ -29,7 +29,7 @@ class UserTest {
 
     @Test
     void patchUpdatesFields() {
-        User user = new User(UUID.randomUUID(), "Old", "old@test.com", "old", "pass");
+        User user = new User(UUID.randomUUID(), "Old", "old@test.com", "old", "pass", true);
         
         user.patch("New", "new@test.com", "new");
         
@@ -40,7 +40,7 @@ class UserTest {
 
     @Test
     void patchWithNullsDoesNotUpdate() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         
         user.patch(null, null, null);
         
@@ -51,7 +51,7 @@ class UserTest {
 
     @Test
     void addAddressAttachesToUser() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address address = Address.create("Street", 1, "City", "12345678", "Hood", "ST", null, false);
         
         user.addAddress(address);
@@ -62,7 +62,7 @@ class UserTest {
 
     @Test
     void addMainAddressUnsetsOtherMain() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address addr1 = Address.create("St1", 1, "City", "12345678", "Hood", "ST", null, true);
         Address addr2 = Address.create("St2", 2, "City", "87654321", "Hood", "ST", null, true);
         
@@ -75,7 +75,7 @@ class UserTest {
 
     @Test
     void removeAddressThrowsIfLastAddress() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address address = Address.create("Street", 1, "City", "12345678", "Hood", "ST", null, true);
         user.addAddress(address);
         
@@ -84,7 +84,7 @@ class UserTest {
 
     @Test
     void removeMainAddressSetsNextAsMain() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address addr1 = Address.create("St1", 1, "City", "12345678", "Hood", "ST", null, true);
         Address addr2 = Address.create("St2", 2, "City", "87654321", "Hood", "ST", null, false);
         user.addAddress(addr1);
@@ -98,7 +98,7 @@ class UserTest {
 
     @Test
     void removeAddressThrowsIfNotOwned() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address address = Address.create("Street", 1, "City", "12345678", "Hood", "ST", null, true);
         
         assertThrows(AddressNotFoundException.class, () -> user.removeAddress(address));
@@ -106,7 +106,7 @@ class UserTest {
 
     @Test
     void updateAddressThrowsIfMainSetToFalse() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address address = new Address(1L, "Old", 1, "City", "12345678", "Hood", "ST", null, true);
         user.addAddress(address);
         
@@ -116,7 +116,7 @@ class UserTest {
 
     @Test
     void updateAddressUpdatesFields() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address address = new Address(1L, "Old", 1, "City", "12345678", "Hood", "ST", null, true);
         user.addAddress(address);
         
@@ -158,7 +158,7 @@ class UserTest {
 
     @Test
     void changePasswordSetsNewPassword() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "OldPass123!");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "OldPass123!", true);
         
         user.changePassword("NewValidPass123!");
         
@@ -167,7 +167,7 @@ class UserTest {
 
     @Test
     void addProfileAddsToSet() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         
         user.addProfile(profile);
@@ -177,7 +177,7 @@ class UserTest {
 
     @Test
     void removeProfileRemovesFromSet() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
         user.addProfile(profile);
         
@@ -188,7 +188,7 @@ class UserTest {
 
     @Test
     void setPasswordSetsPassword() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "old");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "old", true);
         
         user.setPassword("new");
         
@@ -197,7 +197,7 @@ class UserTest {
 
     @Test
     void setMainAddressUnsetsOthers() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         Address addr1 = Address.create("St1", 1, "City", "12345678", "Hood", "ST", null, true);
         Address addr2 = Address.create("St2", 2, "City", "87654321", "Hood", "ST", null, false);
         user.addAddress(addr1);
@@ -211,7 +211,7 @@ class UserTest {
 
     @Test
     void findAddressByIdOrFailThrowsIfNotFound() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         
         assertThrows(AddressNotFoundException.class, () -> user.findAddressByIdOrFail(999L));
     }
@@ -222,5 +222,21 @@ class UserTest {
         constructor.setAccessible(true);
         User user = constructor.newInstance();
         assertThat(user).isNotNull();
+    }
+
+    @Test
+    void deactivateSetsActiveFalse() {
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
+        assertThat(user.isActive()).isTrue();
+
+        user.deactivate();
+
+        assertThat(user.isActive()).isFalse();
+    }
+
+    @Test
+    void isActiveReturnsFalseWhenCreatedInactive() {
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", false);
+        assertThat(user.isActive()).isFalse();
     }
 }

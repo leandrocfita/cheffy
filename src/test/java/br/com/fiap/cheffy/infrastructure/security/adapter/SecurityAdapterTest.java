@@ -51,7 +51,7 @@ class SecurityAdapterTest {
     void authenticationManagerAuthenticatesUser() {
         br.com.fiap.cheffy.infrastructure.security.model.SpringAuthenticatedUser springUser = 
             new br.com.fiap.cheffy.infrastructure.security.model.SpringAuthenticatedUser(
-                UUID.randomUUID(), "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")));
+                UUID.randomUUID(), "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")), true);
         Authentication auth = new UsernamePasswordAuthenticationToken(springUser, null, springUser.getAuthorities());
         when(authManager.authenticate(any())).thenReturn(auth);
 

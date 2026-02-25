@@ -70,7 +70,7 @@ class JwtAuthenticationFilterTest {
         UUID userId = UUID.randomUUID();
         String token = "valid.jwt.token";
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(userId, "user", "pass", 
-            Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")));
+            Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")), true);
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtService.extractUserId(token)).thenReturn(userId);

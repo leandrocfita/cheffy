@@ -53,7 +53,7 @@ class RegisterRestaurantUseCaseTest {
         RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
 
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
         Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
 
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
@@ -85,7 +85,7 @@ class RegisterRestaurantUseCaseTest {
 
         UUID userId = UUID.randomUUID();
         UUID savedRestaurantId = UUID.randomUUID();
-        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
         Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
         user.addProfile(ownerProfile);
 
@@ -135,7 +135,7 @@ class RegisterRestaurantUseCaseTest {
         RestaurantCommandPort command = RestaurantCommandPortTestBuilder.aValidCommand().build();
 
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
 
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
@@ -159,7 +159,7 @@ class RegisterRestaurantUseCaseTest {
                 .withZoneId("Invalid")
                 .build();
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234");
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
 
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);

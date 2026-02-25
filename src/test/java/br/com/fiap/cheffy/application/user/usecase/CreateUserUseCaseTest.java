@@ -55,7 +55,7 @@ class CreateUserUseCaseTest {
         UserCommandPort command = buildCommand();
         Profile profile = Profile.create(7L, ProfileType.CLIENT.getType());
         String encodedPassword = "encoded-password";
-        User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword);
+        User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword, true);
 
         when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.of(profile));
 
