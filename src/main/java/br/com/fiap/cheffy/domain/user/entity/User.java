@@ -162,11 +162,15 @@ public class User {
     /* Profile behavior */
 
     public void addProfile(Profile profile) {
-        profiles.add(profile);
+        if(!profiles.contains(profile)) {
+            profiles.add(profile);
+        }
     }
 
     public void removeProfile(Profile profile) {
-        profiles.remove(profile);
+        if(profiles.contains(profile)) {
+            profiles.remove(profile);
+        }
     }
 
     /* Password */
