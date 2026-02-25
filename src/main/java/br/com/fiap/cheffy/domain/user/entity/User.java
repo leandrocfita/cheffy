@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
+import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,6 +21,7 @@ public class User {
     private String name;
     private String email;
     private String login;
+    private boolean active;
 
     private String password;
     private Set<Profile> profiles = new HashSet<>();
@@ -27,12 +29,13 @@ public class User {
 
     protected User() {}
 
-    public User(UUID id, String name, String email, String login, String password) {
+    public User(UUID id, String name, String email, String login, String password, boolean active) {
         this.id = id;
         this.name = Objects.requireNonNull(name);
         this.email = Objects.requireNonNull(email);
         this.login = Objects.requireNonNull(login);
         this.password = Objects.requireNonNull(password);
+        this.active = active;
     }
 
     /*Factory Method*/
@@ -48,7 +51,8 @@ public class User {
                 name,
                 email,
                 login,
-                encodedPassword
+                encodedPassword,
+                true
         );
 
         user.addProfile(profile);
@@ -63,6 +67,14 @@ public class User {
         if (name != null && !name.isEmpty()) this.name = name;
         if (email != null && !email.isEmpty()) this.email = email;
         if (login != null && !login.isEmpty()) this.login = login;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     /* Address behavior */
