@@ -54,12 +54,12 @@ class RegisterRestaurantUseCaseTest {
 
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
-        Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
+        Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.name());
 
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
-        when(profileRepository.findByType(ProfileType.OWNER.getType())).thenReturn(Optional.of(ownerProfile));
+        when(profileRepository.findByType(ProfileType.OWNER.name())).thenReturn(Optional.of(ownerProfile));
 
         UUID savedRestaurantId = UUID.randomUUID();
         Restaurant savedRestaurant = mock(Restaurant.class);
@@ -86,7 +86,7 @@ class RegisterRestaurantUseCaseTest {
         UUID userId = UUID.randomUUID();
         UUID savedRestaurantId = UUID.randomUUID();
         User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
-        Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.getType());
+        Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.name());
         user.addProfile(ownerProfile);
 
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
@@ -146,7 +146,7 @@ class RegisterRestaurantUseCaseTest {
         when(savedRestaurant.getId()).thenReturn(savedRestaurantId);
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(savedRestaurant);
 
-        when(profileRepository.findByType(ProfileType.OWNER.getType())).thenReturn(Optional.empty());
+        when(profileRepository.findByType(ProfileType.OWNER.name())).thenReturn(Optional.empty());
 
         assertThrows(ProfileNotFoundException.class, () -> useCase.execute(command, userId));
 
