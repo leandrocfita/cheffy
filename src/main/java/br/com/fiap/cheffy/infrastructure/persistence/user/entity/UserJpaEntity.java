@@ -53,6 +53,9 @@ public class UserJpaEntity {
     )
     private Set<AddressJpaEntity> addresses = new HashSet<>();
 
+    @Column(nullable = false)
+    private boolean active;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private OffsetDateTime dateCreated;
