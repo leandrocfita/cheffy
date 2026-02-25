@@ -44,3 +44,14 @@ class RestaurantWebMapperTest {
         assertThat(command.address().main()).isNull();
     }
 }
+
+class ProfileWebMapperTest {
+    @Test
+    void toProfileInputCommandPortMapsType() {
+        br.com.fiap.cheffy.presentation.dto.ProfileInputDto dto =
+                new br.com.fiap.cheffy.presentation.dto.ProfileInputDto("CLIENT");
+        br.com.fiap.cheffy.application.profile.dto.ProfileInputPort result =
+                ProfileWebMapper.toProfileInputCommandPort(dto);
+        assertThat(result.name()).isEqualTo("CLIENT");
+    }
+}

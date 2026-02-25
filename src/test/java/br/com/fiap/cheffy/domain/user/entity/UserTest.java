@@ -239,4 +239,14 @@ class UserTest {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", false);
         assertThat(user.isActive()).isFalse();
     }
+
+    @Test
+    void activateSetsActiveTrue() {
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", false);
+        assertThat(user.isActive()).isFalse();
+
+        user.activate();
+
+        assertThat(user.isActive()).isTrue();
+    }
 }

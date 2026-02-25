@@ -31,6 +31,7 @@ class UserControllerTest {
 
     @Mock private CreateUserInput createUserInput;
     @Mock private DeactivateUserInput deactivateUserInput;
+    @Mock private ReactivateUserInput reactivateUserInput;
     @Mock private UpdateUserPasswordInput updateUserPasswordInput;
     @Mock private UpdateUserInput updateUserInput;
     @Mock private AddAddressInput addAddressInput;
@@ -150,5 +151,15 @@ class UserControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(queryPort);
+    }
+
+    @Test
+    void reactivateUserReturnsNoContent() {
+        UUID id = UUID.randomUUID();
+
+        ResponseEntity<Void> response = userController.reactivateUser(id);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(reactivateUserInput).execute(id);
     }
 }

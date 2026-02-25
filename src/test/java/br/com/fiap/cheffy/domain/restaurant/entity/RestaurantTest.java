@@ -248,4 +248,11 @@ class RestaurantTest {
 
         assertThat(restaurant.isOpenAt(instant)).isFalse();
     }
+
+    @Test
+    void isOpenNowDelegatesToIsOpenAt() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, null);
+        assertThat(restaurant.isOpenNow()).isTrue();
+    }
 }

@@ -170,4 +170,28 @@ class RegisterRestaurantUseCaseTest {
         verify(userServiceHelper, never()).saveUser(any(User.class));
     }
 
+    @Test
+    void executeRegistersOpen24hRestaurant() {
+        RestaurantCommandPort command = new RestaurantCommandPort(
+                "Restaurante 24h", "Italiana", "27865757000102",
+                null, null, "America/Sao_Paulo", true,
+                new br.com.fiap.cheffy.application.user.dto.AddressCommandPort(
+                        "Rua A", 123, "Sao Paulo", "01001000", "Centro", "SP", null, null));
+        UUID userId = UUID.randomUUID();
+        User user = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
+        Profile ownerProfile = Profile.create(1L, ProfileType.OWNER.name());
+
+        when(restaurantRepository.existsByName(command.name())).thenReturn(false);
+        when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
+        when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
+        when(profileRepository.findByType(ProfileType.OWNER.name())).thenReturn(Optional.of(ownerProfile));
+
+        Restaurant savedRestaurant = mock(Restaurant.class);
+        when(savedRestaurant.getId()).thenReturn(UUID.randomUUID());
+        when(restaurantRepository.save(any(Restaurant.class))).thenReturn(savedRestaurant);
+
+        String result = useCase.execute(command, userId);
+
+        assertThat(result).isNotNull();
+    }
 }

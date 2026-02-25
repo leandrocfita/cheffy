@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity;
 
+import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -15,12 +16,14 @@ class FoodItemJpaEntityTest {
         FoodItemJpaEntity entity = new FoodItemJpaEntity();
         UUID id = UUID.randomUUID();
         OffsetDateTime now = OffsetDateTime.now();
+        RestaurantJpaEntity restaurant = new RestaurantJpaEntity();
 
         entity.setId(id);
         entity.setName("Prato");
         entity.setDescription("Desc");
         entity.setPrice(BigDecimal.TEN);
         entity.setPhotoKey("key");
+        entity.setRestaurant(restaurant);
         entity.setDeliveryAvailable(true);
         entity.setAvailable(false);
         entity.setActive(true);
@@ -32,6 +35,7 @@ class FoodItemJpaEntityTest {
         assertThat(entity.getDescription()).isEqualTo("Desc");
         assertThat(entity.getPrice()).isEqualTo(BigDecimal.TEN);
         assertThat(entity.getPhotoKey()).isEqualTo("key");
+        assertThat(entity.getRestaurant()).isEqualTo(restaurant);
         assertThat(entity.getDeliveryAvailable()).isTrue();
         assertThat(entity.getAvailable()).isFalse();
         assertThat(entity.getActive()).isTrue();
