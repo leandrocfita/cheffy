@@ -26,7 +26,7 @@ public class DeactivateUserUseCase implements DeactivateUserInput {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION, id));
 
         if (!user.isActive()) {
-            throw new UserOperationNotAllowedException(USER_IS_INACTIVE);
+            throw new UserOperationNotAllowedException(USER_IS_ALREADY_INACTIVE);
         }
 
         if (restaurantRepository.existsActiveRestaurantByUserId(id)) {

@@ -20,6 +20,13 @@ import org.springframework.context.annotation.Configuration;
 public class UserUseCaseConfig {
 
     @Bean
+    public ReactivateUserUseCase reactivateUserUseCase(
+            UserRepository userRepository
+    ) {
+        return new ReactivateUserUseCase(userRepository);
+    }
+
+    @Bean
     public DeactivateUserUseCase deactivateUserUseCase (
             UserRepository userRepository,
             RestaurantRepository restaurantRepository

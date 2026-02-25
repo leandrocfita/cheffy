@@ -34,6 +34,7 @@ public class UserController {
 
     private final CreateUserInput createUserInput;
     private final DeactivateUserInput deactivateUserInput;
+    private final ReactivateUserInput reactivateUserInput;
     private final UpdateUserPasswordInput updateUserPasswordInput;
     private final UpdateUserInput updateUserInput;
     private final AddAddressInput addAddressInput;
@@ -49,6 +50,7 @@ public class UserController {
             UserWebMapper mapper,
             CreateUserInput createUserInput,
             DeactivateUserInput deactivateUserInput,
+            ReactivateUserInput reactivateUserInput,
             UpdateUserPasswordInput updateUserPasswordInput,
             UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
@@ -60,6 +62,7 @@ public class UserController {
         this.updateUserPasswordInput = updateUserPasswordInput;
         this.createUserInput = createUserInput;
         this.deactivateUserInput = deactivateUserInput;
+        this.reactivateUserInput = reactivateUserInput;
         this.updateUserInput = updateUserInput;
         this.mapper = mapper;
         this.updateAddressInput = updateAddressInput;
@@ -151,6 +154,23 @@ public class UserController {
         log.info("UserController.deactivateUser - START - Deactivate user");
         deactivateUserInput.execute(id);
         log.info("UserController.deactivateUser - END - User deactivated [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/reactivate")
+    @Operation(summary = "Reativa usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuário reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> reactivateUser(@PathVariable final UUID id) {
+        log.info("UserController.reactivateUser - START - Reactivate user");
+        reactivateUserInput.execute(id);
+        log.info("UserController.reactivateUser - END - User reactivated [{}]", id);
         return ResponseEntity.noContent().build();
     }
 
