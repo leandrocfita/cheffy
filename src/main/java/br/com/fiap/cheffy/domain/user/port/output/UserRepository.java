@@ -21,4 +21,6 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
 
     Page<User> findAll(Pageable pageable);
+
+    Page<User> findByName(String name, Pageable pageable);
 }

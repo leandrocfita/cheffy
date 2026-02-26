@@ -43,4 +43,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 
     @EntityGraph(attributePaths = {"profiles", "addresses"})
     Page<UserJpaEntity> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"profiles", "addresses"})
+    Page<UserJpaEntity> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 }
