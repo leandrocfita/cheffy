@@ -4,7 +4,6 @@ import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
-import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 
 import java.util.HashSet;
 import java.util.Objects;
