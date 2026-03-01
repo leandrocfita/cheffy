@@ -101,6 +101,20 @@ class WorkingHoursTest {
     }
 
     @Test
+    void shouldThrowWhenOpen24HoursWithWorkingHoursDeclared() {
+        assertThrows(UserOperationNotAllowedException.class, () ->
+                WorkingHours.of(null, null)
+        );
+    }
+
+    @Test
+    void shouldThrowWhenNullOpeningOrClosingTime() {
+        assertThrows(UserOperationNotAllowedException.class, () ->
+                WorkingHours.of(null, LocalTime.parse("18:00"))
+        );
+    }
+
+    @Test
     void shouldIncludeOpeningTimeAndExcludeClosingTime() {
         WorkingHours wh = WorkingHours.of(
                 LocalTime.parse("09:00"),
@@ -109,5 +123,15 @@ class WorkingHoursTest {
 
         assertTrue(wh.isOpenAt(LocalTime.parse("09:00")));
         assertFalse(wh.isOpenAt(LocalTime.parse("18:00")));
+    }
+
+    @Test
+    void shouldThrowWhenOpen24HoursButTimesProvided() throws Exception {
+        var constructor = WorkingHours.class.getDeclaredConstructor(
+                LocalTime.class, LocalTime.class, boolean.class, boolean.class);
+        constructor.setAccessible(true);
+        assertThrows(java.lang.reflect.InvocationTargetException.class, () ->
+                constructor.newInstance(LocalTime.parse("09:00"), LocalTime.parse("18:00"), true, false)
+        );
     }
 }

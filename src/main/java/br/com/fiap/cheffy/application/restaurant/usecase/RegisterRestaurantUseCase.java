@@ -70,13 +70,13 @@ public class RegisterRestaurantUseCase implements RegisterRestaurantInput {
     }
 
     private static boolean hasntOwnerProfile(User user) {
-        return !user.getProfiles()
+        return user.getProfiles()
                 .stream()
-                .anyMatch(profile -> profile.getType().equals(ProfileType.OWNER.getType()));
+                .noneMatch(profile -> profile.getType().equals(ProfileType.OWNER.name()));
     }
 
     private Profile getOwnerProfileOrFail() {
-        String owner = ProfileType.OWNER.getType();
+        String owner = ProfileType.OWNER.name();
 
         return profileRepository.findByType(owner)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,

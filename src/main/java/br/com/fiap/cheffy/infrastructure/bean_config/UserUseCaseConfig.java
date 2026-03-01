@@ -7,6 +7,7 @@ import br.com.fiap.cheffy.application.user.usecase.AddAddressUseCase;
 import br.com.fiap.cheffy.application.user.usecase.CreateUserUseCase;
 import br.com.fiap.cheffy.application.user.usecase.LoginUseCase;
 import br.com.fiap.cheffy.application.user.usecase.UpdateAddressUseCase;
+import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.port.input.AuthenticationManagerPort;
 import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -17,6 +18,24 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UserUseCaseConfig {
+
+    @Bean
+    public ReactivateUserUseCase reactivateUserUseCase(
+            UserRepository userRepository
+    ) {
+        return new ReactivateUserUseCase(userRepository);
+    }
+
+    @Bean
+    public DeactivateUserUseCase deactivateUserUseCase (
+            UserRepository userRepository,
+            RestaurantRepository restaurantRepository
+    ) {
+        return new DeactivateUserUseCase(
+                userRepository,
+                restaurantRepository
+        );
+    }
 
     @Bean
     public UpdateUserUseCase updateUserUseCase(

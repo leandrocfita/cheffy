@@ -41,4 +41,24 @@ class MenuTest {
         assertThat(menu.availableItems()).isEmpty();
         assertThrows(IllegalStateException.class, () -> menu.addItem(FoodItem.reconstitute(UUID.randomUUID(), "B", "D", BigDecimal.ONE, "k2", true, true, true)));
     }
+
+    @Test
+    void hasActiveItemsReturnsTrueWhenActiveItemExists() {
+        FoodItem active = FoodItem.reconstitute(UUID.randomUUID(), "A", "D", BigDecimal.ONE, "k1", true, true, true);
+        Menu menu = new Menu(new HashSet<>(Set.of(active)));
+        assertThat(menu.hasActiveItems()).isTrue();
+    }
+
+    @Test
+    void hasActiveItemsReturnsFalseWhenEmpty() {
+        Menu menu = new Menu(new HashSet<>());
+        assertThat(menu.hasActiveItems()).isFalse();
+    }
+
+    @Test
+    void hasActiveItemsReturnsFalseWhenAllInactive() {
+        FoodItem inactive = FoodItem.reconstitute(UUID.randomUUID(), "A", "D", BigDecimal.ONE, "k1", false, true, false);
+        Menu menu = new Menu(new HashSet<>(Set.of(inactive)));
+        assertThat(menu.hasActiveItems()).isFalse();
+    }
 }

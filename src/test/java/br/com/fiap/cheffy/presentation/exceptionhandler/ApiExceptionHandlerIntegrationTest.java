@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
+import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
@@ -195,6 +196,32 @@ class ApiExceptionHandlerIntegrationTest {
         
         ResponseEntity<Object> response = (ResponseEntity<Object>) method.invoke(handler, ex, webRequest);
         
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void shouldHandleInvalidDataExceptionViaReflection() throws Exception {
+        when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Invalid data");
+
+        InvalidDataException ex = new InvalidDataException(ExceptionsKeys.ZONE_ID_DO_NOT_EXIST);
+
+        var method = ApiExceptionHandler.class.getDeclaredMethod("handleInvalidDataException",
+            InvalidDataException.class, WebRequest.class);
+        method.setAccessible(true);
+
+        ResponseEntity<Object> response = (ResponseEntity<Object>) method.invoke(handler, ex, webRequest);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void shouldHandleProfileAlreadyExistException() throws Exception {
+        when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Profile %s already exists");
+
+        ProfileAlreadyExistException ex = new ProfileAlreadyExistException(ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION, "CLIENT");
+
+        ResponseEntity<Object> response = handler.handleProfileAlreadyExist(ex, webRequest);
+
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 }

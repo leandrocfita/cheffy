@@ -14,7 +14,7 @@ class UserChangePasswordTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(UUID.randomUUID(), "John Doe", "john@email.com", "john.doe", "oldEncodedPassword");
+        user = new User(UUID.randomUUID(), "John Doe", "john@email.com", "john.doe", "oldEncodedPassword", true);
     }
 
     @Test

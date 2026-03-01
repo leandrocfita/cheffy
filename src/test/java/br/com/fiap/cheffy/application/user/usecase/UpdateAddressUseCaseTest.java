@@ -32,7 +32,7 @@ class UpdateAddressUseCaseTest {
     @Test
     void executeUpdatesAddressAndSavesUser() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Jane Doe", "jane@example.com", "janed", "Password1!Strong");
+        User user = new User(userId, "Jane Doe", "jane@example.com", "janed", "Password1!Strong", true);
         Address existingMain = new Address(
                 2L,
                 "Old Street",

@@ -53,12 +53,11 @@ class CreateUserUseCaseTest {
     @Test
     void executeCreatesUserWithAddressAndEncodesPassword() {
         UserCommandPort command = buildCommand();
-        Profile profile = Profile.create(7L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(7L, ProfileType.CLIENT.name());
         String encodedPassword = "encoded-password";
-        User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword);
+        User savedUser = new User(UUID.randomUUID(), command.name(), command.email(), command.login(), encodedPassword, true);
 
-        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.of(profile));
-
+        when(profileRepository.findByType(ProfileType.CLIENT.name())).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn(encodedPassword);
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -71,7 +70,6 @@ class CreateUserUseCaseTest {
 
         assertEquals(savedUser.getId().toString(), result);
         assertEquals(encodedPassword, capturedUser.getPassword());
-       // assertTrue(capturedUser.getProfiles().contains(profile));
 
         Set<Address> addresses = capturedUser.getAddresses();
         assertEquals(1, addresses.size());
@@ -91,7 +89,7 @@ class CreateUserUseCaseTest {
     void executeThrowsWhenProfileIsMissing() {
         UserCommandPort command = buildCommand();
 
-        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.empty());
+        when(profileRepository.findByType(ProfileType.CLIENT.name())).thenReturn(Optional.empty());
 
         assertThrows(ProfileNotFoundException.class, () -> createUserUseCase.execute(command));
 
@@ -101,8 +99,8 @@ class CreateUserUseCaseTest {
     @Test
     void executeThrowsWhenEmailOrLoginAlreadyExists() {
         UserCommandPort command = buildCommand();
-        Profile profile = Profile.create(7L, ProfileType.CLIENT.getType());
-        when(profileRepository.findByType(ProfileType.CLIENT.getType())).thenReturn(Optional.of(profile));
+        Profile profile = Profile.create(7L, ProfileType.CLIENT.name());
+        when(profileRepository.findByType(ProfileType.CLIENT.name())).thenReturn(Optional.of(profile));
         when(passwordEncoder.encode(command.password())).thenReturn("encoded-password");
         when(userRepository.existsByEmailOrLogin(command.email(), command.login())).thenReturn(true);
 

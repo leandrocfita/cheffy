@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,5 +65,16 @@ class RestaurantRepositoryImplTest {
 
         assertThat(result).isTrue();
         verify(restaurantJpaRepository).existsByName(( "Name"));
+    }
+
+    @Test
+    void existsActiveRestaurantByUserIdDelegatesToJpaRepository() {
+        UUID userId = UUID.randomUUID();
+        when(restaurantJpaRepository.existsByUserIdAndActiveTrue(userId)).thenReturn(true);
+
+        boolean result = repository.existsActiveRestaurantByUserId(userId);
+
+        assertThat(result).isTrue();
+        verify(restaurantJpaRepository).existsByUserIdAndActiveTrue(userId);
     }
 }

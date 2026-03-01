@@ -49,7 +49,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getId(),
                 user.getLogin(),
                 user.getPassword(),
-                mapProfilesToAuthorities(user)
+                mapProfilesToAuthorities(user),
+                user.isActive()
         );
     }
 

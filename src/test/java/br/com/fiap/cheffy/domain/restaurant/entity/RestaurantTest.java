@@ -20,7 +20,7 @@ class RestaurantTest {
 
     @Test
     void createRestaurantSetsOwnerAndValidState() {
-        User owner = new User(UUID.randomUUID(), "Owner", "owner@mail.com", "owner", "Password@1234");
+        User owner = new User(UUID.randomUUID(), "Owner", "owner@mail.com", "owner", "Password@1234", true);
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
         Restaurant restaurant = Restaurant.createWithWorkingHours(
@@ -40,7 +40,7 @@ class RestaurantTest {
 
     @Test
     void create24hRestaurantSetsOwnerAndValidState() {
-        User owner = new User(UUID.randomUUID(), "Owner", "owner@mail.com", "owner", "Password@1234");
+        User owner = new User(UUID.randomUUID(), "Owner", "owner@mail.com", "owner", "Password@1234", true);
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
         Restaurant restaurant = Restaurant.create24h(
@@ -247,5 +247,12 @@ class RestaurantTest {
                 .toInstant();
 
         assertThat(restaurant.isOpenAt(instant)).isFalse();
+    }
+
+    @Test
+    void isOpenNowDelegatesToIsOpenAt() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, null);
+        assertThat(restaurant.isOpenNow()).isTrue();
     }
 }

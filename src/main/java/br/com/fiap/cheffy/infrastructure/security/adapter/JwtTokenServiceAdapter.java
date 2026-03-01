@@ -27,7 +27,8 @@ public class JwtTokenServiceAdapter implements TokenGeneratorPort {
                         null,
                         user.getRoles().stream()
                                 .map(SimpleGrantedAuthority::new)
-                                .collect(Collectors.toSet())
+                                .collect(Collectors.toSet()),
+                        true
                 )
         );
     }
