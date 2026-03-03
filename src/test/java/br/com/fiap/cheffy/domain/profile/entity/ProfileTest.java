@@ -53,11 +53,11 @@ class ProfileTest {
 
     @Test
     void createProfileThrowsWhenTypeIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> Profile.create(1L, null));
+        assertThrows(UserOperationNotAllowedException.class, () -> Profile.create(1L, null));
     }
 
     @Test
     void createProfileThrowsWhenTypeIsBlank() {
-        assertThrows(IllegalArgumentException.class, () -> Profile.create(1L, ""));
+        assertThrows(UserOperationNotAllowedException.class, () -> Profile.create(1L, ""));
     }
 }
