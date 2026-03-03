@@ -47,7 +47,7 @@ class RestaurantPersistenceMapperTest {
 
     @Test
     void toJpaMapsRestaurantIncludingAddressAndUser() {
-        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678");
+        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678", true);
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
         Restaurant restaurant = Restaurant.createWithWorkingHours(
@@ -90,7 +90,7 @@ class RestaurantPersistenceMapperTest {
         entity.setFoodItems(Set.of(foodItemJpa));
 
         Address address = new Address(1L, "Rua A", 10, "São Paulo", "01001000", "Centro", "SP", "Casa", true);
-        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678");
+        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678", true);
         FoodItem foodItem = FoodItem.reconstitute(
                 foodItemJpa.getId(),
                 "Prato",

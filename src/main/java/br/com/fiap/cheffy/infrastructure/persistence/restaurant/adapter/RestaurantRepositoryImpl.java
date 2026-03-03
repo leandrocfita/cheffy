@@ -8,6 +8,8 @@ import br.com.fiap.cheffy.infrastructure.persistence.restaurant.repository.Resta
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 @RequiredArgsConstructor
 public class RestaurantRepositoryImpl implements RestaurantRepository {
@@ -35,4 +37,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         return restaurantJpaRepository.existsByName(restaurantName);
     }
 
+    @Override
+    public boolean existsActiveRestaurantByUserId(UUID userId) {
+        return restaurantJpaRepository.existsByUserIdAndActiveTrue(userId);
+    }
 }

@@ -5,6 +5,8 @@ import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ProfileTest {
@@ -47,5 +49,15 @@ class ProfileTest {
         assertThatThrownBy(() -> profile.patch(null))
                 .isInstanceOf(UserOperationNotAllowedException.class)
                 .hasMessage("PROFILE_DATA_NOT_VALID");
+    }
+
+    @Test
+    void createProfileThrowsWhenTypeIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> Profile.create(1L, null));
+    }
+
+    @Test
+    void createProfileThrowsWhenTypeIsBlank() {
+        assertThrows(IllegalArgumentException.class, () -> Profile.create(1L, ""));
     }
 }

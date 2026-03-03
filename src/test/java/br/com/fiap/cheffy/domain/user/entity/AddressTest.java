@@ -63,4 +63,12 @@ class AddressTest {
         assertThat(address.getNumber()).isEqualTo(123);
         assertThat(address.isMain()).isTrue();
     }
+
+    @Test
+    void protectedConstructorExists() throws Exception {
+        var constructor = Address.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        Address address = (Address) constructor.newInstance();
+        assertThat(address).isNotNull();
+    }
 }

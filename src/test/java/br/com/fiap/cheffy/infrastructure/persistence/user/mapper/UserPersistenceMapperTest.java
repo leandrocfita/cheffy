@@ -45,7 +45,7 @@ class UserPersistenceMapperTest {
 
     @Test
     void toJpaMapsUserToJpaEntity() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         user.addProfile(Profile.create(1L, "CLIENT"));
         when(profileMapper.toJpaReference(any())).thenReturn(new ProfileJpaEntity());
 
@@ -58,7 +58,7 @@ class UserPersistenceMapperTest {
 
     @Test
     void toJpaMapsUserWithAddresses() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         user.addProfile(Profile.create(1L, "CLIENT"));
         Address address1 = new Address(1L, "Street", 123, "City", "12345678", "Neighborhood", "SP", null, true);
         user.addAddress(address1);
@@ -74,7 +74,7 @@ class UserPersistenceMapperTest {
 
     @Test
     void toJpaMapsUserWithProfiles() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         user.addProfile(Profile.create(1L, "CLIENT"));
         ProfileJpaEntity profileJpa = new ProfileJpaEntity();
         when(profileMapper.toJpaReference(any())).thenReturn(profileJpa);

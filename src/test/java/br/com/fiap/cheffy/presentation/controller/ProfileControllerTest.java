@@ -39,6 +39,8 @@ class ProfileControllerTest {
         ProfileInputDto inputDto = new ProfileInputDto("Chef");
         Long createdId = 1L;
         when(profileCreateInput.create(any(ProfileInputPort.class))).thenReturn(createdId);
+        ProfileInputDto dto = new ProfileInputDto("CLIENT");
+        when(profileCreateInput.create(any(ProfileInputPort.class))).thenReturn(1L);
 
         ResponseEntity<Object> response = profileController.createProfile(inputDto);
 
@@ -72,5 +74,7 @@ class ProfileControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(profileUpdateInput).updateByName(eq(name), any(ProfileInputPort.class));
+        var body =  response.getBody();
+        assertThat(body).isNull();
     }
 }

@@ -67,7 +67,7 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     private Profile findClientProfile() {
-        String profileType = ProfileType.CLIENT.getType();
+        String profileType = ProfileType.CLIENT.name();
 
         return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,

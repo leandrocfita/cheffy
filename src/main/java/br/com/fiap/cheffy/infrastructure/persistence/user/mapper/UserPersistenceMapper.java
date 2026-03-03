@@ -29,6 +29,7 @@ public class UserPersistenceMapper {
         jpa.setEmail(user.getEmail());
         jpa.setLogin(user.getLogin());
         jpa.setPassword(user.getPassword());
+        jpa.setActive(user.isActive());
 
         jpa.setProfiles(
                 user.getProfiles().stream()
@@ -51,7 +52,8 @@ public class UserPersistenceMapper {
                 jpa.getName(),
                 jpa.getEmail(),
                 jpa.getLogin(),
-                jpa.getPassword()
+                jpa.getPassword(),
+                jpa.isActive()
         );
 
         jpa.getProfiles().forEach(p ->

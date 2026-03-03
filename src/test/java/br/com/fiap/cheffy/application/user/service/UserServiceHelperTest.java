@@ -33,7 +33,7 @@ class UserServiceHelperTest {
     @Test
     void getUserOrFailReturnsUser() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Name", "email@test.com", "login", "pass");
+        User user = new User(id, "Name", "email@test.com", "login", "pass", true);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
         User result = userServiceHelper.getUserOrFail(id);
@@ -50,8 +50,18 @@ class UserServiceHelperTest {
     }
 
     @Test
+    void saveUserDelegatesToRepository() {
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
+        when(userRepository.save(user)).thenReturn(user);
+
+        User result = userServiceHelper.saveUser(user);
+
+        assertThat(result).isEqualTo(user);
+    }
+
+    @Test
     void userToQueryPortMapsUser() {
-        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass");
+        User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
         UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
         when(mapper.toQuery(user)).thenReturn(queryPort);
 
