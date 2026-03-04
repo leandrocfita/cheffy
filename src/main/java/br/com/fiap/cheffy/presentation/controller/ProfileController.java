@@ -1,8 +1,8 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
-import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
+import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
 import br.com.fiap.cheffy.presentation.dto.ProfileInputDto;
 import br.com.fiap.cheffy.presentation.mapper.ProfileWebMapper;
@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -27,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     private final ProfileCreateInput profileCreateInput;
+    private final ProfileUpdateInput profileUpdateInput;
 
-    public ProfileController(ProfileCreateInput profileCreateInput) {
+    public ProfileController(ProfileCreateInput profileCreateInput, ProfileUpdateInput profileUpdateInput) {
         this.profileCreateInput = profileCreateInput;
+        this.profileUpdateInput = profileUpdateInput;
     }
 
     @PostMapping("")
@@ -48,5 +47,33 @@ public class ProfileController {
             ProfileCreateReponseDto profileCreateReponseDto = new ProfileCreateReponseDto(id, profileInputDto.profileNameType(), "Profile created successfully");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(profileCreateReponseDto);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update profile by ID", description = "Updates an existing profile type identified by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Profile updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Profile not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Void> updateProfileById(@PathVariable Long id, @RequestBody @Valid ProfileInputDto profileInputDto) {
+        ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
+        profileUpdateInput.updateById(id, profileInputPort);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/name/{name}")
+    @Operation(summary = "Update profile by Name", description = "Updates an existing profile type identified by its Name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Profile updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Profile not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Void> updateProfileByName(@PathVariable String name, @RequestBody @Valid ProfileInputDto profileInputDto) {
+        ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
+        profileUpdateInput.updateByName(name, profileInputPort);
+        return ResponseEntity.noContent().build();
     }
 }
