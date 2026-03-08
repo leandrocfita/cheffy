@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
@@ -18,7 +20,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -270,13 +271,20 @@ public class UserController {
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
 
-        log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]", page, size, sortBy, direction);
+        log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]",
+                page, size, sortBy, direction);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
 
-        Page<UserQueryPort> users = listAllUsersInput.execute(pageable);
+        PageRequest pageRequest  = PageRequest.of(page, size, sortBy, sortDirection);
 
-        log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
+
+        PageResult<UserQueryPort> users = listAllUsersInput.execute(pageRequest);
+
+        log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]",
+                users.numberOfElements(), page);
 
         return ResponseEntity.ok(users);
     }
@@ -334,12 +342,16 @@ public class UserController {
         log.info("UserController.searchUsersByName - START - Searching users [name={}, page={}, size={}, sortBy={}, direction={}]",
                 name, page, size, sortBy, direction);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
 
-        Page<UserQueryPort> users = findUserByNameInput.execute(name, pageable);
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy, sortDirection);
+
+        PageResult<UserQueryPort> users = findUserByNameInput.execute(name, pageRequest);
 
         log.info("UserController.searchUsersByName - END - Found [{}] users with name [{}]",
-                users.getNumberOfElements(), name);
+                users.numberOfElements(), name);
 
         return ResponseEntity.ok(users);
     }

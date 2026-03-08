@@ -3,6 +3,7 @@ package br.com.fiap.cheffy.presentation.controller;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.*;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
@@ -23,8 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -132,13 +132,13 @@ class UserControllerTest {
     @Test
     void listAllUsersReturnsOk() {
         UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
-        Page<UserQueryPort> page = new PageImpl<>(List.of(queryPort));
-        when(listAllUsersInput.execute(any())).thenReturn(page);
+        PageResult<UserQueryPort> pageResult = PageResult.of(List.of(queryPort), 0, 10, 1);
+        when(listAllUsersInput.execute(any())).thenReturn(pageResult);
 
         ResponseEntity<?> response = userController.listAllUsers(0, 10, "name", Sort.Direction.ASC);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(listAllUsersInput).execute(any());
+        verify(listAllUsersInput, times(1)).execute(any());
     }
 
     @Test

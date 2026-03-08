@@ -1,9 +1,9 @@
 package br.com.fiap.cheffy.domain.user.port.output;
 
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
+
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public interface UserRepository {
 
     Optional<User> findById(UUID id);
 
-    Page<User> findAll(Pageable pageable);
+    PageResult<User> findAll(PageRequest pageRequest);
 
-    Page<User> findByName(String name, Pageable pageable);
+    PageResult<User> findByName(String name, PageRequest pageRequest);
 }
