@@ -2,6 +2,7 @@ package br.com.fiap.cheffy.domain.restaurant.port.output;
 
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RestaurantRepository {
@@ -13,4 +14,6 @@ public interface RestaurantRepository {
     boolean existsByName(String restaurantName);
 
     boolean existsActiveRestaurantByUserId(UUID userId);
+
+    Optional<Restaurant> findById(UUID restaurantId);
 }

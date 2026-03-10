@@ -1,7 +1,9 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
+import br.com.fiap.cheffy.domain.fooditem.excception.FoodItemAlreadyExistInRestaurant;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
 import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.objenesis.ObjenesisException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -273,6 +276,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProfileAlreadyExistException.class)
     public ResponseEntity<Object> handleProfileAlreadyExist(ProfileAlreadyExistException ex, WebRequest request){
 
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(RestaurantDoesNotExistException.class)
+    public ResponseEntity<Object> handleRestaurantDoesNotExist(RestaurantDoesNotExistException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(FoodItemAlreadyExistInRestaurant.class)
+    public  ResponseEntity<Object> handleFoodItemAlreadyExistInRestaurant(FoodItemAlreadyExistInRestaurant ex, WebRequest request){
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
 
