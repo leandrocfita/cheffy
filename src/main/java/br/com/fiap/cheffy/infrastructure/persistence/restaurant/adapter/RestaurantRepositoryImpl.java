@@ -45,6 +45,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public Optional<Restaurant> findById(UUID restaurantId) {
-        return restaurantJpaRepository.findById(restaurantId).map(restaurantMapper::toDomain);
+        return restaurantJpaRepository.findById(restaurantId)
+                .map(restaurantMapper::toDomain);
     }
 }

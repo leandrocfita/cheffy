@@ -3,6 +3,8 @@ package br.com.fiap.cheffy.presentation.exceptionhandler;
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
 import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
@@ -76,6 +78,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(RestaurantOperationNotAllowedException.class)
+    private ResponseEntity<Object> handleRestaurantOperationNotAllowedException(RestaurantOperationNotAllowedException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
     @ExceptionHandler(UserOperationNotAllowedException.class)
     private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
 
@@ -93,6 +111,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
 
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    private ResponseEntity<Object> handleRestaurantNotFoundException(RestaurantNotFoundException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
@@ -25,13 +26,16 @@ import java.util.UUID;
 public class RestaurantController {
 
     private RegisterRestaurantInput restaurantInput;
+    private DeactivateRestaurantInput deactivateRestaurantInput;
     private RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
+            DeactivateRestaurantInput deactivateRestaurantInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
+        this.deactivateRestaurantInput = deactivateRestaurantInput;
         this.mapper = mapper;
     }
 
@@ -67,6 +71,24 @@ public class RestaurantController {
 
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/deactivate")
+    @Operation(summary = "Desativar restaurante de um usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Restaurante desativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> deactivateRestaurant(@PathVariable @Valid final UUID id,
+                                                     @RequestBody @Valid final UUID userId) {
+        log.info("RestaurantController.deactivateRestaurant - START - Deactivate restaurant - id: [{}], userId: [{}]", id, userId);
+        deactivateRestaurantInput.execute(id, userId);
+        log.info("RestaurantController.deactivateRestaurant - END - Restaurant deactivated - id: [{}]", id);
+        return ResponseEntity.noContent().build();
     }
 
 }

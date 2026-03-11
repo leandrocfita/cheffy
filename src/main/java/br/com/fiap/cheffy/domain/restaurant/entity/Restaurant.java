@@ -1,6 +1,8 @@
 package br.com.fiap.cheffy.domain.restaurant.entity;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.restaurant.valueobject.WorkingHours;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
@@ -11,6 +13,8 @@ import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
+
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_ALREADY_INACTIVE;
 
 
 public class Restaurant {
@@ -100,6 +104,20 @@ public class Restaurant {
         );
         restaurant.setOwner(user);
         return restaurant;
+    }
+
+    public void deactivate() {
+        if (!this.isActive()) {
+            throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_ALREADY_INACTIVE);
+        }
+        this.active = false;
+    }
+
+    public boolean isOwnedByUser (UUID userId) {
+        return this.user.getId().equals(userId)
+                && user.getProfiles().stream()
+                .anyMatch(profile -> ProfileType.OWNER.name().equals(profile.getType()))
+                && user.isActive();
     }
 
     //reconstitute
