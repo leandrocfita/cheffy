@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.fooditem;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
@@ -40,7 +41,7 @@ class CreateFoodItemUseCaseTest {
     void shouldCreateFoodItemSuccessfully() {
         // Given
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort input = new FoodItemQueryPort(UUID.randomUUID(),"X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false, false);
+        var input = new FoodItemCommandPort("X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false);
         Restaurant testRestaurant = createPersistentRestaurantEntity();
 
         //Simulate restaurant exists
@@ -62,7 +63,7 @@ class CreateFoodItemUseCaseTest {
     void shouldThrowExceptionWhenFoodItemAlreadyExists() {
         // Given
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort input = new FoodItemQueryPort(UUID.randomUUID(),"X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false, false);
+        FoodItemCommandPort input = new FoodItemCommandPort("X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false);
 
         Restaurant testRestaurant = createPersistentRestaurantEntity();
 
@@ -78,7 +79,7 @@ class CreateFoodItemUseCaseTest {
     @DisplayName("Should throw exception if a Restaurant was not found")
     void shouldThrowExceptionWhenRestaurantDoesNotExist(){
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort input = new FoodItemQueryPort(UUID.randomUUID(),"X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false, false);
+        var input = new FoodItemCommandPort("X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false);
 
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.empty());
 

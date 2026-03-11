@@ -1,9 +1,10 @@
 package br.com.fiap.cheffy.domain.user.port.input;
 
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
+
 
 public interface FindUserByNameInput {
-    Page<UserQueryPort> execute(String name, Pageable pageable);
+    PageResult<UserQueryPort> execute(String name,PageRequest pageRequest);
 }

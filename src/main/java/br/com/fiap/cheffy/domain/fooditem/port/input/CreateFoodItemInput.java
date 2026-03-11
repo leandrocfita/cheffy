@@ -1,9 +1,10 @@
 package br.com.fiap.cheffy.domain.fooditem.port.input;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 
 public interface CreateFoodItemInput {
 
-    FoodItem execute(FoodItemQueryPort foodItemQueryPort, String restaurantId);
+    FoodItem execute(FoodItemCommandPort foodItemCommandPort, String restaurantId);
 }

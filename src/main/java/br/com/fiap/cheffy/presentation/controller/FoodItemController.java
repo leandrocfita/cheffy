@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
@@ -44,10 +45,12 @@ public class FoodItemController {
             @RequestBody @Valid FoodItemDTO foodItemDTO,
             @NotBlank @PathVariable String restaurantId){
 
-        FoodItemQueryPort foodItemQueryPort = foodItemWebMapper.FoodItemToFoodItemQueryPort(foodItemDTO, restaurantId);
+        FoodItemCommandPort foodItemQueryPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemDTO, restaurantId);
 
         FoodItem createdFoodItem = createFoodItemInput.execute(foodItemQueryPort, restaurantId);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdFoodItem);
+        FoodItemQueryPort responseObject = foodItemWebMapper.FoodItemToFoodItemQueryPort(createdFoodItem);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
 }

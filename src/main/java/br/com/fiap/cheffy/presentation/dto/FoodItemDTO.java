@@ -8,12 +8,13 @@ public record FoodItemDTO(
 
         @NotBlank
         String name,
+        @NotBlank
         String description,
         @NotBlank
         BigDecimal price,
+        @NotBlank
         String photoKey,
         boolean deliveryAvailable,
-        boolean available,
-        boolean active
+        boolean available
 ) {
 }
