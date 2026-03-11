@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.adapter;
 
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
@@ -9,11 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,17 +99,16 @@ class UserRepositoryImplTest {
 
     @Test
     void findAll() {
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        UserJpaEntity entity = new UserJpaEntity();
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
-        UserJpaEntity jpaEntity = new UserJpaEntity();
-        org.springframework.data.domain.Page<UserJpaEntity> jpaPage =
-                new org.springframework.data.domain.PageImpl<>(java.util.List.of(jpaEntity));
-        when(jpaRepository.findAll(pageable)).thenReturn(jpaPage);
-        when(mapper.toDomain(jpaEntity)).thenReturn(user);
+        Page<UserJpaEntity> springPage = new PageImpl<>(List.of(entity));
+        when(jpaRepository.findAll(any(Pageable.class))).thenReturn(springPage);
+        when(mapper.toDomain(entity)).thenReturn(user);
 
-        org.springframework.data.domain.Page<User> result = userRepository.findAll(pageable);
+        PageResult<User> result = userRepository.findAll(pageRequest);
 
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().get(0)).isEqualTo(user);
+        assertThat(result.content()).hasSize(1);
+        assertThat(result.content().get(0)).isEqualTo(user);
     }
 }
