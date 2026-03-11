@@ -1,9 +1,8 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.RestaurantActivationProcessInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
-import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,17 +24,17 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantController {
 
-    private RegisterRestaurantInput restaurantInput;
-    private DeactivateRestaurantInput deactivateRestaurantInput;
-    private RestaurantWebMapper mapper;
+    private final RegisterRestaurantInput restaurantInput;
+    private final RestaurantActivationProcessInput restaurantActivationProcessInput;
+    private final RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
-            DeactivateRestaurantInput deactivateRestaurantInput,
+            RestaurantActivationProcessInput restaurantActivationProcessInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
-        this.deactivateRestaurantInput = deactivateRestaurantInput;
+        this.restaurantActivationProcessInput = restaurantActivationProcessInput;
         this.mapper = mapper;
     }
 
@@ -86,8 +85,26 @@ public class RestaurantController {
     public ResponseEntity<Void> deactivateRestaurant(@PathVariable @Valid final UUID id,
                                                      @RequestBody @Valid final UUID userId) {
         log.info("RestaurantController.deactivateRestaurant - START - Deactivate restaurant - id: [{}], userId: [{}]", id, userId);
-        deactivateRestaurantInput.execute(id, userId);
+        restaurantActivationProcessInput.execute(id, userId);
         log.info("RestaurantController.deactivateRestaurant - END - Restaurant deactivated - id: [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/reactivate")
+    @Operation(summary = "Reativar restaurante de um usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Restaurante reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> reactivateRestaurant(@PathVariable @Valid final UUID id,
+                                                     @RequestBody @Valid final UUID userId) {
+        log.info("RestaurantController.reactivateRestaurant - START - Reactivate restaurant - id: [{}], userId: [{}]", id, userId);
+        restaurantActivationProcessInput.execute(id, userId);
+        log.info("RestaurantController.reactivateRestaurant - END - Restaurant reactivated - id: [{}]", id);
         return ResponseEntity.noContent().build();
     }
 

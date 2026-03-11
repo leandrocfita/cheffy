@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_ALREADY_ACTIVE;
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_ALREADY_INACTIVE;
 
 
@@ -111,6 +112,13 @@ public class Restaurant {
             throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_ALREADY_INACTIVE);
         }
         this.active = false;
+    }
+
+    public void reactivate() {
+        if (this.isActive()) {
+            throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_ALREADY_ACTIVE);
+        }
+        this.active = true;
     }
 
     public boolean isOwnedByUser (UUID userId) {

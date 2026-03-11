@@ -8,19 +8,20 @@ import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE;
 
-public class DeactivateRestaurantUseCase implements RestaurantActivationProcessInput {
+public class ReactivateRestaurantUseCase implements RestaurantActivationProcessInput {
     private final RestaurantRepository restaurantRepository;
 
-    public DeactivateRestaurantUseCase(
+    public ReactivateRestaurantUseCase(
             RestaurantRepository restaurantRepository
     ) {
         this.restaurantRepository = restaurantRepository;
     }
 
     @Override
-    public void execute(UUID id,  UUID userId) {
+    public void execute(UUID id, UUID userId) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(RESTAURANT_NOT_FOUND_EXCEPTION, id));
 
@@ -28,7 +29,7 @@ public class DeactivateRestaurantUseCase implements RestaurantActivationProcessI
             throw new RestaurantOperationNotAllowedException(RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE);
         }
 
-        restaurant.deactivate();
+        restaurant.reactivate();
         restaurantRepository.save(restaurant);
     }
 }
