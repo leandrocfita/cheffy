@@ -5,6 +5,7 @@ import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,21 @@ class CreateFoodItemUseCaseTest {
         // When & Then
         assertThrows(Exception.class, () -> createFoodItemUseCase.execute(input, restaurantId.toString()));
         verify(foodItemRepository, never()).save(any(FoodItem.class));
+    }
+
+    @Test
+    @DisplayName("Should throw exception if a Restaurant was not found")
+    void shouldThrowExceptionWhenRestaurantDoesNotExist(){
+        UUID restaurantId = UUID.randomUUID();
+        FoodItemQueryPort input = new FoodItemQueryPort(UUID.randomUUID(),"X-Burger", "Delicious burger", BigDecimal.TEN, "http://img.com", restaurantId, false, false, false);
+
+        when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.empty());
+
+        assertThrows(RestaurantDoesNotExistException.class, ()-> createFoodItemUseCase.execute(input, restaurantId.toString()));
+
+        verify(foodItemRepository, never()).save(any(FoodItem.class));
+        verify(restaurantRepository, times(1)).findById(restaurantId);
+
     }
 
     private Restaurant createPersistentRestaurantEntity(){
