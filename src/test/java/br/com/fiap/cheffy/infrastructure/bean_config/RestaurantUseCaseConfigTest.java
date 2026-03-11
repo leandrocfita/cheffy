@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -30,6 +32,24 @@ class RestaurantUseCaseConfigTest {
                 restaurantRepository,
                 profileRepository
         );
+
+        assertThat(useCase).isNotNull();
+    }
+
+    @Test
+    void deactivateRestaurantUseCaseCreatesBean() {
+        RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
+
+        DeactivateRestaurantUseCase useCase = config.deactivateRestaurantUseCase(restaurantRepository);
+
+        assertThat(useCase).isNotNull();
+    }
+
+    @Test
+    void reactivateRestaurantUseCaseCreatesBean() {
+        RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
+
+        ReactivateRestaurantUseCase useCase = config.reactivateRestaurantUseCase(restaurantRepository);
 
         assertThat(useCase).isNotNull();
     }

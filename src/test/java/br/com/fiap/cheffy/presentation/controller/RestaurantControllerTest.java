@@ -3,6 +3,7 @@ package br.com.fiap.cheffy.presentation.controller;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.RestaurantActivationProcessInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantAddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
@@ -26,6 +27,9 @@ class RestaurantControllerTest {
 
     @Mock
     private RegisterRestaurantInput restaurantInput;
+
+    @Mock
+    private RestaurantActivationProcessInput restaurantActivationProcessInput;
 
     @Mock
     private RestaurantWebMapper mapper;
@@ -77,5 +81,27 @@ class RestaurantControllerTest {
         assertThat(response.getBody()).isEqualTo("restaurant-id");
         verify(mapper).toCommand(dto);
         verify(restaurantInput).execute(command, userId);
+    }
+
+    @Test
+    void deactivateRestaurantReturnsNoContent() {
+        UUID id = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        ResponseEntity<Void> response = controller.deactivateRestaurant(id, userId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(restaurantActivationProcessInput).execute(id, userId);
+    }
+
+    @Test
+    void reactivateRestaurantReturnsNoContent() {
+        UUID id = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        ResponseEntity<Void> response = controller.reactivateRestaurant(id, userId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(restaurantActivationProcessInput).execute(id, userId);
     }
 }

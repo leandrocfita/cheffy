@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,5 +77,31 @@ class RestaurantRepositoryImplTest {
 
         assertThat(result).isTrue();
         verify(restaurantJpaRepository).existsByUserIdAndActiveTrue(userId);
+    }
+
+    @Test
+    void findByIdReturnsMappedDomainWhenFound() {
+        UUID id = UUID.randomUUID();
+        RestaurantJpaEntity jpaEntity = new RestaurantJpaEntity();
+        Restaurant domainRestaurant = org.mockito.Mockito.mock(Restaurant.class);
+
+        when(restaurantJpaRepository.findById(id)).thenReturn(Optional.of(jpaEntity));
+        when(restaurantMapper.toDomain(jpaEntity)).thenReturn(domainRestaurant);
+
+        Optional<Restaurant> result = repository.findById(id);
+
+        assertThat(result).isPresent().contains(domainRestaurant);
+        verify(restaurantJpaRepository).findById(id);
+        verify(restaurantMapper).toDomain(jpaEntity);
+    }
+
+    @Test
+    void findByIdReturnsEmptyWhenNotFound() {
+        UUID id = UUID.randomUUID();
+        when(restaurantJpaRepository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Restaurant> result = repository.findById(id);
+
+        assertThat(result).isEmpty();
     }
 }

@@ -2,6 +2,8 @@ package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.shared.exception.*;
@@ -223,5 +225,35 @@ class ApiExceptionHandlerIntegrationTest {
         ResponseEntity<Object> response = handler.handleProfileAlreadyExist(ex, webRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void shouldHandleRestaurantNotFoundExceptionViaReflection() throws Exception {
+        when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Restaurant %s not found");
+
+        RestaurantNotFoundException ex = new RestaurantNotFoundException(ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION, UUID.randomUUID());
+
+        var method = ApiExceptionHandler.class.getDeclaredMethod("handleRestaurantNotFoundException",
+            RestaurantNotFoundException.class, WebRequest.class);
+        method.setAccessible(true);
+
+        ResponseEntity<Object> response = (ResponseEntity<Object>) method.invoke(handler, ex, webRequest);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void shouldHandleRestaurantOperationNotAllowedExceptionViaReflection() throws Exception {
+        when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Operation not allowed");
+
+        RestaurantOperationNotAllowedException ex = new RestaurantOperationNotAllowedException(ExceptionsKeys.RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE);
+
+        var method = ApiExceptionHandler.class.getDeclaredMethod("handleRestaurantOperationNotAllowedException",
+            RestaurantOperationNotAllowedException.class, WebRequest.class);
+        method.setAccessible(true);
+
+        ResponseEntity<Object> response = (ResponseEntity<Object>) method.invoke(handler, ex, webRequest);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }

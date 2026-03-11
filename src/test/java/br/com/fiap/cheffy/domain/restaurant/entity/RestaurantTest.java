@@ -1,6 +1,9 @@
 package br.com.fiap.cheffy.domain.restaurant.entity;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.profile.entity.Profile;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
@@ -254,5 +257,88 @@ class RestaurantTest {
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
         Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, null);
         assertThat(restaurant.isOpenNow()).isTrue();
+    }
+
+    @Test
+    void deactivateSetsActiveToFalse() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, null);
+
+        restaurant.deactivate();
+
+        assertThat(restaurant.isActive()).isFalse();
+    }
+
+    @Test
+    void deactivateThrowsWhenAlreadyInactive() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.reconstitute(
+                UUID.randomUUID(), "R", "27865757000102", "Italiana", zoneId,
+                null, null, true, false, null, null, new Menu(new java.util.HashSet<>()));
+
+        assertThrows(RestaurantOperationNotAllowedException.class, restaurant::deactivate);
+    }
+
+    @Test
+    void reactivateSetsActiveToTrue() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.reconstitute(
+                UUID.randomUUID(), "R", "27865757000102", "Italiana", zoneId,
+                null, null, true, false, null, null, new Menu(new java.util.HashSet<>()));
+
+        restaurant.reactivate();
+
+        assertThat(restaurant.isActive()).isTrue();
+    }
+
+    @Test
+    void reactivateThrowsWhenAlreadyActive() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, null);
+
+        assertThrows(RestaurantOperationNotAllowedException.class, restaurant::reactivate);
+    }
+
+    @Test
+    void isOwnedByUserReturnsTrueWhenOwnerIsActiveAndHasOwnerProfile() {
+        UUID userId = UUID.randomUUID();
+        User owner = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
+        owner.addProfile(Profile.create(1L, ProfileType.OWNER.name()));
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, owner);
+
+        assertThat(restaurant.isOwnedByUser(userId)).isTrue();
+    }
+
+    @Test
+    void isOwnedByUserReturnsFalseWhenDifferentUserId() {
+        UUID userId = UUID.randomUUID();
+        User owner = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
+        owner.addProfile(Profile.create(1L, ProfileType.OWNER.name()));
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, owner);
+
+        assertThat(restaurant.isOwnedByUser(UUID.randomUUID())).isFalse();
+    }
+
+    @Test
+    void isOwnedByUserReturnsFalseWhenUserIsInactive() {
+        UUID userId = UUID.randomUUID();
+        User owner = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", false);
+        owner.addProfile(Profile.create(1L, ProfileType.OWNER.name()));
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, owner);
+
+        assertThat(restaurant.isOwnedByUser(userId)).isFalse();
+    }
+
+    @Test
+    void isOwnedByUserReturnsFalseWhenUserHasNoOwnerProfile() {
+        UUID userId = UUID.randomUUID();
+        User owner = new User(userId, "Owner", "owner@mail.com", "owner", "Password@1234", true);
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, owner);
+
+        assertThat(restaurant.isOwnedByUser(userId)).isFalse();
     }
 }
