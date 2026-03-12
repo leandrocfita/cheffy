@@ -1,4 +1,4 @@
-package br.com.fiap.cheffy.infrastructure.persistence.fooditen.adapter;
+package br.com.fiap.cheffy.infrastructure.persistence.fooditem.adapter;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
