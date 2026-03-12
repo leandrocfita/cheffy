@@ -1,7 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
-import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateDeactivateRestaurantUseCase;
-import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateDeactivateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
+import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -11,6 +12,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RestaurantUseCaseConfig {
+
+    @Bean
+    public RestaurantServiceHelper restaurantServiceHelper(
+            RestaurantRepository restaurantRepository
+    ) {
+        return new RestaurantServiceHelper(restaurantRepository);
+    }
 
     @Bean
     public RegisterRestaurantUseCase registerRestarantUseCase(
@@ -27,20 +35,20 @@ public class RestaurantUseCaseConfig {
     }
 
     @Bean
-    public DeactivateDeactivateRestaurantUseCase deactivateRestaurantUseCase(
-            RestaurantRepository restaurantRepository
+    public DeactivateRestaurantUseCase deactivateRestaurantUseCase(
+            RestaurantServiceHelper restaurantServiceHelper
     ) {
-        return new DeactivateDeactivateRestaurantUseCase(
-                restaurantRepository
+        return new DeactivateRestaurantUseCase(
+                restaurantServiceHelper
         );
     }
 
     @Bean
-    public ReactivateDeactivateRestaurantUseCase reactivateRestaurantUseCase(
-            RestaurantRepository restaurantRepository
+    public ReactivateRestaurantUseCase reactivateRestaurantUseCase(
+            RestaurantServiceHelper restaurantServiceHelper
     ) {
-        return new ReactivateDeactivateRestaurantUseCase(
-                restaurantRepository
+        return new ReactivateRestaurantUseCase(
+                restaurantServiceHelper
         );
     }
 }
