@@ -12,5 +12,5 @@ public interface FoodItemRepository {
     Optional<FoodItem> findById(UUID foodItemId);
     List<FoodItem> findAllByRestaurantId(UUID restaurantId);
     boolean existsInRestaurantById(UUID restaurantId, UUID foodItemId);
-    boolean existsInRestaurantByName(String foodName, UUID restaurantId);
+    boolean existsByNameIgnoreCaseAndRestaurantId(String foodName, UUID restaurantId);
 }

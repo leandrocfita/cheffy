@@ -1,6 +1,6 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
-import br.com.fiap.cheffy.domain.fooditem.excception.FoodItemAlreadyExistInRestaurant;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
@@ -24,14 +24,12 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
-import org.springframework.objenesis.ObjenesisException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;

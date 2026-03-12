@@ -1,4 +1,4 @@
-package br.com.fiap.cheffy.domain.fooditem.excception;
+package br.com.fiap.cheffy.domain.fooditem.exception;
 
 import br.com.fiap.cheffy.shared.exception.BusinessException;
 import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;

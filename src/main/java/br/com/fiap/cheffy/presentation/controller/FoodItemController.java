@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/food-item", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/restaurants/{restaurantId}/food-items", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @Tag(name = "Food Item", description = "Operações relacionadas ao food items")
 public class FoodItemController {
@@ -49,7 +49,7 @@ public class FoodItemController {
 
         FoodItemCommandPort foodItemQueryPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemDTO, restaurantId);
 
-        FoodItem createdFoodItem = createFoodItemInput.execute(foodItemQueryPort, restaurantId);
+        FoodItem createdFoodItem = createFoodItemInput.execute(foodItemQueryPort);
 
         FoodItemQueryPort responseObject = foodItemWebMapper.foodItemToFoodItemQueryPort(createdFoodItem);
 

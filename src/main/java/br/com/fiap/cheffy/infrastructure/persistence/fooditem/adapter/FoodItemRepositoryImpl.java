@@ -46,7 +46,7 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
     }
 
     @Override
-    public boolean existsInRestaurantByName(String foodName, UUID restaurantId) {
-        return foodItemJpaRepository.existsInRestaurantByName(foodName, restaurantId);
+    public boolean existsByNameIgnoreCaseAndRestaurantId(String foodName, UUID restaurantId) {
+        return foodItemJpaRepository.existsByNameIgnoreCaseAndRestaurantId(foodName, restaurantId);
     }
 }

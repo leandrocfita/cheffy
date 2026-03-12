@@ -2,7 +2,7 @@ package br.com.fiap.cheffy.application.fooditem.usecase;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
-import br.com.fiap.cheffy.domain.fooditem.excception.FoodItemAlreadyExistInRestaurant;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
@@ -11,7 +11,6 @@ import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.shared.constants.FlowConstants;
 import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
 
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,22 +26,22 @@ public class CreateFoodItemUseCase implements CreateFoodItemInput {
     }
 
     @Override
-    public FoodItem execute(FoodItemCommandPort foodItemCommandPort, UUID restaurantId) {
+    public FoodItem execute(FoodItemCommandPort foodItemCommandPort) {
 
-        logger.info(String.format("Iniciando o cadastro do item: %s para o restaurante: %s | Flow: %s", foodItemCommandPort.name(), restaurantId, FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
+        logger.info(String.format("Iniciando o cadastro do item: %s para o restaurante: %s | Flow: %s", foodItemCommandPort.name(), foodItemCommandPort.restaurantId(), FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(
+        Restaurant restaurant = restaurantRepository.findById(foodItemCommandPort.restaurantId()).orElseThrow(
                 () -> {
-                    String errorMessage = String.format("Erro ao tentar cadastrar o item: %s no cárdapio do restaurante: %s. O restaurante não existe. | Flow: %s", foodItemCommandPort.name(), restaurantId, FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW);
+                    String errorMessage = String.format("Erro ao tentar cadastrar o item: %s no cárdapio do restaurante: %s. O restaurante não existe. | Flow: %s", foodItemCommandPort.name(), foodItemCommandPort.restaurantId(), FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW);
                     logger.log(Level.SEVERE, errorMessage);
 
-                    return new RestaurantDoesNotExistException(ExceptionsKeys.RESTAURANT_DOES_NOT_EXIST, restaurantId.toString());
+                    return new RestaurantDoesNotExistException(ExceptionsKeys.RESTAURANT_DOES_NOT_EXIST, foodItemCommandPort.restaurantId().toString());
                 }
         );
         
-        if(foodItemRepository.existsInRestaurantByName(foodItemCommandPort.name(), restaurantId)){
+        if(foodItemRepository.existsByNameIgnoreCaseAndRestaurantId(foodItemCommandPort.name(), foodItemCommandPort.restaurantId())){
 
-            String errorMessage = String.format("Erro ao tentar cadastrar o item: %s no cárdapio do restaurante: %s. O item já existe no cardápio. Flow: %s", foodItemCommandPort.name(), restaurantId, FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW);
+            String errorMessage = String.format("Erro ao tentar cadastrar o item: %s no cárdapio do restaurante: %s. O item já existe no cardápio. Flow: %s", foodItemCommandPort.name(), foodItemCommandPort.restaurantId(), FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW);
             logger.log(Level.SEVERE, errorMessage);
 
             throw new FoodItemAlreadyExistInRestaurant(ExceptionsKeys.FOOD_ITEM_ALREADY_EXIST, foodItemCommandPort.name());

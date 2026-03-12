@@ -20,13 +20,7 @@ public interface FoodItemJpaRepository extends JpaRepository<FoodItemJpaEntity, 
     List<FoodItemJpaEntity> findAllByRestaurantId(@Param("restaurantId") UUID restaurantId);
     
     
-    @Query("""
-        SELECT COUNT(f) > 0
-        FROM FoodItemJpaEntity f
-        WHERE f.name = :foodName
-        AND f.restaurant.id = :restaurantId
-    """)
-    boolean existsInRestaurantByName(@Param("foodName") String foodName, @Param("restaurantId") UUID restaurantId);
+    boolean existsByNameIgnoreCaseAndRestaurantId(String name, UUID restaurantId);
 
     @Query("""
         SELECT COUNT(f) > 0

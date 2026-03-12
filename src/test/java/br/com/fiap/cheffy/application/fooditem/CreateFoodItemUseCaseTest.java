@@ -45,11 +45,11 @@ class CreateFoodItemUseCaseTest {
 
         //Simulate restaurant exists
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(testRestaurant));
-        when(foodItemRepository.existsInRestaurantByName(input.name(), restaurantId)).thenReturn(false);
+        when(foodItemRepository.existsByNameIgnoreCaseAndRestaurantId(input.name(), restaurantId)).thenReturn(false);
         when(foodItemRepository.save(any(FoodItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        FoodItem result = createFoodItemUseCase.execute(input, restaurantId);
+        FoodItem result = createFoodItemUseCase.execute(input);
 
         // Then
         assertNotNull(result);
@@ -67,10 +67,10 @@ class CreateFoodItemUseCaseTest {
         Restaurant testRestaurant = createPersistentRestaurantEntity();
 
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(testRestaurant));
-        when(foodItemRepository.existsInRestaurantByName(input.name(), restaurantId)).thenReturn(true);
+        when(foodItemRepository.existsByNameIgnoreCaseAndRestaurantId(input.name(), restaurantId)).thenReturn(true);
 
         // When & Then
-        assertThrows(Exception.class, () -> createFoodItemUseCase.execute(input, restaurantId));
+        assertThrows(Exception.class, () -> createFoodItemUseCase.execute(input));
         verify(foodItemRepository, never()).save(any(FoodItem.class));
     }
 
@@ -82,7 +82,7 @@ class CreateFoodItemUseCaseTest {
 
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.empty());
 
-        assertThrows(RestaurantDoesNotExistException.class, ()-> createFoodItemUseCase.execute(input, restaurantId));
+        assertThrows(RestaurantDoesNotExistException.class, ()-> createFoodItemUseCase.execute(input));
 
         verify(foodItemRepository, never()).save(any(FoodItem.class));
         verify(restaurantRepository, times(1)).findById(restaurantId);
