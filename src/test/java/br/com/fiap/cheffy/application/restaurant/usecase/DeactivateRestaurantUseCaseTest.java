@@ -1,16 +1,15 @@
 package br.com.fiap.cheffy.application.restaurant.usecase;
 
+import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
-import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,13 +19,13 @@ import static org.mockito.Mockito.*;
 class DeactivateRestaurantUseCaseTest {
 
     @Mock
-    private RestaurantRepository restaurantRepository;
+    private RestaurantServiceHelper restaurantServiceHelper;
 
     private DeactivateRestaurantUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new DeactivateRestaurantUseCase(restaurantRepository);
+        useCase = new DeactivateRestaurantUseCase(restaurantServiceHelper);
     }
 
     @Test
@@ -35,13 +34,13 @@ class DeactivateRestaurantUseCaseTest {
         UUID userId = UUID.randomUUID();
         Restaurant restaurant = mock(Restaurant.class);
 
-        when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant));
+        when(restaurantServiceHelper.getRestaurantOrFail(id)).thenReturn(restaurant);
         when(restaurant.isOwnedByUser(userId)).thenReturn(true);
 
         useCase.execute(id, userId);
 
         verify(restaurant).deactivate();
-        verify(restaurantRepository).save(restaurant);
+        verify(restaurantServiceHelper).saveRestaurant(restaurant);
     }
 
     @Test
@@ -49,10 +48,12 @@ class DeactivateRestaurantUseCaseTest {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
 
-        when(restaurantRepository.findById(id)).thenReturn(Optional.empty());
+        when(restaurantServiceHelper.getRestaurantOrFail(id))
+                .thenThrow(new RestaurantNotFoundException(
+                        br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION, id));
 
         assertThrows(RestaurantNotFoundException.class, () -> useCase.execute(id, userId));
-        verify(restaurantRepository, never()).save(any());
+        verify(restaurantServiceHelper, never()).saveRestaurant(any());
     }
 
     @Test
@@ -61,11 +62,11 @@ class DeactivateRestaurantUseCaseTest {
         UUID userId = UUID.randomUUID();
         Restaurant restaurant = mock(Restaurant.class);
 
-        when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant));
+        when(restaurantServiceHelper.getRestaurantOrFail(id)).thenReturn(restaurant);
         when(restaurant.isOwnedByUser(userId)).thenReturn(false);
 
         assertThrows(RestaurantOperationNotAllowedException.class, () -> useCase.execute(id, userId));
         verify(restaurant, never()).deactivate();
-        verify(restaurantRepository, never()).save(any());
+        verify(restaurantServiceHelper, never()).saveRestaurant(any());
     }
 }

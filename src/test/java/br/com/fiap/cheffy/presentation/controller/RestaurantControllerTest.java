@@ -2,8 +2,9 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
+import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.RestaurantActivationProcessInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantAddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
@@ -29,7 +30,10 @@ class RestaurantControllerTest {
     private RegisterRestaurantInput restaurantInput;
 
     @Mock
-    private RestaurantActivationProcessInput restaurantActivationProcessInput;
+    private DeactivateRestaurantInput deactivateRestaurantInput;
+
+    @Mock
+    private ReactivateRestaurantInput reactivateRestaurantInput;
 
     @Mock
     private RestaurantWebMapper mapper;
@@ -91,7 +95,7 @@ class RestaurantControllerTest {
         ResponseEntity<Void> response = controller.deactivateRestaurant(id, userId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        verify(restaurantActivationProcessInput).execute(id, userId);
+        verify(deactivateRestaurantInput).execute(id, userId);
     }
 
     @Test
@@ -102,6 +106,6 @@ class RestaurantControllerTest {
         ResponseEntity<Void> response = controller.reactivateRestaurant(id, userId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        verify(restaurantActivationProcessInput).execute(id, userId);
+        verify(reactivateRestaurantInput).execute(id, userId);
     }
 }

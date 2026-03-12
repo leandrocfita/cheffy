@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
@@ -22,6 +23,17 @@ class RestaurantUseCaseConfigTest {
     private RestaurantRepository restaurantRepository;
     @Mock
     private ProfileRepository profileRepository;
+    @Mock
+    private RestaurantServiceHelper restaurantServiceHelper;
+
+    @Test
+    void restaurantServiceHelperCreatesBean() {
+        RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
+
+        RestaurantServiceHelper helper = config.restaurantServiceHelper(restaurantRepository);
+
+        assertThat(helper).isNotNull();
+    }
 
     @Test
     void registerRestarantUseCaseCreatesBean() {
@@ -40,7 +52,7 @@ class RestaurantUseCaseConfigTest {
     void deactivateRestaurantUseCaseCreatesBean() {
         RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
 
-        DeactivateRestaurantUseCase useCase = config.deactivateRestaurantUseCase(restaurantRepository);
+        DeactivateRestaurantUseCase useCase = config.deactivateRestaurantUseCase(restaurantServiceHelper);
 
         assertThat(useCase).isNotNull();
     }
@@ -49,7 +61,7 @@ class RestaurantUseCaseConfigTest {
     void reactivateRestaurantUseCaseCreatesBean() {
         RestaurantUseCaseConfig config = new RestaurantUseCaseConfig();
 
-        ReactivateRestaurantUseCase useCase = config.reactivateRestaurantUseCase(restaurantRepository);
+        ReactivateRestaurantUseCase useCase = config.reactivateRestaurantUseCase(restaurantServiceHelper);
 
         assertThat(useCase).isNotNull();
     }
