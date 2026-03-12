@@ -76,7 +76,7 @@ public class RestaurantController {
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/deactivate")
+    @PatchMapping("/{id}/deactivate")
     @Operation(summary = "Desativar restaurante de um usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Restaurante desativado com sucesso"),
@@ -94,7 +94,7 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/reactivate")
+    @PatchMapping("/{id}/reactivate")
     @Operation(summary = "Reativar restaurante de um usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Restaurante reativado com sucesso"),
