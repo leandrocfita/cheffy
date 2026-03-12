@@ -1,4 +1,4 @@
-package br.com.fiap.cheffy.infrastructure.persistence.fooditen.repository;
+package br.com.fiap.cheffy.infrastructure.persistence.fooditem.repository;
 
 import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
