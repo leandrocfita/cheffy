@@ -3,24 +3,25 @@ package br.com.fiap.cheffy.application.restaurant.usecase;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
-import br.com.fiap.cheffy.domain.restaurant.port.input.RestaurantActivationProcessInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE;
 
-public class DeactivateRestaurantUseCase implements RestaurantActivationProcessInput {
+public class ReactivateDeactivateRestaurantUseCase implements ReactivateRestaurantInput {
     private final RestaurantRepository restaurantRepository;
 
-    public DeactivateRestaurantUseCase(
+    public ReactivateDeactivateRestaurantUseCase(
             RestaurantRepository restaurantRepository
     ) {
         this.restaurantRepository = restaurantRepository;
     }
 
     @Override
-    public void execute(UUID id,  UUID userId) {
+    public void execute(UUID id, UUID userId) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(RESTAURANT_NOT_FOUND_EXCEPTION, id));
 
@@ -28,7 +29,7 @@ public class DeactivateRestaurantUseCase implements RestaurantActivationProcessI
             throw new RestaurantOperationNotAllowedException(RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE);
         }
 
-        restaurant.deactivate();
+        restaurant.reactivate();
         restaurantRepository.save(restaurant);
     }
 }

@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.domain.restaurant.port.input.RestaurantActivationProcessInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
@@ -25,16 +26,19 @@ import java.util.UUID;
 public class RestaurantController {
 
     private final RegisterRestaurantInput restaurantInput;
-    private final RestaurantActivationProcessInput restaurantActivationProcessInput;
+    private final DeactivateRestaurantInput deactivateRestaurantInput;
+    private final ReactivateRestaurantInput reactivateRestaurantInput;
     private final RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
-            RestaurantActivationProcessInput restaurantActivationProcessInput,
+            DeactivateRestaurantInput deactivateRestaurantInput,
+            ReactivateRestaurantInput reactivateRestaurantInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
-        this.restaurantActivationProcessInput = restaurantActivationProcessInput;
+        this.deactivateRestaurantInput = deactivateRestaurantInput;
+        this.reactivateRestaurantInput = reactivateRestaurantInput;
         this.mapper = mapper;
     }
 
@@ -85,7 +89,7 @@ public class RestaurantController {
     public ResponseEntity<Void> deactivateRestaurant(@PathVariable @Valid final UUID id,
                                                      @RequestBody @Valid final UUID userId) {
         log.info("RestaurantController.deactivateRestaurant - START - Deactivate restaurant - id: [{}], userId: [{}]", id, userId);
-        restaurantActivationProcessInput.execute(id, userId);
+        deactivateRestaurantInput.execute(id, userId);
         log.info("RestaurantController.deactivateRestaurant - END - Restaurant deactivated - id: [{}]", id);
         return ResponseEntity.noContent().build();
     }
@@ -103,7 +107,7 @@ public class RestaurantController {
     public ResponseEntity<Void> reactivateRestaurant(@PathVariable @Valid final UUID id,
                                                      @RequestBody @Valid final UUID userId) {
         log.info("RestaurantController.reactivateRestaurant - START - Reactivate restaurant - id: [{}], userId: [{}]", id, userId);
-        restaurantActivationProcessInput.execute(id, userId);
+        reactivateRestaurantInput.execute(id, userId);
         log.info("RestaurantController.reactivateRestaurant - END - Restaurant reactivated - id: [{}]", id);
         return ResponseEntity.noContent().build();
     }

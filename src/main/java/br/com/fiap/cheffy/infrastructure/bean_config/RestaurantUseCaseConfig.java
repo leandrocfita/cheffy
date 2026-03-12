@@ -1,7 +1,7 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
-import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
-import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateDeactivateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateDeactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
@@ -27,19 +27,19 @@ public class RestaurantUseCaseConfig {
     }
 
     @Bean
-    public DeactivateRestaurantUseCase deactivateRestaurantUseCase(
+    public DeactivateDeactivateRestaurantUseCase deactivateRestaurantUseCase(
             RestaurantRepository restaurantRepository
     ) {
-        return new DeactivateRestaurantUseCase(
+        return new DeactivateDeactivateRestaurantUseCase(
                 restaurantRepository
         );
     }
 
     @Bean
-    public ReactivateRestaurantUseCase reactivateRestaurantUseCase(
+    public ReactivateDeactivateRestaurantUseCase reactivateRestaurantUseCase(
             RestaurantRepository restaurantRepository
     ) {
-        return new ReactivateRestaurantUseCase(
+        return new ReactivateDeactivateRestaurantUseCase(
                 restaurantRepository
         );
     }
