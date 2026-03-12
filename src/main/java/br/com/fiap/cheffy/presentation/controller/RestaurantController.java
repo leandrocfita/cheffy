@@ -87,7 +87,7 @@ public class RestaurantController {
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
     public ResponseEntity<Void> deactivateRestaurant(@PathVariable @Valid final UUID id,
-                                                     @RequestBody @Valid final UUID userId) {
+                                                     @RequestParam @Valid final UUID userId) {
         log.info("RestaurantController.deactivateRestaurant - START - Deactivate restaurant - id: [{}], userId: [{}]", id, userId);
         deactivateRestaurantInput.execute(id, userId);
         log.info("RestaurantController.deactivateRestaurant - END - Restaurant deactivated - id: [{}]", id);
@@ -105,7 +105,7 @@ public class RestaurantController {
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
     public ResponseEntity<Void> reactivateRestaurant(@PathVariable @Valid final UUID id,
-                                                     @RequestBody @Valid final UUID userId) {
+                                                     @RequestParam @Valid final UUID userId) {
         log.info("RestaurantController.reactivateRestaurant - START - Reactivate restaurant - id: [{}], userId: [{}]", id, userId);
         reactivateRestaurantInput.execute(id, userId);
         log.info("RestaurantController.reactivateRestaurant - END - Restaurant reactivated - id: [{}]", id);
