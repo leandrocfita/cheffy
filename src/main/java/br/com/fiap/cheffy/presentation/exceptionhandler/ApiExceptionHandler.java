@@ -82,7 +82,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleRestaurantOperationNotAllowedException(RestaurantOperationNotAllowedException ex, WebRequest request) {
         String message = getMessage(ex.getMessage());
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
@@ -100,7 +100,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage());
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
@@ -235,7 +235,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String title = getExceptionName(ex);
         String message = getMessage(ex.getMessage()) ;
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
