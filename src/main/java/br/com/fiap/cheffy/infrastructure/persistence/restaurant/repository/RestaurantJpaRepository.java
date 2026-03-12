@@ -13,6 +13,6 @@ public interface RestaurantJpaRepository extends JpaRepository<RestaurantJpaEnti
     boolean existsByName(String restaurantName);
     boolean existsByUserIdAndActiveTrue(UUID userId);
 
-    @EntityGraph(attributePaths = {"user", "address", "foodItems"})
+    @EntityGraph(attributePaths = {"user", "user.profiles", "address", "foodItems"})
     Optional<RestaurantJpaEntity> findById(UUID id);
 }
