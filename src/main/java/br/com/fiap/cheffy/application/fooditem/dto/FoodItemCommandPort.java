@@ -1,19 +1,15 @@
 package br.com.fiap.cheffy.application.fooditem.dto;
 
-import br.com.fiap.cheffy.domain.valueobject.Money;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public record FoodItemQueryPort(
-        UUID id,
+public record FoodItemCommandPort(
         String name,
         String description,
-        Money price,
+        BigDecimal price,
         String photoKey,
         UUID restaurantId,
         Boolean deliveryAvailable,
-        Boolean available,
-        Boolean active
+        Boolean available
 ) {
 }

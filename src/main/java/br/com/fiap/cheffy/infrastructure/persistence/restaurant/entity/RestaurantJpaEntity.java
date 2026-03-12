@@ -1,7 +1,7 @@
 package br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity;
 
 import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

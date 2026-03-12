@@ -1,4 +1,4 @@
-package br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity;
+package br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity;
 
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import org.junit.jupiter.api.Test;
