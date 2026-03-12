@@ -2,7 +2,6 @@ package br.com.fiap.cheffy.infrastructure.persistence.address.mapper;
 
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +12,6 @@ class AddressPersistenceMapperTest {
 
     @Test
     void toAddressJpaEntity() {
-        UserJpaEntity entity = new UserJpaEntity();
         Address address = new Address(
                 1L,
                 "Street",
@@ -26,7 +24,7 @@ class AddressPersistenceMapperTest {
         true
         );
 
-        AddressJpaEntity result = addressPersistenceMapper.toJpa(address, entity);
+        AddressJpaEntity result = addressPersistenceMapper.toJpa(address);
 
         assertNotNull(result);
         assertEquals(address.getId(), result.getId());

@@ -6,7 +6,6 @@ import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.infrastructure.persistence.address.mapper.AddressPersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditen.mapper.FoodItemPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
@@ -47,7 +46,7 @@ public class RestaurantPersistenceMapper {
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
-            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
+            entity.setAddress(addressMapper.toJpa(restaurant.getAddress()));
         }
 
         if (restaurant.getUser() != null) {
