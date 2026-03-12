@@ -6,13 +6,12 @@ import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Component
 public class FoodItemWebMapper {
 
-    public FoodItemQueryPort FoodItemToFoodItemQueryPort(FoodItem foodItem){
+    public FoodItemQueryPort foodItemToFoodItemQueryPort(FoodItem foodItem){
 
         return new FoodItemQueryPort(
                 foodItem.getId(),
@@ -27,14 +26,14 @@ public class FoodItemWebMapper {
         );
     }
 
-    public FoodItemCommandPort foodItemDtoToFoodItemCommandPort(FoodItemDTO foodItemDTO, String restaurantId){
+    public FoodItemCommandPort foodItemDtoToFoodItemCommandPort(FoodItemDTO foodItemDTO, UUID restaurantId){
 
         return new FoodItemCommandPort(
                 foodItemDTO.name(),
                 foodItemDTO.description(),
                 foodItemDTO.price(),
                 foodItemDTO.photoKey(),
-                UUID.fromString(restaurantId),
+                restaurantId,
                 foodItemDTO.deliveryAvailable(),
                 foodItemDTO.available()
         );

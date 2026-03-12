@@ -2,10 +2,9 @@ package br.com.fiap.cheffy.infrastructure.persistence.fooditem.adapter;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.mapper.FoodItemPersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.repository.FoodItemJpaRepository;
-import lombok.NoArgsConstructor;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper.FoodItemPersistenceMapper;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.repository.FoodItemJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

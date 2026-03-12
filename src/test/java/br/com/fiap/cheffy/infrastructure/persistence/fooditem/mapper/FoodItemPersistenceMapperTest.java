@@ -1,7 +1,7 @@
-package br.com.fiap.cheffy.infrastructure.persistence.fooditen.mapper;
+package br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public record FoodItemDTO(
         String name,
         @NotBlank
         String description,
-        @NotBlank
+        @DecimalMin("0.1")
         BigDecimal price,
         @NotBlank
         String photoKey,

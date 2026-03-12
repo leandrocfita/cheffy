@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(value = "/api/v1/food-item", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -43,13 +45,13 @@ public class FoodItemController {
     })
     public ResponseEntity<Object> postFoodItem(
             @RequestBody @Valid FoodItemDTO foodItemDTO,
-            @NotBlank @PathVariable String restaurantId){
+            @NotBlank @PathVariable UUID restaurantId){
 
         FoodItemCommandPort foodItemQueryPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemDTO, restaurantId);
 
         FoodItem createdFoodItem = createFoodItemInput.execute(foodItemQueryPort, restaurantId);
 
-        FoodItemQueryPort responseObject = foodItemWebMapper.FoodItemToFoodItemQueryPort(createdFoodItem);
+        FoodItemQueryPort responseObject = foodItemWebMapper.foodItemToFoodItemQueryPort(createdFoodItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }

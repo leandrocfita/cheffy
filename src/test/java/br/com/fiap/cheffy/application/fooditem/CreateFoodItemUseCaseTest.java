@@ -1,7 +1,6 @@
 package br.com.fiap.cheffy.application.fooditem;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
-import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
@@ -50,7 +49,7 @@ class CreateFoodItemUseCaseTest {
         when(foodItemRepository.save(any(FoodItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        FoodItem result = createFoodItemUseCase.execute(input, restaurantId.toString());
+        FoodItem result = createFoodItemUseCase.execute(input, restaurantId);
 
         // Then
         assertNotNull(result);
@@ -71,7 +70,7 @@ class CreateFoodItemUseCaseTest {
         when(foodItemRepository.existsInRestaurantByName(input.name(), restaurantId)).thenReturn(true);
 
         // When & Then
-        assertThrows(Exception.class, () -> createFoodItemUseCase.execute(input, restaurantId.toString()));
+        assertThrows(Exception.class, () -> createFoodItemUseCase.execute(input, restaurantId));
         verify(foodItemRepository, never()).save(any(FoodItem.class));
     }
 
@@ -83,7 +82,7 @@ class CreateFoodItemUseCaseTest {
 
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.empty());
 
-        assertThrows(RestaurantDoesNotExistException.class, ()-> createFoodItemUseCase.execute(input, restaurantId.toString()));
+        assertThrows(RestaurantDoesNotExistException.class, ()-> createFoodItemUseCase.execute(input, restaurantId));
 
         verify(foodItemRepository, never()).save(any(FoodItem.class));
         verify(restaurantRepository, times(1)).findById(restaurantId);
