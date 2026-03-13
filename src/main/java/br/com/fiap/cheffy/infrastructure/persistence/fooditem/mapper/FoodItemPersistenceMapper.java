@@ -4,19 +4,20 @@ import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.mapper.RestaurantPersistenceMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FoodItemPersistenceMapper {
 
-    private final RestaurantPersistenceMapper restaurantPersistenceMapper;
+   private final RestaurantPersistenceMapper restaurantPersistenceMapper;
 
-    public FoodItemPersistenceMapper(RestaurantPersistenceMapper restaurantPersistenceMapper) {
+    public FoodItemPersistenceMapper(@Lazy RestaurantPersistenceMapper restaurantPersistenceMapper) {
         this.restaurantPersistenceMapper = restaurantPersistenceMapper;
     }
 
     public FoodItem toDomain(FoodItemJpaEntity entity) {
-        return FoodItem.reconstitute(
+        FoodItem domainEntity = FoodItem.reconstitute(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
@@ -26,6 +27,10 @@ public class FoodItemPersistenceMapper {
                 entity.getAvailable(),
                 entity.getActive()
         );
+
+        domainEntity.setRestaurant(restaurantPersistenceMapper.toDomain(entity.getRestaurant()));
+
+        return  domainEntity;
     }
 
     public FoodItemJpaEntity toJpa(FoodItem domain) {
