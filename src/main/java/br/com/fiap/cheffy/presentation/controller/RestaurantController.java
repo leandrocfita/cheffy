@@ -1,8 +1,9 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
-import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,14 +25,20 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantController {
 
-    private RegisterRestaurantInput restaurantInput;
-    private RestaurantWebMapper mapper;
+    private final RegisterRestaurantInput restaurantInput;
+    private final DeactivateRestaurantInput deactivateRestaurantInput;
+    private final ReactivateRestaurantInput reactivateRestaurantInput;
+    private final RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
+            DeactivateRestaurantInput deactivateRestaurantInput,
+            ReactivateRestaurantInput reactivateRestaurantInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
+        this.deactivateRestaurantInput = deactivateRestaurantInput;
+        this.reactivateRestaurantInput = reactivateRestaurantInput;
         this.mapper = mapper;
     }
 
@@ -67,6 +74,42 @@ public class RestaurantController {
 
         MDC.clear();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    @Operation(summary = "Desativar restaurante de um usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Restaurante desativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> deactivateRestaurant(@PathVariable @Valid final UUID id,
+                                                     @RequestParam @Valid final UUID userId) {
+        log.info("RestaurantController.deactivateRestaurant - START - Deactivate restaurant - id: [{}], userId: [{}]", id, userId);
+        deactivateRestaurantInput.execute(id, userId);
+        log.info("RestaurantController.deactivateRestaurant - END - Restaurant deactivated - id: [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/reactivate")
+    @Operation(summary = "Reativar restaurante de um usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Restaurante reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> reactivateRestaurant(@PathVariable @Valid final UUID id,
+                                                     @RequestParam @Valid final UUID userId) {
+        log.info("RestaurantController.reactivateRestaurant - START - Reactivate restaurant - id: [{}], userId: [{}]", id, userId);
+        reactivateRestaurantInput.execute(id, userId);
+        log.info("RestaurantController.reactivateRestaurant - END - Restaurant reactivated - id: [{}]", id);
+        return ResponseEntity.noContent().build();
     }
 
 }
