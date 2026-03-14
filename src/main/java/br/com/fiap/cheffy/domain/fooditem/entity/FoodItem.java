@@ -108,6 +108,7 @@ public class FoodItem {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+//        restaurant.addFoodItem(this);
     }
 
     public void disable() {
