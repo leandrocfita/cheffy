@@ -14,8 +14,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_ALREADY_ACTIVE;
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_ALREADY_INACTIVE;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 
 public class Restaurant {
@@ -119,6 +118,24 @@ public class Restaurant {
             throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_ALREADY_ACTIVE);
         }
         this.active = true;
+    }
+
+    public void patch(String name, String culinary, ZoneId zoneId, WorkingHours workingHours) {
+        if (!this.active) {
+            throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_INACTIVE_CANNOT_UPDATE);
+        }
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+        if (culinary != null && !culinary.isBlank()) {
+            this.culinary = culinary;
+        }
+        if (zoneId != null) {
+            this.zoneId = zoneId;
+        }
+        if (workingHours != null) {
+            this.workingHours = workingHours;
+        }
     }
 
     public boolean isOwnedByUser (UUID userId) {

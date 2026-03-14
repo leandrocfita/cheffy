@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
+import br.com.fiap.cheffy.domain.restaurant.valueobject.WorkingHours;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.domain.user.exception.UserOperationNotAllowedException;
@@ -340,5 +341,64 @@ class RestaurantTest {
         Restaurant restaurant = Restaurant.create24h("R", "27865757000102", "Italiana", zoneId, owner);
 
         assertThat(restaurant.isOwnedByUser(userId)).isFalse();
+    }
+
+    @Test
+    void patchUpdatesNameAndCulinary() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.createWithWorkingHours(
+                "Restaurante", "27865757000102", "Brasileira", zoneId,
+                LocalTime.parse("09:00"), LocalTime.parse("18:00"), null);
+
+        restaurant.patch("Novo Nome", "Japonesa", null, null);
+
+        assertThat(restaurant.getName()).isEqualTo("Novo Nome");
+        assertThat(restaurant.getCulinary()).isEqualTo("Japonesa");
+    }
+    @Test
+    void patchIgnoresNullAndBlankValues() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.createWithWorkingHours(
+                "Restaurante", "27865757000102", "Brasileira", zoneId,
+                LocalTime.parse("09:00"), LocalTime.parse("18:00"), null);
+
+        restaurant.patch(null, "  ", null, null);
+
+        assertThat(restaurant.getName()).isEqualTo("Restaurante");
+        assertThat(restaurant.getCulinary()).isEqualTo("Brasileira");
+    }
+    @Test
+    void patchUpdatesZoneId() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.createWithWorkingHours(
+                "Restaurante", "27865757000102", "Brasileira", zoneId,
+                LocalTime.parse("09:00"), LocalTime.parse("18:00"), null);
+        ZoneId newZoneId = ZoneId.of("Europe/London");
+
+        restaurant.patch(null, null, newZoneId, null);
+
+        assertThat(restaurant.getZoneId()).isEqualTo(newZoneId);
+    }
+    @Test
+    void patchUpdatesWorkingHours() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.createWithWorkingHours(
+                "Restaurante", "27865757000102", "Brasileira", zoneId,
+                LocalTime.parse("09:00"), LocalTime.parse("18:00"), null);
+        WorkingHours newHours = WorkingHours.of(LocalTime.parse("10:00"), LocalTime.parse("22:00"));
+
+        restaurant.patch(null, null, null, newHours);
+
+        assertThat(restaurant.getOpeningTime()).isEqualTo(LocalTime.parse("10:00"));
+        assertThat(restaurant.getClosingTime()).isEqualTo(LocalTime.parse("22:00"));
+    }
+    @Test
+    void patchThrowsWhenRestaurantIsInactive() {
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        Restaurant restaurant = Restaurant.reconstitute(
+                UUID.randomUUID(), "R", "27865757000102", "Italiana", zoneId,
+                null, null, true, false, null, null, new Menu(new java.util.HashSet<>()));
+        assertThrows(RestaurantOperationNotAllowedException.class,
+                () -> restaurant.patch("Novo Nome", null, null, null));
     }
 }
