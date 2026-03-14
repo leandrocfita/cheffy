@@ -46,7 +46,7 @@ public class RestaurantPersistenceMapper {
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
-            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
+            entity.setAddress(addressMapper.toJpa(restaurant.getAddress()));
         }
 
         if (restaurant.getUser() != null) {

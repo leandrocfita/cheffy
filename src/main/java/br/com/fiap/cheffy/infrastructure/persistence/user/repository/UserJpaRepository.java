@@ -16,19 +16,8 @@ import java.util.UUID;
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 
-    List<UserJpaEntity> findAllByProfilesId(Long id);
-
     @EntityGraph(attributePaths = {"profiles", "addresses"})
     List<UserJpaEntity> findAll();
-
-    //FIXME - Trocar retorno para List<UserJpaEntity>
-    @Query("""
-            SELECT distinct u FROM UserJpaEntity u 
-                    JOIN FETCH u.profiles
-                    LEFT JOIN FETCH u.addresses
-                WHERE u.name = :name 
-            """)
-    Optional<UserJpaEntity> findByName(@Param("name") String name);
 
     @EntityGraph(attributePaths = {"profiles", "addresses"})
     Optional<UserJpaEntity> findByEmail(@Param("email") String email);

@@ -49,8 +49,16 @@ public class RestaurantJpaEntity {
     @Column(name = "zone_id", nullable = false)
     private String zoneId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    @JoinTable(
+            name = "restaurant_address",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id")
+    )
     private AddressJpaEntity address;
 
     @ManyToOne(fetch = FetchType.LAZY)
