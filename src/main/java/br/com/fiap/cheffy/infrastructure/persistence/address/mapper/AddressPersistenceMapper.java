@@ -2,7 +2,6 @@ package br.com.fiap.cheffy.infrastructure.persistence.address.mapper;
 
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +11,7 @@ public class AddressPersistenceMapper {
     }
 
 
-    public AddressJpaEntity toJpa(Address address, UserJpaEntity userJpa) {
+    public AddressJpaEntity toJpa(Address address) {
         AddressJpaEntity jpa = new AddressJpaEntity();
 
         jpa.setId(address.getId());
@@ -24,7 +23,6 @@ public class AddressPersistenceMapper {
         jpa.setStateProvince(address.getStateProvince());
         jpa.setAddressLine(address.getAddressLine());
         jpa.setMain(address.isMain());
-        jpa.setUser(userJpa);
 
         return jpa;
     }

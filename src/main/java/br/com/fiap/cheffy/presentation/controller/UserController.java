@@ -146,7 +146,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/deactivate")
+    @PatchMapping("/{id}/deactivate")
     @Operation(summary = "Desativar usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso"),
@@ -163,7 +163,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/reactivate")
+    @PatchMapping("/{id}/reactivate")
     @Operation(summary = "Reativa usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Usuário reativado com sucesso"),

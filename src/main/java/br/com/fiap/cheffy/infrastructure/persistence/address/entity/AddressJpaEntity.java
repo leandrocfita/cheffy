@@ -1,6 +1,5 @@
 package br.com.fiap.cheffy.infrastructure.persistence.address.entity;
 
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import lombok.Getter;
@@ -53,10 +52,6 @@ public class AddressJpaEntity {
 
     @Column
     private Boolean main;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
-    private UserJpaEntity user;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

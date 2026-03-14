@@ -14,10 +14,9 @@ class AddressPersistenceMapperTest {
 
     @Test
     void toAddressJpaEntity() {
-        UserJpaEntity entity = new UserJpaEntity();
         Address address = AddressTestUtils.createTestAddressDomainEntity();
 
-        AddressJpaEntity result = addressPersistenceMapper.toJpa(address, entity);
+        AddressJpaEntity result = addressPersistenceMapper.toJpa(address);
 
         assertNotNull(result);
         assertEquals(address.getId(), result.getId());

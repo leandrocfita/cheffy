@@ -60,7 +60,7 @@ class RestaurantPersistenceMapperTest {
         );
         restaurant.addAddress(new Address(1L, "Rua A", 10, "São Paulo", "01001000", "Centro", "SP", "Casa", true));
 
-        when(addressMapper.toJpa(any(), any())).thenReturn(new AddressJpaEntity());
+        when(addressMapper.toJpa(any())).thenReturn(new AddressJpaEntity());
         when(userMapper.toJpa(owner)).thenReturn(new UserJpaEntity());
 
         RestaurantJpaEntity result = mapper.toJpa(restaurant);
