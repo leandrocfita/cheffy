@@ -60,4 +60,16 @@ class ProblemTest {
         assertThat(field.getName()).isEqualTo("email");
         assertThat(field.getUserMessage()).isEqualTo("Invalid email");
     }
+
+    @Test
+    void problemBuilderToStringDoesNotThrow() {
+        String s = Problem.builder().status(400).title("T").toString();
+        assertThat(s).isNotNull();
+    }
+
+    @Test
+    void fieldBuilderToStringDoesNotThrow() {
+        String s = Problem.Field.builder().name("f").toString();
+        assertThat(s).isNotNull();
+    }
 }

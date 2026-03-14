@@ -7,6 +7,10 @@ import br.com.fiap.cheffy.infrastructure.persistence.restaurant.mapper.Restauran
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.repository.RestaurantJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
 
     @Override
+    @Transactional
     public Restaurant save(Restaurant restaurant) {
         RestaurantJpaEntity restaurantJpaEntity = restaurantMapper.toJpa(restaurant);
 
@@ -35,4 +40,15 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         return restaurantJpaRepository.existsByName(restaurantName);
     }
 
+    @Override
+    public boolean existsActiveRestaurantByUserId(UUID userId) {
+        return restaurantJpaRepository.existsByUserIdAndActiveTrue(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Restaurant> findById(UUID restaurantId) {
+        return restaurantJpaRepository.findById(restaurantId)
+                .map(restaurantMapper::toDomain);
+    }
 }

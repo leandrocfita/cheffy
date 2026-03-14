@@ -53,4 +53,17 @@ class ProfileRepositoryImplTest {
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(profile);
     }
+
+    @Test
+    void saveProfileDelegatesToJpaRepository() {
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
+        jpaEntity.setId(1L);
+        when(mapper.toJpaReference(profile)).thenReturn(jpaEntity);
+        when(jpaRepository.save(jpaEntity)).thenReturn(jpaEntity);
+
+        Long result = profileRepository.save(profile);
+
+        assertThat(result).isEqualTo(1L);
+    }
 }

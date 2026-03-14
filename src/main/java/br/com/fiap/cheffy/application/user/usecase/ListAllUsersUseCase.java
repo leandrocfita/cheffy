@@ -2,11 +2,14 @@ package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.application.user.mapper.UserQueryMapper;
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
+import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.domain.user.port.input.ListAllUsersInput;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 
 public class ListAllUsersUseCase implements ListAllUsersInput {
 
@@ -19,9 +22,14 @@ public class ListAllUsersUseCase implements ListAllUsersInput {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<UserQueryPort> execute(Pageable pageable) {
-        return userRepository.findAll(pageable)
-                .map(mapper::toQuery);
+    public PageResult<UserQueryPort> execute(PageRequest pageRequest) {
+
+        PageResult<User> userPage = userRepository.findAll(pageRequest);
+
+        List<UserQueryPort> mappedContent = userPage.content().stream()
+                .map(mapper::toQuery)
+                .toList();
+
+        return PageResult.from(userPage, mappedContent);
     }
 }

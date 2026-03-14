@@ -59,6 +59,7 @@ public class FoodItem {
         this.active = active;
     }
 
+
     public static FoodItem create(
             String name,
             String description,
@@ -107,6 +108,7 @@ public class FoodItem {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+//        restaurant.addFoodItem(this);
     }
 
     public void disable() {

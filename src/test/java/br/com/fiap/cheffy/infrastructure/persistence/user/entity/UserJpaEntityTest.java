@@ -47,4 +47,13 @@ class UserJpaEntityTest {
 
         assertThat(entity.getLastUpdated()).isEqualTo(now);
     }
+
+    @Test
+    void setAndGetActive() {
+        UserJpaEntity entity = new UserJpaEntity();
+        entity.setActive(true);
+        assertThat(entity.isActive()).isTrue();
+        entity.setActive(false);
+        assertThat(entity.isActive()).isFalse();
+    }
 }

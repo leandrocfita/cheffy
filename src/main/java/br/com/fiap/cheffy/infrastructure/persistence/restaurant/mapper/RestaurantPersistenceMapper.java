@@ -6,8 +6,7 @@ import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.infrastructure.persistence.address.mapper.AddressPersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.mapper.FoodItemPersistenceMapper;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper.FoodItemPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
 import org.springframework.stereotype.Component;
@@ -47,7 +46,7 @@ public class RestaurantPersistenceMapper {
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
-            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
+            entity.setAddress(addressMapper.toJpa(restaurant.getAddress()));
         }
 
         if (restaurant.getUser() != null) {
@@ -71,12 +70,11 @@ public class RestaurantPersistenceMapper {
 
         Set<FoodItem> foodItems = entity.getFoodItems()
                 .stream()
-                .map(foodItemMapper::toDomain)
+                .map(f -> foodItemMapper.toDomain(f))
                 .collect(Collectors.toSet());
 
-        Menu menu = new Menu(foodItems);
 
-        return Restaurant.reconstitute(
+        Restaurant reconstitute = Restaurant.reconstitute(
                 entity.getId(),
                 entity.getName(),
                 entity.getCnpj(),
@@ -88,8 +86,11 @@ public class RestaurantPersistenceMapper {
                 entity.getActive(),
                 address,
                 owner,
-                menu
+                new Menu(foodItems)
         );
+
+
+        return reconstitute;
     }
 
 }

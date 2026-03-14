@@ -2,6 +2,8 @@ package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.application.user.mapper.UserQueryMapper;
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.user.entity.Address;
@@ -12,10 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,60 +41,80 @@ class ListAllUsersUseCaseTest {
 
     @Test
     void shouldListUsersSuccessfully() {
+        PageRequest pageRequest = PageRequest.of(0, 10, "name", PageRequest.SortDirection.ASC);
 
         User firstUser = createUser("João Silva", "joao.silva@email.com");
         User secondUser = createUser("Maria Souza", "maria.souza@email.com");
+        List<User> users = Arrays.asList(firstUser, secondUser);
 
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<User> userPage = new PageImpl<>(Arrays.asList(firstUser, secondUser), pageable, 2);
+        PageResult<User> userPage = PageResult.of(users, 0, 10, 2);
 
         UserQueryPort mappedFirstUser = mock(UserQueryPort.class);
         UserQueryPort mappedSecondUser = mock(UserQueryPort.class);
 
-        when(userRepository.findAll(pageable)).thenReturn(userPage);
+        when(userRepository.findAll(pageRequest)).thenReturn(userPage);
         when(mapper.toQuery(firstUser)).thenReturn(mappedFirstUser);
         when(mapper.toQuery(secondUser)).thenReturn(mappedSecondUser);
 
 
-        Page<UserQueryPort> usersPageResult = useCase.execute(pageable);
+        PageResult<UserQueryPort> usersPageResult = useCase.execute(pageRequest);
 
         assertNotNull(usersPageResult);
-        assertEquals(2, usersPageResult.getTotalElements());
-        assertEquals(2, usersPageResult.getContent().size());
-        verify(userRepository, times(1)).findAll(pageable);
+        assertEquals(2, usersPageResult.totalElements());
+        assertEquals(2, usersPageResult.numberOfElements());
+        verify(userRepository, times(1)).findAll(pageRequest);
     }
 
     @Test
     void shouldReturnEmptyPageWhenNoUsers() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<User> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
-        when(userRepository.findAll(pageable)).thenReturn(emptyPage);
+        PageRequest pageRequest = PageRequest.of(0, 10, "name", PageRequest.SortDirection.ASC);
+        PageResult<User> emptyPage = PageResult.of(Collections.emptyList(), 0, 10, 0);
+        when(userRepository.findAll(pageRequest)).thenReturn(emptyPage);
 
-        Page<UserQueryPort> usersPageResult = useCase.execute(pageable);
+
+        PageResult<UserQueryPort> usersPageResult = useCase.execute(pageRequest);
 
         assertNotNull(usersPageResult);
-        assertEquals(0, usersPageResult.getTotalElements());
-        assertTrue(usersPageResult.getContent().isEmpty());
+        assertEquals(0, usersPageResult.totalElements());
+        assertEquals(0, usersPageResult.numberOfElements());
+        assertTrue(usersPageResult.empty());
+        assertTrue(usersPageResult.first());
+        assertTrue(usersPageResult.last());
+
+        verify(userRepository, times(1)).findAll(pageRequest);
+        verify(mapper, never()).toQuery(any());
     }
 
     @Test
     void shouldHandlePagination() {
-        User user = createUser("Carlos Oliveira", "carlos.oliveira@email.com");
+        PageRequest pageRequest = PageRequest.of(1, 2, "name", PageRequest.SortDirection.ASC);
 
-        Pageable pageable = PageRequest.of(1, 5);
-        Page<User> userPage = new PageImpl<>(List.of(user), pageable, 10);
+        User firstUser = createUser("Carlos Souza", "carlos@test.com");
+        User secondUser = createUser("Diana Costa", "diana@test.com");
+        List<User> users = Arrays.asList(firstUser, secondUser);
 
-        UserQueryPort query = mock(UserQueryPort.class);
-        when(userRepository.findAll(pageable)).thenReturn(userPage);
-        when(mapper.toQuery(user)).thenReturn(query);
+        PageResult<User> userPage = PageResult.of(users, 1, 2, 5);
 
+        UserQueryPort queryPort3 = mock(UserQueryPort.class);
+        UserQueryPort queryPort4 = mock(UserQueryPort.class);
 
-        Page<UserQueryPort> result = useCase.execute(pageable);
+        when(userRepository.findAll(pageRequest)).thenReturn(userPage);
+        when(mapper.toQuery(firstUser)).thenReturn(queryPort3);
+        when(mapper.toQuery(secondUser)).thenReturn(queryPort4);
 
+        PageResult<UserQueryPort> result = useCase.execute(pageRequest);
 
-        assertEquals(10, result.getTotalElements());
-        assertEquals(2, result.getTotalPages());
-        assertEquals(1, result.getNumber());
+        assertNotNull(result);
+        assertEquals(5, result.totalElements());
+        assertEquals(2, result.numberOfElements());
+        assertEquals(3, result.totalPages());
+        assertEquals(1, result.page());
+        assertFalse(result.first());
+        assertFalse(result.last());
+        assertFalse(result.empty());
+
+        verify(userRepository, times(1)).findAll(pageRequest);
+
     }
 
     private User createUser(String name, String email) {

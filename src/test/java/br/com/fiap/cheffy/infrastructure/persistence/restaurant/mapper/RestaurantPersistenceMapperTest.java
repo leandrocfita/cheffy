@@ -6,8 +6,8 @@ import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.address.mapper.AddressPersistenceMapper;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.entity.FoodItemJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.fooditen.mapper.FoodItemPersistenceMapper;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper.FoodItemPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistenceMapper;
@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.util.Set;
 import java.util.UUID;
@@ -47,7 +46,7 @@ class RestaurantPersistenceMapperTest {
 
     @Test
     void toJpaMapsRestaurantIncludingAddressAndUser() {
-        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678");
+        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678", true);
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
         Restaurant restaurant = Restaurant.createWithWorkingHours(
@@ -61,7 +60,7 @@ class RestaurantPersistenceMapperTest {
         );
         restaurant.addAddress(new Address(1L, "Rua A", 10, "São Paulo", "01001000", "Centro", "SP", "Casa", true));
 
-        when(addressMapper.toJpa(any(), any())).thenReturn(new AddressJpaEntity());
+        when(addressMapper.toJpa(any())).thenReturn(new AddressJpaEntity());
         when(userMapper.toJpa(owner)).thenReturn(new UserJpaEntity());
 
         RestaurantJpaEntity result = mapper.toJpa(restaurant);
@@ -90,7 +89,7 @@ class RestaurantPersistenceMapperTest {
         entity.setFoodItems(Set.of(foodItemJpa));
 
         Address address = new Address(1L, "Rua A", 10, "São Paulo", "01001000", "Centro", "SP", "Casa", true);
-        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678");
+        User owner = new User(UUID.randomUUID(), "Owner", "mail@test.com", "owner", "Pass@12345678", true);
         FoodItem foodItem = FoodItem.reconstitute(
                 foodItemJpa.getId(),
                 "Prato",

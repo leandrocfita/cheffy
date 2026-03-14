@@ -16,7 +16,7 @@ class SpringAuthenticatedUserTest {
         UUID id = UUID.randomUUID();
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
         
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "username", "password", authorities);
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "username", "password", authorities, true);
         
         assertEquals(id, user.getId());
         assertEquals("username", user.getUsername());
@@ -27,7 +27,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void shouldReturnTrueForAccountNonExpired() {
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(
-            UUID.randomUUID(), "user", "pass", Set.of()
+            UUID.randomUUID(), "user", "pass", Set.of(), true
         );
         
         assertTrue(user.isAccountNonExpired());
@@ -36,7 +36,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void shouldReturnTrueForAccountNonLocked() {
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(
-            UUID.randomUUID(), "user", "pass", Set.of()
+            UUID.randomUUID(), "user", "pass", Set.of(), true
         );
         
         assertTrue(user.isAccountNonLocked());
@@ -45,7 +45,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void shouldReturnTrueForCredentialsNonExpired() {
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(
-            UUID.randomUUID(), "user", "pass", Set.of()
+            UUID.randomUUID(), "user", "pass", Set.of(), true
         );
         
         assertTrue(user.isCredentialsNonExpired());
@@ -54,10 +54,19 @@ class SpringAuthenticatedUserTest {
     @Test
     void shouldReturnTrueForEnabled() {
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(
-            UUID.randomUUID(), "user", "pass", Set.of()
+            UUID.randomUUID(), "user", "pass", Set.of(), true
         );
         
         assertTrue(user.isEnabled());
+    }
+
+    @Test
+    void shouldReturnFalseForDisabledUser() {
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(
+            UUID.randomUUID(), "user", "pass", Set.of(), false
+        );
+        
+        assertFalse(user.isEnabled());
     }
 
     @Test
@@ -68,7 +77,7 @@ class SpringAuthenticatedUserTest {
         );
         
         SpringAuthenticatedUser user = new SpringAuthenticatedUser(
-            UUID.randomUUID(), "admin", "pass", authorities
+            UUID.randomUUID(), "admin", "pass", authorities, true
         );
         
         assertEquals(2, user.getAuthorities().size());
@@ -77,7 +86,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void shouldUseGettersFromLombok() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of());
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of(), true);
         
         assertNotNull(user.getId());
         assertNotNull(user.getUsername());
@@ -90,9 +99,9 @@ class SpringAuthenticatedUserTest {
         UUID id = UUID.randomUUID();
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
         
-        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass", authorities);
-        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass", authorities);
-        SpringAuthenticatedUser user3 = new SpringAuthenticatedUser(UUID.randomUUID(), "other", "pass", authorities);
+        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass", authorities, true);
+        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass", authorities, true);
+        SpringAuthenticatedUser user3 = new SpringAuthenticatedUser(UUID.randomUUID(), "other", "pass", authorities, true);
         
         assertEquals(user1, user2);
         assertNotEquals(user1, user3);
@@ -102,7 +111,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void toStringWorks() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of());
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of(), true);
         
         String toString = user.toString();
         assertNotNull(toString);
@@ -112,7 +121,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void equalsWithNull() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of());
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of(), true);
         
         assertNotEquals(user, null);
     }
@@ -120,7 +129,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void equalsWithDifferentClass() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of());
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of(), true);
         
         assertNotEquals(user, "string");
     }
@@ -128,7 +137,7 @@ class SpringAuthenticatedUserTest {
     @Test
     void equalsWithSameObject() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of());
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", Set.of(), true);
         
         assertEquals(user, user);
     }
@@ -136,8 +145,8 @@ class SpringAuthenticatedUserTest {
     @Test
     void equalsWithDifferentId() {
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(UUID.randomUUID(), "user", "pass", authorities);
-        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(UUID.randomUUID(), "user", "pass", authorities);
+        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(UUID.randomUUID(), "user", "pass", authorities, true);
+        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(UUID.randomUUID(), "user", "pass", authorities, true);
         
         assertNotEquals(user1, user2);
     }
@@ -146,8 +155,8 @@ class SpringAuthenticatedUserTest {
     void equalsWithDifferentUsername() {
         UUID id = UUID.randomUUID();
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user1", "pass", authorities);
-        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user2", "pass", authorities);
+        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user1", "pass", authorities, true);
+        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user2", "pass", authorities, true);
         
         assertNotEquals(user1, user2);
     }
@@ -156,8 +165,8 @@ class SpringAuthenticatedUserTest {
     void equalsWithDifferentPassword() {
         UUID id = UUID.randomUUID();
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass1", authorities);
-        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass2", authorities);
+        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass1", authorities, true);
+        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass2", authorities, true);
         
         assertNotEquals(user1, user2);
     }
@@ -165,8 +174,8 @@ class SpringAuthenticatedUserTest {
     @Test
     void equalsWithDifferentAuthorities() {
         UUID id = UUID.randomUUID();
-        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_USER")));
-        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        SpringAuthenticatedUser user1 = new SpringAuthenticatedUser(id, "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_USER")), true);
+        SpringAuthenticatedUser user2 = new SpringAuthenticatedUser(id, "user", "pass", Set.of(new SimpleGrantedAuthority("ROLE_ADMIN")), true);
         
         assertNotEquals(user1, user2);
     }
@@ -175,7 +184,7 @@ class SpringAuthenticatedUserTest {
     void hashCodeConsistency() {
         UUID id = UUID.randomUUID();
         Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", authorities);
+        SpringAuthenticatedUser user = new SpringAuthenticatedUser(id, "user", "pass", authorities, true);
         
         int hash1 = user.hashCode();
         int hash2 = user.hashCode();

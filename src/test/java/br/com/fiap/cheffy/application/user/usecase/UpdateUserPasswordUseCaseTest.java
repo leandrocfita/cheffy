@@ -38,7 +38,7 @@ class UpdateUserPasswordUseCaseTest {
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
-        existingUser = new User(userId, "John Doe", "john@email.com", "john.doe", "encodedOldPass");
+        existingUser = new User(userId, "John Doe", "john@email.com", "john.doe", "encodedOldPass", true);
     }
 
     @Test

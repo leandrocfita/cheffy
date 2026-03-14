@@ -55,4 +55,26 @@ class PresentationDtoTest {
         assertThat(dto.email()).isEqualTo("email@test.com");
         assertThat(dto.login()).isEqualTo("login");
     }
+
+    @Test
+    void createUserUpdatePasswordDTO() {
+        UserUpdatePasswordDTO dto = new UserUpdatePasswordDTO("NewPass@123");
+        assertThat(dto.password()).isEqualTo("NewPass@123");
+    }
+
+    @Test
+    void createRestaurantCreateDTO() {
+        RestaurantAddressCreateDTO addr = new RestaurantAddressCreateDTO("St", 1, "City", "12345678", "Hood", "SP", null);
+        RestaurantCreateDTO dto = new RestaurantCreateDTO("Name", "Brasileira", "27865757000102", null, null, "America/Sao_Paulo", false, addr);
+        assertThat(dto.name()).isEqualTo("Name");
+        assertThat(dto.address().streetName()).isEqualTo("St");
+    }
+
+    @Test
+    void createProfileCreateReponseDto() {
+        ProfileCreateReponseDto dto = new ProfileCreateReponseDto(1L, "CLIENT", "created");
+        assertThat(dto.id()).isEqualTo(1L);
+        assertThat(dto.nameType()).isEqualTo("CLIENT");
+        assertThat(dto.message()).isEqualTo("created");
+    }
 }

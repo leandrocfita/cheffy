@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
@@ -14,11 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +33,8 @@ import java.util.UUID;
 public class UserController {
 
     private final CreateUserInput createUserInput;
+    private final DeactivateUserInput deactivateUserInput;
+    private final ReactivateUserInput reactivateUserInput;
     private final UpdateUserPasswordInput updateUserPasswordInput;
     private final UpdateUserInput updateUserInput;
     private final AddAddressInput addAddressInput;
@@ -40,6 +42,8 @@ public class UserController {
     private final RemoveAddressInput removeAddress;
     private final ListAllUsersInput listAllUsersInput;
     private final FindUserByIdInput findUserByIdInput;
+    private final FindUserByNameInput findUserByNameInput;
+
     private final UserWebMapper mapper;
 
 
@@ -47,16 +51,23 @@ public class UserController {
     public UserController(
             UserWebMapper mapper,
             CreateUserInput createUserInput,
+            DeactivateUserInput deactivateUserInput,
+            ReactivateUserInput reactivateUserInput,
             UpdateUserPasswordInput updateUserPasswordInput,
             UpdateUserInput updateUserInput,
             AddAddressInput addAddressInput,
             UpdateAddressInput updateAddressInput,
             RemoveAddressInput removeAddress,
             ListAllUsersInput listAllUsersInput,
-            FindUserByIdInput findUserByIdInput)
+            FindUserByIdInput findUserByIdInput,
+            FindUserByNameInput findUserByNameInput)
+
+
     {
         this.updateUserPasswordInput = updateUserPasswordInput;
         this.createUserInput = createUserInput;
+        this.deactivateUserInput = deactivateUserInput;
+        this.reactivateUserInput = reactivateUserInput;
         this.updateUserInput = updateUserInput;
         this.mapper = mapper;
         this.updateAddressInput = updateAddressInput;
@@ -64,6 +75,7 @@ public class UserController {
         this.removeAddress = removeAddress;
         this.listAllUsersInput = listAllUsersInput;
         this.findUserByIdInput = findUserByIdInput;
+        this.findUserByNameInput = findUserByNameInput;
     }
 
     @PostMapping
@@ -131,6 +143,40 @@ public class UserController {
         log.info("UserController.updateUser - START - Update user");
         updateUserInput.execute(id, mapper.toCommand(userUpdateDTO));
         log.info("UserController.updateUser - END - User updated [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    @Operation(summary = "Desativar usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> deactivateUser(@PathVariable final UUID id) {
+        log.info("UserController.deactivateUser - START - Deactivate user");
+        deactivateUserInput.execute(id);
+        log.info("UserController.deactivateUser - END - User deactivated [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/reactivate")
+    @Operation(summary = "Reativa usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuário reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> reactivateUser(@PathVariable final UUID id) {
+        log.info("UserController.reactivateUser - START - Reactivate user");
+        reactivateUserInput.execute(id);
+        log.info("UserController.reactivateUser - END - User reactivated [{}]", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -223,13 +269,20 @@ public class UserController {
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
 
-        log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]", page, size, sortBy, direction);
+        log.info("UserController.listAllUsers - START - Listing users [page={}, size={}, sortBy={}, direction={}]",
+                page, size, sortBy, direction);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
 
-        Page<UserQueryPort> users = listAllUsersInput.execute(pageable);
+        PageRequest pageRequest  = PageRequest.of(page, size, sortBy, sortDirection);
 
-        log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]", users.getNumberOfElements(), page);
+
+        PageResult<UserQueryPort> users = listAllUsersInput.execute(pageRequest);
+
+        log.info("UserController.listAllUsers - END - Found [{}] users in page [{}]",
+                users.numberOfElements(), page);
 
         return ResponseEntity.ok(users);
     }
@@ -260,4 +313,45 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
+    @GetMapping(params = "name")
+    @Operation(
+            summary = "Buscar usuários por nome",
+            description = "Retorna lista paginada de usuários filtrados pelo nome"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuários encontrados com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ),
+            @ApiResponse(responseCode = "400", description = "Parâmetro inválido"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<?> searchUsersByName(
+            @RequestParam @NotBlank String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+
+        log.info("UserController.searchUsersByName - START - Searching users [name={}, page={}, size={}, sortBy={}, direction={}]",
+                name, page, size, sortBy, direction);
+
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
+
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy, sortDirection);
+
+        PageResult<UserQueryPort> users = findUserByNameInput.execute(name, pageRequest);
+
+        log.info("UserController.searchUsersByName - END - Found [{}] users with name [{}]",
+                users.numberOfElements(), name);
+
+        return ResponseEntity.ok(users);
+    }
+
 }

@@ -1,9 +1,11 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.application.user.mapper.UserQueryMapper;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.application.user.usecase.*;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
+import br.com.fiap.cheffy.infrastructure.bean_config.ProfileUseCaseConfig;
 import br.com.fiap.cheffy.domain.user.port.input.AuthenticationManagerPort;
 import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.user.port.input.TokenGeneratorPort;
@@ -30,6 +32,8 @@ class BeanConfigTest {
     private TokenGeneratorPort tokenGenerator;
     @Mock
     private UserQueryMapper userQueryMapper;
+    @Mock
+    private RestaurantRepository restaurantRepository;
 
     @Test
     void userUseCaseConfigCreatesBeans() {
@@ -37,6 +41,9 @@ class BeanConfigTest {
 
         UserServiceHelper helper = config.userServiceHelper(userRepository, userQueryMapper);
         assertThat(helper).isNotNull();
+
+        DeactivateUserUseCase deactivate = config.deactivateUserUseCase(userRepository, restaurantRepository);
+        assertThat(deactivate).isNotNull();
 
         CreateUserUseCase createUser = config.createUserUseCase(userRepository, profileRepository, passwordEncoder);
         assertThat(createUser).isNotNull();
@@ -55,5 +62,23 @@ class BeanConfigTest {
 
         LoginUseCase login = config.loginUseCase(authManager, tokenGenerator);
         assertThat(login).isNotNull();
+
+        UpdateUserPasswordUseCase updatePassword = config.updateUserPasswordUseCase(userRepository, passwordEncoder);
+        assertThat(updatePassword).isNotNull();
+
+        ListAllUsersUseCase listAll = config.listAllUsersUseCase(userRepository, userQueryMapper);
+        assertThat(listAll).isNotNull();
+
+        FindUserByIdUseCase findById = config.findUserByIdUseCase(userRepository, userQueryMapper);
+        assertThat(findById).isNotNull();
+
+        ReactivateUserUseCase reactivate = config.reactivateUserUseCase(userRepository);
+        assertThat(reactivate).isNotNull();
+    }
+
+    @Test
+    void profileUseCaseConfigCreatesBeans() {
+        ProfileUseCaseConfig config = new ProfileUseCaseConfig();
+        assertThat(config.createProfileUseCase(profileRepository)).isNotNull();
     }
 }

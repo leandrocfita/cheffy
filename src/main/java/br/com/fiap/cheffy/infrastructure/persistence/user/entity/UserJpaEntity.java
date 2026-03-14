@@ -47,11 +47,19 @@ public class UserJpaEntity {
     private Set<ProfileJpaEntity> profiles = new HashSet<>();
 
     @OneToMany(
-            mappedBy = "user",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "user_address",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id")
     )
     private Set<AddressJpaEntity> addresses = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean active;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

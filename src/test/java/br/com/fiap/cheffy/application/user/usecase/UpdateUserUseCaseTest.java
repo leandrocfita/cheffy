@@ -34,7 +34,7 @@ class UpdateUserUseCaseTest {
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
-        existingUser = new User(userId, "John Doe", "john@email.com", "john.doe", "encodedPass");
+        existingUser = new User(userId, "John Doe", "john@email.com", "john.doe", "encodedPass", true);
     }
 
     @Test
@@ -90,7 +90,7 @@ class UpdateUserUseCaseTest {
     @Test
     void shouldThrowInvalidOperationExceptionWhenEmailAlreadyExists() {
         UUID otherUserId = UUID.randomUUID();
-        User otherUser = new User(otherUserId, "Other", "new@email.com", "other", "pass");
+        User otherUser = new User(otherUserId, "Other", "new@email.com", "other", "pass", true);
         UserCommandPort command = new UserCommandPort(null, "new@email.com", null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
@@ -103,7 +103,7 @@ class UpdateUserUseCaseTest {
     @Test
     void shouldThrowInvalidOperationExceptionWhenLoginAlreadyExists() {
         UUID otherUserId = UUID.randomUUID();
-        User otherUser = new User(otherUserId, "Other", "other@email.com", "newlogin", "pass");
+        User otherUser = new User(otherUserId, "Other", "other@email.com", "newlogin", "pass", true);
         UserCommandPort command = new UserCommandPort(null, null, "newlogin", null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));

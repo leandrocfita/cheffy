@@ -29,7 +29,7 @@ class JwtServiceTest {
         
         UUID userId = UUID.randomUUID();
         user = new SpringAuthenticatedUser(userId, "testuser", "pass", 
-            Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")));
+            Set.of(new SimpleGrantedAuthority("ROLE_CLIENT")), true);
     }
 
     @Test

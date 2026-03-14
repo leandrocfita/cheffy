@@ -14,6 +14,7 @@ public class SpringAuthenticatedUser implements UserDetails {
     private final String userName;
     private final String password;
     private final Set<? extends GrantedAuthority> authorities;
+    private final boolean enabled;
 
     @Override
     public String getPassword() {
@@ -42,6 +43,6 @@ public class SpringAuthenticatedUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return enabled;
     }
 }
