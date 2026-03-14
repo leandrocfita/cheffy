@@ -1,8 +1,8 @@
 package br.com.fiap.cheffy.domain.profile.port.output;
 
+import br.com.fiap.cheffy.application.profile.dto.PageInputPort;
+import br.com.fiap.cheffy.application.profile.dto.PageOutputPort;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -14,5 +14,5 @@ public interface ProfileRepository {
 
     Long save(Profile profile);
 
-    Page<Profile> findAll(Pageable pageable);
+    PageOutputPort<Profile> findAll(PageInputPort inputPort);
 }
