@@ -155,6 +155,10 @@ public class Restaurant {
                 user,
                 menu);
 
+//        menu.getItems().forEach(item -> {
+//            restaurant.addFoodItem(item);
+//        });
+
         return restaurant;
     }
 

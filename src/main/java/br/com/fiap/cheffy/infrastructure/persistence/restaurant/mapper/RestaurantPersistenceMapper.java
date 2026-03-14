@@ -12,6 +12,7 @@ import br.com.fiap.cheffy.infrastructure.persistence.user.mapper.UserPersistence
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,8 +47,8 @@ public class RestaurantPersistenceMapper {
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
-            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
         }
+            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
 
         if (restaurant.getUser() != null) {
             entity.setUser(userMapper.toJpa(restaurant.getUser()));
@@ -70,12 +71,11 @@ public class RestaurantPersistenceMapper {
 
         Set<FoodItem> foodItems = entity.getFoodItems()
                 .stream()
-                .map(foodItemMapper::toDomain)
+                .map(f -> foodItemMapper.toDomain(f))
                 .collect(Collectors.toSet());
 
-        Menu menu = new Menu(foodItems);
 
-        return Restaurant.reconstitute(
+        Restaurant reconstitute = Restaurant.reconstitute(
                 entity.getId(),
                 entity.getName(),
                 entity.getCnpj(),
@@ -87,8 +87,11 @@ public class RestaurantPersistenceMapper {
                 entity.getActive(),
                 address,
                 owner,
-                menu
+                new Menu(foodItems)
         );
+
+
+        return reconstitute;
     }
 
 }

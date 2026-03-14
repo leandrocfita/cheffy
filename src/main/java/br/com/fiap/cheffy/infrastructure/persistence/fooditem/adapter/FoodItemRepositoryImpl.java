@@ -5,6 +5,8 @@ import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper.FoodItemPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.repository.FoodItemJpaRepository;
+import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
+import br.com.fiap.cheffy.infrastructure.persistence.restaurant.mapper.RestaurantPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -20,16 +22,22 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
 
     private final FoodItemPersistenceMapper foodItemPersistenceMapper;
     private final FoodItemJpaRepository foodItemJpaRepository;
+    private final RestaurantPersistenceMapper restaurantPersistenceMapper;
 
 
     @Override
     public FoodItem save(FoodItem foodItem) {
 
-        FoodItemJpaEntity transformedObject = foodItemPersistenceMapper.toJpa(foodItem);
+        RestaurantJpaEntity restaurantJpaEntity = restaurantPersistenceMapper.toJpa(foodItem.getRestaurant());
+
+        FoodItemJpaEntity transformedObject = foodItemPersistenceMapper.toJpa(foodItem,  restaurantJpaEntity);
 
          var savedEntity = foodItemJpaRepository.save(transformedObject);
 
-        return foodItemPersistenceMapper.toDomain(savedEntity);
+        FoodItem saved = foodItemPersistenceMapper.toDomain(savedEntity);
+        saved.setRestaurant(foodItem.getRestaurant());
+
+        return saved;
     }
 
     @Override
