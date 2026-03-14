@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.persistence.profile.adapter;
 
+import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.entity.ProfileJpaEntity;
@@ -10,10 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,5 +71,20 @@ class ProfileRepositoryImplTest {
         Long result = profileRepository.save(profile);
 
         assertThat(result).isEqualTo(1L);
+    }
+
+    @Test
+    void findAll() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        ProfileJpaEntity entity = new ProfileJpaEntity();
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        Page<ProfileJpaEntity> springPage = new PageImpl<>(List.of(entity));
+        when(jpaRepository.findAll(any(Pageable.class))).thenReturn(springPage);
+        when(mapper.toDomain(entity)).thenReturn(profile);
+
+        var result = profileRepository.findAll(pageRequest);
+
+        assertThat(result.content()).hasSize(1);
+        assertThat(result.content().getFirst()).isEqualTo(profile);
     }
 }

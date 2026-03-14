@@ -1,6 +1,9 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.application.profile.dto.*;
+import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.profile.port.input.ListAllProfilesInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
@@ -13,13 +16,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -28,13 +29,13 @@ import java.util.List;
 public class ProfileController {
 
     private final ProfileCreateInput profileCreateInput;
-    private final ListAllProfilesInput listAllProfilesInput;
     private final ProfileUpdateInput profileUpdateInput;
+    private final ListAllProfilesInput listAllProfilesInput;
 
     public ProfileController(
             ProfileCreateInput profileCreateInput,
-            ListAllProfilesInput listAllProfilesInput,
-            ProfileUpdateInput profileUpdateInput) {
+            ProfileUpdateInput profileUpdateInput,
+        ListAllProfilesInput listAllProfilesInput) {
         this.profileCreateInput = profileCreateInput;
         this.profileUpdateInput = profileUpdateInput;
         this.listAllProfilesInput = listAllProfilesInput;
@@ -90,21 +91,22 @@ public class ProfileController {
     @Operation(summary = "Listar todos os perfis")
     @ApiResponse(responseCode = "200", description = "Lista de perfis retornada com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro interno")
-    public ResponseEntity<PageOutputPort<ProfileQueryPort>> listAllProfiles(
+    public ResponseEntity<?> listAllProfiles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "type") String sortBy,
-            @RequestParam(defaultValue = "ASC") String direction) {
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         log.info("ProfileController.listAllProfiles - START - Listing profiles [page={}, size={}, sortBy={}, direction={}]", page, size, sortBy, direction);
 
-        PageInputPort request = new PageInputPort(
-                page,
-                size,
-                new SortRequestPort(sortBy, SortRequestPort.Direction.valueOf(direction.toUpperCase())));
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
 
-        PageOutputPort<ProfileQueryPort> profiles = listAllProfilesInput.execute(request);
+        PageRequest pageRequest  = PageRequest.of(page, size, sortBy, sortDirection);
 
-        log.info("ProfileController.listAllProfiles - END - Found [{}] profiles in page [{}]", profiles.getTotalElements(), page);
+        PageResult<ProfileQueryPort> profiles = listAllProfilesInput.execute(pageRequest);
+
+        log.info("ProfileController.listAllProfiles - END - Found [{}] profiles in page [{}]", profiles.numberOfElements(), page);
 
         return ResponseEntity.ok(profiles);
     }
