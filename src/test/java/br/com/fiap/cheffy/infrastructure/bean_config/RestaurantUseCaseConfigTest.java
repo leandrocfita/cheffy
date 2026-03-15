@@ -42,7 +42,8 @@ class RestaurantUseCaseConfigTest {
         RegisterRestaurantUseCase useCase = config.registerRestarantUseCase(
                 userServiceHelper,
                 restaurantRepository,
-                profileRepository
+                profileRepository,
+                restaurantServiceHelper
         );
 
         assertThat(useCase).isNotNull();

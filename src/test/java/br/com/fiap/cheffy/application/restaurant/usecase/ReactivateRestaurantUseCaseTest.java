@@ -34,8 +34,7 @@ class ReactivateRestaurantUseCaseTest {
         UUID userId = UUID.randomUUID();
         Restaurant restaurant = mock(Restaurant.class);
 
-        when(restaurantServiceHelper.getRestaurantOrFail(id)).thenReturn(restaurant);
-        when(restaurant.isOwnedByUser(userId)).thenReturn(true);
+        when(restaurantServiceHelper.getRestaurantOrFailValidatingOwnership(id, userId)).thenReturn(restaurant);
 
         useCase.execute(id, userId);
 
@@ -48,7 +47,7 @@ class ReactivateRestaurantUseCaseTest {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
 
-        when(restaurantServiceHelper.getRestaurantOrFail(id))
+        when(restaurantServiceHelper.getRestaurantOrFailValidatingOwnership(id, userId))
                 .thenThrow(new RestaurantNotFoundException(
                         br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION, id));
 
@@ -60,13 +59,11 @@ class ReactivateRestaurantUseCaseTest {
     void executeThrowsWhenUserDoesNotOwnRestaurant() {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        Restaurant restaurant = mock(Restaurant.class);
-
-        when(restaurantServiceHelper.getRestaurantOrFail(id)).thenReturn(restaurant);
-        when(restaurant.isOwnedByUser(userId)).thenReturn(false);
+        when(restaurantServiceHelper.getRestaurantOrFailValidatingOwnership(id, userId))
+                .thenThrow(new RestaurantOperationNotAllowedException(
+                        br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE));
 
         assertThrows(RestaurantOperationNotAllowedException.class, () -> useCase.execute(id, userId));
-        verify(restaurant, never()).reactivate();
         verify(restaurantServiceHelper, never()).saveRestaurant(any());
     }
 }

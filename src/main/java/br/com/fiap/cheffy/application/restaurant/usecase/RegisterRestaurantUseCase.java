@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.restaurant.usecase;
 
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
+import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
@@ -11,10 +12,8 @@ import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
-import br.com.fiap.cheffy.shared.exception.InvalidDataException;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
-import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.UUID;
 
@@ -25,15 +24,17 @@ public class RegisterRestaurantUseCase implements RegisterRestaurantInput {
     private final UserServiceHelper userServiceHelper;
     private final RestaurantRepository restaurantRepository;
     private final ProfileRepository profileRepository;
+    private final RestaurantServiceHelper restaurantServiceHelper;
 
     public RegisterRestaurantUseCase(
             UserServiceHelper userServiceHelper,
             RestaurantRepository restaurantRepository,
-            ProfileRepository profileRepository
+            ProfileRepository profileRepository, RestaurantServiceHelper restaurantServiceHelper
     ) {
         this.userServiceHelper = userServiceHelper;
         this.restaurantRepository = restaurantRepository;
         this.profileRepository = profileRepository;
+        this.restaurantServiceHelper = restaurantServiceHelper;
     }
 
     @Override
@@ -97,7 +98,7 @@ public class RegisterRestaurantUseCase implements RegisterRestaurantInput {
     }
 
     private Restaurant createRestaurantDomain(RestaurantCommandPort restaurant, User user) {
-        ZoneId zoneId = extractZoneId(restaurant);
+        ZoneId zoneId = restaurantServiceHelper.extractZoneId(restaurant.zoneId());
         return restaurant.open24hours() ? Restaurant.create24h(
                 restaurant.name(),
                 restaurant.cnpj(),
@@ -115,11 +116,4 @@ public class RegisterRestaurantUseCase implements RegisterRestaurantInput {
         );
     }
 
-    private static ZoneId extractZoneId(RestaurantCommandPort restaurant) {
-        try {
-            return ZoneId.of(restaurant.zoneId());
-        } catch (DateTimeException ex) {
-            throw new InvalidDataException(ZONE_ID_DO_NOT_EXIST);
-        }
-    }
 }

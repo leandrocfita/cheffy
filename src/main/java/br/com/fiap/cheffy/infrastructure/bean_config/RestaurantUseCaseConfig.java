@@ -25,12 +25,14 @@ public class RestaurantUseCaseConfig {
     public RegisterRestaurantUseCase registerRestarantUseCase(
             UserServiceHelper userServiceHelper,
             RestaurantRepository restaurantRepository,
-            ProfileRepository profileRepository
+            ProfileRepository profileRepository,
+            RestaurantServiceHelper restaurantServiceHelper
     ) {
         return new RegisterRestaurantUseCase(
                 userServiceHelper,
                 restaurantRepository,
-                profileRepository
+                profileRepository,
+                restaurantServiceHelper
         );
 
     }

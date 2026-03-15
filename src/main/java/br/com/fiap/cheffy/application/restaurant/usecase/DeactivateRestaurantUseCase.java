@@ -20,12 +20,7 @@ public class DeactivateRestaurantUseCase implements DeactivateRestaurantInput {
 
     @Override
     public void execute(UUID id, UUID userId) {
-        Restaurant restaurant = restaurantServiceHelper.getRestaurantOrFail(id);
-
-        if (!restaurant.isOwnedByUser(userId)) {
-            throw new RestaurantOperationNotAllowedException(RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE);
-        }
-
+        Restaurant restaurant = restaurantServiceHelper.getRestaurantOrFailValidatingOwnership(id, userId);
         restaurant.deactivate();
         restaurantServiceHelper.saveRestaurant(restaurant);
     }
