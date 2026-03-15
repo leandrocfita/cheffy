@@ -11,9 +11,4 @@ public interface ProfileJpaRepository extends JpaRepository<ProfileJpaEntity, Lo
 
     Optional<ProfileJpaEntity> findByType(String type);
 
-    Optional<ProfileJpaEntity> findById(Long id);
-
-    ProfileJpaEntity save(ProfileJpaEntity entity);
-
-
 }
