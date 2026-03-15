@@ -47,7 +47,6 @@ public class CreateFoodItemUseCase implements CreateFoodItemInput {
             throw new FoodItemAlreadyExistInRestaurant(ExceptionsKeys.FOOD_ITEM_ALREADY_EXIST, foodItemCommandPort.name());
         }
 
-
         logger.info(String.format("Convertendo o foodItemCommandPort para FoodItem | Flow: %s", FlowConstants.TRIAGE_CREATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
 
         FoodItem createdFoodItem =  FoodItem.create(foodItemCommandPort.name(), foodItemCommandPort.description(), foodItemCommandPort.price(), foodItemCommandPort.photoKey(), foodItemCommandPort.deliveryAvailable(), foodItemCommandPort.available(), restaurant);

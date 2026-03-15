@@ -39,7 +39,7 @@ public class UserPersistenceMapper {
 
         jpa.setAddresses(
                 user.getAddresses().stream()
-                        .map(address -> addressMapper.toJpa(address, jpa))
+                        .map(addressMapper::toJpa)
                         .collect(Collectors.toSet())
         );
 

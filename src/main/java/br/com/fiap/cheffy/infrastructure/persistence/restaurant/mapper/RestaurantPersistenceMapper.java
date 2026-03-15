@@ -46,7 +46,7 @@ public class RestaurantPersistenceMapper {
         entity.setActive(restaurant.isActive());
 
         if (restaurant.getAddress() != null) {
-            entity.setAddress(addressMapper.toJpa(restaurant.getAddress(), null));
+            entity.setAddress(addressMapper.toJpa(restaurant.getAddress()));
         }
 
         if (restaurant.getUser() != null) {
@@ -70,12 +70,11 @@ public class RestaurantPersistenceMapper {
 
         Set<FoodItem> foodItems = entity.getFoodItems()
                 .stream()
-                .map(foodItemMapper::toDomain)
+                .map(f -> foodItemMapper.toDomain(f))
                 .collect(Collectors.toSet());
 
-        Menu menu = new Menu(foodItems);
 
-        return Restaurant.reconstitute(
+        Restaurant reconstitute = Restaurant.reconstitute(
                 entity.getId(),
                 entity.getName(),
                 entity.getCnpj(),
@@ -87,8 +86,11 @@ public class RestaurantPersistenceMapper {
                 entity.getActive(),
                 address,
                 owner,
-                menu
+                new Menu(foodItems)
         );
+
+
+        return reconstitute;
     }
 
 }

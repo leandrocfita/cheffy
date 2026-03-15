@@ -1,6 +1,5 @@
 package br.com.fiap.cheffy.infrastructure.persistence.address.entity;
 
-import br.com.fiap.cheffy.infrastructure.persistence.user.entity.UserJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
@@ -31,15 +30,6 @@ class AddressJpaEntityTest {
         assertThat(entity.getStateProvince()).isEqualTo("ST");
         assertThat(entity.getAddressLine()).isEqualTo("Apt 1");
         assertThat(entity.getMain()).isTrue();
-    }
-
-    @Test
-    void setAndGetUser() {
-        AddressJpaEntity address = new AddressJpaEntity();
-        UserJpaEntity user = new UserJpaEntity();
-        address.setUser(user);
-
-        assertThat(address.getUser()).isEqualTo(user);
     }
 
     @Test
