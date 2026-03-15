@@ -1,6 +1,9 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.profile.port.input.FindProfileByInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
@@ -29,6 +32,9 @@ class ProfileControllerTest {
 
     @Mock
     private ProfileUpdateInput profileUpdateInput;
+
+    @Mock
+    private FindProfileByInput findProfileByInput;
 
     @InjectMocks
     private ProfileController profileController;
@@ -74,5 +80,17 @@ class ProfileControllerTest {
         verify(profileUpdateInput).updateByName(eq(name), any(ProfileInputPort.class));
         var body =  response.getBody();
         assertThat(body).isNull();
+    }
+
+    @Test
+    void findUserByIdReturnsOk() {
+        Long id = 1L;
+        ProfileQueryPort queryPort = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
+        when(findProfileByInput.execute(any())).thenReturn(queryPort);
+
+        var response = profileController.findProfileById(id);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(queryPort);
     }
 }

@@ -1,21 +1,27 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
+import br.com.fiap.cheffy.domain.profile.port.input.FindProfileByInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
 import br.com.fiap.cheffy.presentation.dto.ProfileInputDto;
 import br.com.fiap.cheffy.presentation.mapper.ProfileWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,10 +31,12 @@ public class ProfileController {
 
     private final ProfileCreateInput profileCreateInput;
     private final ProfileUpdateInput profileUpdateInput;
+    private final FindProfileByInput findProfileByIdInput;
 
-    public ProfileController(ProfileCreateInput profileCreateInput, ProfileUpdateInput profileUpdateInput) {
+    public ProfileController(ProfileCreateInput profileCreateInput, ProfileUpdateInput profileUpdateInput, FindProfileByInput findProfileByIdInput) {
         this.profileCreateInput = profileCreateInput;
         this.profileUpdateInput = profileUpdateInput;
+        this.findProfileByIdInput = findProfileByIdInput;
     }
 
     @PostMapping("")
@@ -41,12 +49,12 @@ public class ProfileController {
     })
     public ResponseEntity<Object> createProfile(@RequestBody @Valid ProfileInputDto profileInputDto) {
 
-            ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
-            Long id = profileCreateInput.create(profileInputPort);
+        ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
+        Long id = profileCreateInput.create(profileInputPort);
 
-            ProfileCreateReponseDto profileCreateReponseDto = new ProfileCreateReponseDto(id, profileInputDto.profileNameType(), "Profile created successfully");
+        ProfileCreateReponseDto profileCreateReponseDto = new ProfileCreateReponseDto(id, profileInputDto.profileNameType(), "Profile created successfully");
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(profileCreateReponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(profileCreateReponseDto);
     }
 
     @PutMapping("/{id}")
@@ -75,5 +83,32 @@ public class ProfileController {
         ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
         profileUpdateInput.updateByName(name, profileInputPort);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Buscar perfil por ID",
+            description = "Retorna os dados completos de um perfil específico"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Perfil encontrado com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<ProfileQueryPort> findProfileById(@PathVariable Long id) {
+        log.info("ProfileController.findProfileById - START - Finding profile by ID [{}]", id);
+
+        var profile = findProfileByIdInput.execute(id);
+
+        log.info("ProfileController.findProfileById - END - Profile found: [{}]", profile);
+        MDC.clear();
+
+        return ResponseEntity.ok(profile);
     }
 }
