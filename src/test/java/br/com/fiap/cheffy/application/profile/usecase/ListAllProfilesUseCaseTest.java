@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ListAllProfileUseCaseTest {
+class ListAllProfilesUseCaseTest {
 
     @Mock
     private ProfileRepository profileRepository;
@@ -29,7 +29,7 @@ class ListAllProfileUseCaseTest {
     @Mock
     private ProfileQueryMapper mapper;
 
-    private ListAllProfileUseCase useCase;
+    private ListAllProfilesUseCase useCase;
 
     private int page;
     private int size;
@@ -44,7 +44,7 @@ class ListAllProfileUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new ListAllProfileUseCase(profileRepository, mapper);
+        useCase = new ListAllProfilesUseCase(profileRepository, mapper);
 
         this.page = 0;
         this.size = 10;

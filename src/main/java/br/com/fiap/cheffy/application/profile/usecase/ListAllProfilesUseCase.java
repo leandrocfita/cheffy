@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public class ListAllProfileUseCase implements ListAllProfilesInput {
+public class ListAllProfilesUseCase implements ListAllProfilesInput {
 
     private final ProfileRepository profileRepository;
     private final ProfileQueryMapper mapper;
 
-    public ListAllProfileUseCase(ProfileRepository profileRepository, ProfileQueryMapper mapper) {
+    public ListAllProfilesUseCase(ProfileRepository profileRepository, ProfileQueryMapper mapper) {
         this.profileRepository = profileRepository;
         this.mapper = mapper;
     }
