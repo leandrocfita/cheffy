@@ -1,6 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.profile.mapper.ProfileQueryMapper;
 import br.com.fiap.cheffy.application.profile.usecase.CreateProfileUseCase;
+import br.com.fiap.cheffy.application.profile.usecase.FindProfileByIdUseCase;
 import br.com.fiap.cheffy.application.profile.usecase.UpdateProfileUseCase;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +20,12 @@ public class ProfileUseCaseConfig {
     @Bean
     UpdateProfileUseCase updateProfileUseCase(ProfileRepository profileRepository) {
         return new UpdateProfileUseCase(profileRepository);
+    }
+
+    @Bean
+    public FindProfileByIdUseCase findProfileByIdUseCase(
+            ProfileRepository profileRepository,
+            ProfileQueryMapper mapper) {
+        return new FindProfileByIdUseCase(profileRepository, mapper);
     }
 }
