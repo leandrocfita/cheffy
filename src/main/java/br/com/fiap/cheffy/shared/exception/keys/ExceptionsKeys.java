@@ -48,5 +48,6 @@ public enum ExceptionsKeys {
     RESTAURANT_DOES_NOT_EXIST,
 
     //FoodItem
-    FOOD_ITEM_ALREADY_EXIST
+    FOOD_ITEM_ALREADY_EXIST,
+    FOOD_ITEM_NOT_FOUND_EXCEPTION
 }
