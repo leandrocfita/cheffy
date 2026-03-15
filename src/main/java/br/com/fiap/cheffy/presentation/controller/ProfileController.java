@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "Profile", description = "Operations related to user profiles")
+@Tag(name = "Profile", description = "Operações relacionadas aos perfis de usuário")
 public class ProfileController {
 
     private final ProfileCreateInput profileCreateInput;
@@ -35,19 +35,22 @@ public class ProfileController {
     public ProfileController(
             ProfileCreateInput profileCreateInput,
             ProfileUpdateInput profileUpdateInput,
-        ListAllProfilesInput listAllProfilesInput) {
+            ListAllProfilesInput listAllProfilesInput) {
         this.profileCreateInput = profileCreateInput;
         this.profileUpdateInput = profileUpdateInput;
         this.listAllProfilesInput = listAllProfilesInput;
     }
 
     @PostMapping("")
-    @Operation(summary = "Create a new profile", description = "Creates a new user profile based on the provided type")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Profile created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "409", description = "Profile already exists, no duplicatas wil be accepted"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(
+            summary = "Criar novo perfil",
+            description = "Criar um novo perfil de usuário com base no tipo fornecido"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Perfil criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
+            @ApiResponse(responseCode = "409", description = "Perfil já existente, duplicatas não são aceitas"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     public ResponseEntity<Object> createProfile(@RequestBody @Valid ProfileInputDto profileInputDto) {
 
@@ -60,12 +63,15 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update profile by ID", description = "Updates an existing profile type identified by its ID")
+    @Operation(
+            summary = "Atualizar perfil por ID",
+            description = "Atualiza um tipo de perfil existente identificado pelo seu ID"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Profile not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "Perfil atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     public ResponseEntity<Void> updateProfileById(@PathVariable Long id, @RequestBody @Valid ProfileInputDto profileInputDto) {
         ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
@@ -74,12 +80,15 @@ public class ProfileController {
     }
 
     @PutMapping("/name/{name}")
-    @Operation(summary = "Update profile by Name", description = "Updates an existing profile type identified by its Name")
+    @Operation(
+            summary = "Atualizar perfil por nome",
+            description = "Atualiza um tipo de perfil existente identificado pelo seu nome"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Profile not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "Perfil atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     public ResponseEntity<Void> updateProfileByName(@PathVariable String name, @RequestBody @Valid ProfileInputDto profileInputDto) {
         ProfileInputPort profileInputPort = ProfileWebMapper.toProfileInputCommandPort(profileInputDto);
@@ -102,7 +111,7 @@ public class ProfileController {
                 ? PageRequest.SortDirection.DESC
                 : PageRequest.SortDirection.ASC;
 
-        PageRequest pageRequest  = PageRequest.of(page, size, sortBy, sortDirection);
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy, sortDirection);
 
         PageResult<ProfileQueryPort> profiles = listAllProfilesInput.execute(pageRequest);
 
