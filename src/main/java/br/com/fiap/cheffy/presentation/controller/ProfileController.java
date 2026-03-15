@@ -46,7 +46,7 @@ public class ProfileController {
             summary = "Criar novo perfil",
             description = "Criar um novo perfil de usuário com base no tipo fornecido"
     )
-    @ApiResponses({
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Perfil criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "409", description = "Perfil já existente, duplicatas não são aceitas"),
@@ -100,7 +100,7 @@ public class ProfileController {
     @Operation(summary = "Listar todos os perfis")
     @ApiResponse(responseCode = "200", description = "Lista de perfis retornada com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro interno")
-    public ResponseEntity<?> listAllProfiles(
+    public ResponseEntity<PageResult<ProfileQueryPort>> listAllProfiles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "type") String sortBy,

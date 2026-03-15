@@ -87,7 +87,7 @@ class ProfileControllerTest {
 
     @Test
     void listAllProfilesReturnsOk() {
-        ProfileQueryPort queryPort = new ProfileQueryPort(1L, ProfileType.CLIENT.getType());
+        ProfileQueryPort queryPort = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
         var profilePage = PageResult.of(List.of(queryPort), 0, 10, 1);
         when(listAllProfilesInput.execute(any())).thenReturn(profilePage);
 

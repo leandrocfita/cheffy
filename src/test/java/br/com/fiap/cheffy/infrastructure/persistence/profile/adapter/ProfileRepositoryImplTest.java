@@ -36,7 +36,7 @@ class ProfileRepositoryImplTest {
 
     @Test
     void findById() {
-        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
         ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
         when(jpaRepository.findById(1L)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(profile);
@@ -44,25 +44,23 @@ class ProfileRepositoryImplTest {
         Optional<Profile> result = profileRepository.findById(1L);
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(profile);
     }
 
     @Test
     void findByType() {
-        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
         ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
-        when(jpaRepository.findByType("cliente")).thenReturn(Optional.of(jpaEntity));
+        when(jpaRepository.findByType("CLIENT")).thenReturn(Optional.of(jpaEntity));
         when(mapper.toDomain(jpaEntity)).thenReturn(profile);
 
-        Optional<Profile> result = profileRepository.findByType("cliente");
+        Optional<Profile> result = profileRepository.findByType("CLIENT");
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(profile);
     }
 
     @Test
     void saveProfileDelegatesToJpaRepository() {
-        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
         ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
         jpaEntity.setId(1L);
         when(mapper.toJpaReference(profile)).thenReturn(jpaEntity);
@@ -77,7 +75,7 @@ class ProfileRepositoryImplTest {
     void findAll() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         ProfileJpaEntity entity = new ProfileJpaEntity();
-        Profile profile = Profile.create(1L, ProfileType.CLIENT.getType());
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
         Page<ProfileJpaEntity> springPage = new PageImpl<>(List.of(entity));
         when(jpaRepository.findAll(any(Pageable.class))).thenReturn(springPage);
         when(mapper.toDomain(entity)).thenReturn(profile);

@@ -49,12 +49,12 @@ class ListAllProfilesUseCaseTest {
         this.page = 0;
         this.size = 10;
 
-        this.firstProfile = createProfile(1L, ProfileType.CLIENT.getType());
-        this.secondProfile = createProfile(2L, ProfileType.OWNER.getType());
+        this.firstProfile = createProfile(1L, ProfileType.CLIENT.name());
+        this.secondProfile = createProfile(2L, ProfileType.OWNER.name());
         this.profiles = Arrays.asList(this.firstProfile, this.secondProfile);
 
-        this.mappedFirstProfile = new ProfileQueryPort(1L, ProfileType.CLIENT.getType());
-        this.mappedSecondProfile = new ProfileQueryPort(2L, ProfileType.OWNER.getType());
+        this.mappedFirstProfile = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
+        this.mappedSecondProfile = new ProfileQueryPort(2L, ProfileType.OWNER.name());
 
     }
 
