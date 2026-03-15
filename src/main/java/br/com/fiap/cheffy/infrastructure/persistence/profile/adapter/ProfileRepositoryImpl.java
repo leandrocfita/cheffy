@@ -23,6 +23,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     private final ProfileJpaRepository profileJpaRepository;
     private final ProfilePersistenceMapper mapper;
 
+    @Override
     public Optional<Profile> findById(Long id) {
         return profileJpaRepository.findById(id)
                 .map(mapper::toDomain);
