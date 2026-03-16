@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface FindFoodItemByIdInput {
 
-    FoodItemQueryPort execute(UUID foodItemId);
+    FoodItemQueryPort execute(UUID restaurantId, UUID foodItemId);
 }

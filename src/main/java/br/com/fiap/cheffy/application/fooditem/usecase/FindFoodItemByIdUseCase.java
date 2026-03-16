@@ -21,8 +21,8 @@ public class FindFoodItemByIdUseCase implements FindFoodItemByIdInput {
     }
 
     @Override
-    public FoodItemQueryPort execute(UUID foodItemId) {
-        FoodItem foodItem = foodItemRepository.findById(foodItemId)
+    public FoodItemQueryPort execute(UUID restaurantId, UUID foodItemId) {
+        FoodItem foodItem = foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)
                 .orElseThrow(() -> new FoodItemNotFoundException(FOOD_ITEM_NOT_FOUND_EXCEPTION, foodItemId));
         return foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem);
     }

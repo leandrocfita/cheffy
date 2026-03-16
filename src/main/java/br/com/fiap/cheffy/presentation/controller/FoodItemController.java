@@ -82,9 +82,10 @@ public class FoodItemController {
     })
     public ResponseEntity<Object> getFoodItemById(@PathVariable UUID restaurantId, @PathVariable UUID foodItemId) {
 
+
         log.info("FoodItemController.getFoodItemById - START - Finding food item [{}] for restaurant [{}]", foodItemId, restaurantId);
 
-        FoodItemQueryPort foodItemQueryPort = findFoodItemByIdInput.execute(foodItemId);
+        FoodItemQueryPort foodItemQueryPort = findFoodItemByIdInput.execute(restaurantId, foodItemId);
 
         log.info("FoodItemController.getFoodItemById - END - Food item found [{}]", foodItemId);
         return ResponseEntity.ok(foodItemQueryPort);

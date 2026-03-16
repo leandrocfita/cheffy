@@ -37,28 +37,28 @@ class FindFoodItemByIdUseCaseTest {
     void shouldReturnFoodItemWhenFoundById() {
         FoodItem foodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
         UUID foodItemId = foodItem.getId();
+        UUID restaurantId = foodItem.getRestaurant().getId();
         FoodItemQueryPort queryPort = mock(FoodItemQueryPort.class);
-        when(foodItemRepository.findById(foodItemId)).thenReturn(Optional.of(foodItem));
+        when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.of(foodItem));
         when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
 
-
-        FoodItemQueryPort executed = useCase.execute(foodItemId);
-
+        FoodItemQueryPort executed = useCase.execute(restaurantId, foodItemId);
 
         assertNotNull(executed);
         assertEquals(queryPort, executed);
-        verify(foodItemRepository, times(1)).findById(foodItemId);
+        verify(foodItemRepository, times(1)).findByIdAndRestaurantId(foodItemId, restaurantId);
         verify(foodItemWebMapper, times(1)).foodItemToFoodItemQueryPort(foodItem);
     }
 
     @Test
     void shouldThrowFoodItemNotFoundExceptionWhenNotFound() {
         UUID foodItemId = UUID.randomUUID();
-        when(foodItemRepository.findById(foodItemId)).thenReturn(Optional.empty());
+        UUID restaurantId = UUID.randomUUID();
+        when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.empty());
 
-        assertThrows(FoodItemNotFoundException.class, () -> useCase.execute(foodItemId));
+        assertThrows(FoodItemNotFoundException.class, () -> useCase.execute(restaurantId, foodItemId));
 
-        verify(foodItemRepository, times(1)).findById(foodItemId);
+        verify(foodItemRepository, times(1)).findByIdAndRestaurantId(foodItemId, restaurantId);
         verify(foodItemWebMapper, never()).foodItemToFoodItemQueryPort(any());
     }
 
@@ -66,11 +66,12 @@ class FindFoodItemByIdUseCaseTest {
     void shouldCorrectlyMapFoodItemWithRestaurant() {
         FoodItem foodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
         UUID foodItemId = foodItem.getId();
+        UUID restaurantId = foodItem.getRestaurant().getId();
         FoodItemQueryPort queryPort = mock(FoodItemQueryPort.class);
-        when(foodItemRepository.findById(foodItemId)).thenReturn(Optional.of(foodItem));
+        when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.of(foodItem));
         when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
 
-        useCase.execute(foodItemId);
+        useCase.execute(restaurantId, foodItemId);
 
         verify(foodItemWebMapper).foodItemToFoodItemQueryPort(argThat(item ->
                 item.getName().equals("Test Food") &&
