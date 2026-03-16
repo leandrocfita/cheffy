@@ -4,7 +4,6 @@ import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
-import br.com.fiap.cheffy.domain.valueobject.Money;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -49,7 +48,7 @@ class ApplicationDtoRestaurantTest {
     void foodItemQueryPortFields() {
         UUID id = UUID.randomUUID();
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort dto = new FoodItemQueryPort(id, "Prato", "Desc",BigDecimal.TEN, "key", restaurantId, true, true, true);
+        FoodItemQueryPort dto = new FoodItemQueryPort(id, "Prato", "Desc", BigDecimal.TEN, "key", restaurantId, true, true, true);
 
         assertThat(dto.id()).isEqualTo(id);
         assertThat(dto.name()).isEqualTo("Prato");
