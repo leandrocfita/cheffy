@@ -1,6 +1,10 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
+import br.com.fiap.cheffy.domain.common.PageResult;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.profile.port.input.ListAllProfilesInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
 import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
@@ -12,14 +16,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
@@ -29,6 +35,9 @@ class ProfileControllerTest {
 
     @Mock
     private ProfileUpdateInput profileUpdateInput;
+
+    @Mock
+    private ListAllProfilesInput listAllProfilesInput;
 
     @InjectMocks
     private ProfileController profileController;
@@ -72,7 +81,19 @@ class ProfileControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(profileUpdateInput).updateByName(eq(name), any(ProfileInputPort.class));
-        var body =  response.getBody();
+        var body = response.getBody();
         assertThat(body).isNull();
+    }
+
+    @Test
+    void listAllProfilesReturnsOk() {
+        ProfileQueryPort queryPort = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
+        var profilePage = PageResult.of(List.of(queryPort), 0, 10, 1);
+        when(listAllProfilesInput.execute(any())).thenReturn(profilePage);
+
+        var response = profileController.listAllProfiles(0, 10, "type", Sort.Direction.ASC);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(listAllProfilesInput, times(1)).execute(any());
     }
 }
