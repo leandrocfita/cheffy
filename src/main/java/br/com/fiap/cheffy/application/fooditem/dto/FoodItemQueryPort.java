@@ -9,7 +9,7 @@ public record FoodItemQueryPort(
         UUID id,
         String name,
         String description,
-        Money price,
+        BigDecimal price,
         String photoKey,
         UUID restaurantId,
         Boolean deliveryAvailable,

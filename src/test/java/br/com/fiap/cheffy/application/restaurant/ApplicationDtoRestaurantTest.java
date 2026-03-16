@@ -34,7 +34,7 @@ class ApplicationDtoRestaurantTest {
     void restaurantQueryPortFields() {
         UUID id = UUID.randomUUID();
         UUID foodId = UUID.randomUUID();
-        FoodItemQueryPort food = new FoodItemQueryPort(foodId, "Prato", "Desc", new Money(BigDecimal.TEN), "key", id, true, true, true);
+        FoodItemQueryPort food = new FoodItemQueryPort(foodId, "Prato", "Desc", BigDecimal.TEN, "key", id, true, true, true);
         AddressCommandPort addr = new AddressCommandPort("St", 1, "City", "12345678", "Hood", "SP", null, true);
         OffsetTime opening = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
         OffsetTime closing = OffsetTime.of(18, 0, 0, 0, ZoneOffset.UTC);
@@ -49,11 +49,11 @@ class ApplicationDtoRestaurantTest {
     void foodItemQueryPortFields() {
         UUID id = UUID.randomUUID();
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort dto = new FoodItemQueryPort(id, "Prato", "Desc",new Money(BigDecimal.TEN), "key", restaurantId, true, true, true);
+        FoodItemQueryPort dto = new FoodItemQueryPort(id, "Prato", "Desc",BigDecimal.TEN, "key", restaurantId, true, true, true);
 
         assertThat(dto.id()).isEqualTo(id);
         assertThat(dto.name()).isEqualTo("Prato");
-        assertThat(dto.price()).isEqualTo(new Money(BigDecimal.TEN));
+        assertThat(dto.price()).isEqualTo(BigDecimal.TEN);
         assertThat(dto.restaurantId()).isEqualTo(restaurantId);
         assertThat(dto.deliveryAvailable()).isTrue();
         assertThat(dto.available()).isTrue();

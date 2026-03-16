@@ -17,7 +17,7 @@ public class FoodItemWebMapper {
                 foodItem.getId(),
                 foodItem.getName(),
                 foodItem.getDescription(),
-                foodItem.getPrice(),
+                foodItem.getPrice().value(),
                 foodItem.getPhotoKey(),
                 foodItem.getRestaurant().getId(),
                 foodItem.isDeliveryAvailable(),

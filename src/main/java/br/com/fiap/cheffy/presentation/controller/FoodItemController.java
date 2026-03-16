@@ -62,7 +62,7 @@ public class FoodItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
 
-
+    @Transactional(readOnly = true)
     @GetMapping("/{foodItemId}")
     @Operation(
             summary = "Buscar item do cardápio por ID",

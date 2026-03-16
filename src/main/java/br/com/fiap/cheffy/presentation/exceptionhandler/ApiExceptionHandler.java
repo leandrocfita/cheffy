@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestau
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantInactiveException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
@@ -318,6 +319,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(RestaurantInactiveException.class)
+    private ResponseEntity<Object> handleRestaurantInactiveException(RestaurantInactiveException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
