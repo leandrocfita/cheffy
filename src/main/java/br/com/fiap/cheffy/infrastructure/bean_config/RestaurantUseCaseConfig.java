@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper
 import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.UpdateRestaurantUseCase;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
@@ -24,12 +25,14 @@ public class RestaurantUseCaseConfig {
     public RegisterRestaurantUseCase registerRestarantUseCase(
             UserServiceHelper userServiceHelper,
             RestaurantRepository restaurantRepository,
-            ProfileRepository profileRepository
+            ProfileRepository profileRepository,
+            RestaurantServiceHelper restaurantServiceHelper
     ) {
         return new RegisterRestaurantUseCase(
                 userServiceHelper,
                 restaurantRepository,
-                profileRepository
+                profileRepository,
+                restaurantServiceHelper
         );
 
     }
@@ -50,5 +53,10 @@ public class RestaurantUseCaseConfig {
         return new ReactivateRestaurantUseCase(
                 restaurantServiceHelper
         );
+    }
+
+    @Bean
+    public UpdateRestaurantUseCase updateRestaurantUseCase(RestaurantServiceHelper restaurantServiceHelper) {
+        return new UpdateRestaurantUseCase(restaurantServiceHelper);
     }
 }
