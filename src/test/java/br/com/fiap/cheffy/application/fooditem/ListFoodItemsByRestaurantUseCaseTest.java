@@ -48,15 +48,15 @@ class ListFoodItemsByRestaurantUseCaseTest {
         PageResult<FoodItem> page = PageResult.of(List.of(activeFoodItem), 0, 10, 1L);
 
         when(restaurantServiceHelper.getRestaurantOrFail(restaurantId)).thenReturn(restaurant);
-        when(foodItemRepository.findAllByRestaurantId(restaurantId, pageRequest)).thenReturn(page);
+        when(foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest)).thenReturn(page);
 
-        PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest);
+        PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest, false);
 
         assertThat(result.content()).hasSize(1);
         assertThat(result.content().get(0).name()).isEqualTo(activeFoodItem.getName());
         assertThat(result.content().get(0).price()).isEqualByComparingTo(activeFoodItem.getPrice().value());
         assertThat(result.totalElements()).isEqualTo(1L);
-        verify(foodItemRepository).findAllByRestaurantId(restaurantId, pageRequest);
+        verify(foodItemRepository).findAllActiveByRestaurantId(restaurantId, pageRequest);
     }
 
     @Test
@@ -77,9 +77,9 @@ class ListFoodItemsByRestaurantUseCaseTest {
         when(restaurantServiceHelper.getRestaurantOrFail(restaurantId)).thenReturn(restaurant);
         when(foodItemRepository.findAllByRestaurantId(restaurantId, pageRequest)).thenReturn(page);
 
-        PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest);
+        PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest, true);
 
-        assertThat(result.content()).hasSize(1);
+        assertThat(result.content()).hasSize(2);
         assertThat(result.content().get(0).name()).isEqualTo(activeItem.getName());
     }
 
@@ -94,7 +94,7 @@ class ListFoodItemsByRestaurantUseCaseTest {
 
         when(restaurantServiceHelper.getRestaurantOrFail(restaurantId)).thenReturn(inactiveRestaurant);
 
-        assertThatThrownBy(() -> useCase.execute(restaurantId, pageRequest))
+        assertThatThrownBy(() -> useCase.execute(restaurantId, pageRequest, false))
                 .isInstanceOf(RestaurantOperationNotAllowedException.class);
 
         verifyNoInteractions(foodItemRepository);
@@ -110,7 +110,7 @@ class ListFoodItemsByRestaurantUseCaseTest {
                 .thenThrow(new br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException(
                         br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_NOT_FOUND_EXCEPTION, restaurantId));
 
-        assertThatThrownBy(() -> useCase.execute(restaurantId, pageRequest))
+        assertThatThrownBy(() -> useCase.execute(restaurantId, pageRequest, false))
                 .isInstanceOf(br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException.class);
 
         verifyNoInteractions(foodItemRepository);

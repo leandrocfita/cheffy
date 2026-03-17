@@ -70,15 +70,15 @@ class FoodItemControllerTest {
         FoodItemQueryPort queryPort = FoodItemTestUtils.createTestFoodItemQueryPort(UUID.randomUUID(), restaurantId);
         PageResult<FoodItemQueryPort> page = PageResult.of(List.of(queryPort), 0, 10, 1L);
 
-        when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class))).thenReturn(page);
+        when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class), eq(false))).thenReturn(page);
 
         ResponseEntity<PageResult<FoodItemQueryPort>> response =
-                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.ASC);
+                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.ASC, false);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().content()).hasSize(1);
-        verify(listFoodItemsByRestaurantInput).execute(eq(restaurantId), any(PageRequest.class));
+        verify(listFoodItemsByRestaurantInput).execute(eq(restaurantId), any(PageRequest.class), eq(false));
     }
 
     @Test
@@ -87,10 +87,10 @@ class FoodItemControllerTest {
         UUID restaurantId = UUID.randomUUID();
         PageResult<FoodItemQueryPort> page = PageResult.of(List.of(), 0, 10, 0L);
 
-        when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class))).thenReturn(page);
+        when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class), eq(false))).thenReturn(page);
 
         ResponseEntity<PageResult<FoodItemQueryPort>> response =
-                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.DESC);
+                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.DESC, false);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
