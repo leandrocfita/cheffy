@@ -3,7 +3,9 @@ package br.com.fiap.cheffy.presentation.controller;
 import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
 import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.UpdateRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
+import br.com.fiap.cheffy.presentation.dto.RestaurantUpdateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,17 +30,19 @@ public class RestaurantController {
     private final RegisterRestaurantInput restaurantInput;
     private final DeactivateRestaurantInput deactivateRestaurantInput;
     private final ReactivateRestaurantInput reactivateRestaurantInput;
+    private final UpdateRestaurantInput updateRestaurantInput;
     private final RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
             DeactivateRestaurantInput deactivateRestaurantInput,
-            ReactivateRestaurantInput reactivateRestaurantInput,
+            ReactivateRestaurantInput reactivateRestaurantInput, UpdateRestaurantInput updateRestaurantInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
         this.deactivateRestaurantInput = deactivateRestaurantInput;
         this.reactivateRestaurantInput = reactivateRestaurantInput;
+        this.updateRestaurantInput = updateRestaurantInput;
         this.mapper = mapper;
     }
 
@@ -111,5 +115,32 @@ public class RestaurantController {
         log.info("RestaurantController.reactivateRestaurant - END - Restaurant reactivated - id: [{}]", id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}")
+    @Operation(
+            summary = "Atualizar dados de um restaurante",
+            description = "Atualiza os dados de um restaurante existente. Somente o proprietário pode atualizar." +
+                    " Restaurantes desativados não podem ser atualizados."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Restaurante atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou malformados"),
+            @ApiResponse(responseCode = "401", description = "Token expirado"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Operação não permitida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> updateRestaurant(
+            @PathVariable final UUID id,
+            @RequestParam final UUID userId,
+            @RequestBody @Valid final RestaurantUpdateDTO restaurantUpdateDTO
+    ) {
+        log.info("RestaurantController.updateRestaurant - START - Update restaurant - id: [{}], userId: [{}]", id, userId);
+        updateRestaurantInput.execute(id, userId, mapper.toUpdateCommand(restaurantUpdateDTO));
+        log.info("RestaurantController.updateRestaurant - END - Restaurant updated - id: [{}]", id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
