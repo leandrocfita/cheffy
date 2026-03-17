@@ -35,8 +35,6 @@ class FindProfileByIdUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        this.useCase = new FindProfileByIdUseCase(repository, mapper);
-
         this.profile = createProfile(1L, ProfileType.CLIENT.name());
         this.mappedProfile = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
     }

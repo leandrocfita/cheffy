@@ -90,15 +90,16 @@ class ProfileControllerTest {
     }
 
     @Test
-    void findUserByIdReturnsOk() {
+    void findProfileByIdReturnsOk() {
         Long id = 1L;
         ProfileQueryPort queryPort = new ProfileQueryPort(1L, ProfileType.CLIENT.name());
-        when(findProfileByInput.execute(any())).thenReturn(queryPort);
+        when(findProfileByInput.execute(eq(id))).thenReturn(queryPort);
 
         var response = profileController.findProfileById(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(queryPort);
+        verify(findProfileByInput).execute(eq(id));
     }
 
     @Test

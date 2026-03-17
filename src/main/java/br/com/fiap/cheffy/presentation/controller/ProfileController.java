@@ -26,8 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -118,18 +116,18 @@ public class ProfileController {
             ),
             @ApiResponse(responseCode = "401", description = "Token expirado"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
     public ResponseEntity<ProfileQueryPort> findProfileById(@PathVariable Long id) {
-        log.info("ProfileController.findProfileById - START - Finding profile by ID [{}]", id);
-
-        var profile = findProfileByIdInput.execute(id);
-
-        log.info("ProfileController.findProfileById - END - Profile found: [{}]", profile);
-        MDC.clear();
-
-        return ResponseEntity.ok(profile);
+        try {
+            log.info("ProfileController.findProfileById - START - Finding profile by ID [{}]", id);
+            var profile = findProfileByIdInput.execute(id);
+            log.info("ProfileController.findProfileById - END - Profile found: [{}]", profile);
+            return ResponseEntity.ok(profile);
+        } finally {
+            MDC.clear();
+        }
     }
 
     @GetMapping
