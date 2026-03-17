@@ -43,26 +43,21 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
     @Override
     public Optional<FoodItem> findById(UUID foodItemId) {
         return foodItemJpaRepository.findById(foodItemId)
-                .map(entity -> {
-                    FoodItem foodItem = foodItemPersistenceMapper.toDomain(entity);
-                    if (entity.getRestaurant() != null) {
-                        foodItem.setRestaurant(restaurantPersistenceMapper.toDomain(entity.getRestaurant()));
-                    }
-                    return foodItem;
-                });
+                .map(this::mapToDomainWithRestaurant);
     }
-
 
     @Override
     public Optional<FoodItem> findByIdAndRestaurantId(UUID foodItemId, UUID restaurantId) {
         return foodItemJpaRepository.findByIdAndRestaurantId(foodItemId, restaurantId)
-                .map(entity -> {
-                    FoodItem foodItem = foodItemPersistenceMapper.toDomain(entity);
-                    if (entity.getRestaurant() != null) {
-                        foodItem.setRestaurant(restaurantPersistenceMapper.toDomain(entity.getRestaurant()));
-                    }
-                    return foodItem;
-                });
+                .map(this::mapToDomainWithRestaurant);
+    }
+
+    private FoodItem mapToDomainWithRestaurant(FoodItemJpaEntity entity) {
+        FoodItem foodItem = foodItemPersistenceMapper.toDomain(entity);
+        if (entity.getRestaurant() != null) {
+            foodItem.setRestaurant(restaurantPersistenceMapper.toDomain(entity.getRestaurant()));
+        }
+        return foodItem;
     }
 
     @Override

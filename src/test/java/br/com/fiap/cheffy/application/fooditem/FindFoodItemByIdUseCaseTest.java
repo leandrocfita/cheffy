@@ -5,6 +5,8 @@ import br.com.fiap.cheffy.application.fooditem.usecase.FindFoodItemByIdUseCase;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
+import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantInactiveException;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
 import br.com.fiap.cheffy.utils.FoodItemTestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,21 +18,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FindFoodItemByIdUseCaseTest {
     @Mock
     private FoodItemRepository foodItemRepository;
-    @Mock
-    private FoodItemWebMapper foodItemWebMapper;
-
     private FindFoodItemByIdUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new FindFoodItemByIdUseCase(foodItemRepository, foodItemWebMapper);
+        useCase = new FindFoodItemByIdUseCase(foodItemRepository);
     }
 
     @Test
@@ -38,16 +38,18 @@ class FindFoodItemByIdUseCaseTest {
         FoodItem foodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
         UUID foodItemId = foodItem.getId();
         UUID restaurantId = foodItem.getRestaurant().getId();
-        FoodItemQueryPort queryPort = mock(FoodItemQueryPort.class);
         when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.of(foodItem));
-        when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
-
-        FoodItemQueryPort executed = useCase.execute(restaurantId, foodItemId);
-
-        assertNotNull(executed);
-        assertEquals(queryPort, executed);
+        FoodItemQueryPort result = useCase.execute(restaurantId, foodItemId);
+        assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(foodItemId);
+        assertThat(result.name()).isEqualTo(foodItem.getName());
+        assertThat(result.description()).isEqualTo(foodItem.getDescription());
+        assertThat(result.price()).isEqualTo(foodItem.getPrice().value());
+        assertThat(result.restaurantId()).isEqualTo(restaurantId);
+        assertThat(result.deliveryAvailable()).isEqualTo(foodItem.isDeliveryAvailable());
+        assertThat(result.available()).isEqualTo(foodItem.isAvailable());
+        assertThat(result.active()).isEqualTo(foodItem.isActive());
         verify(foodItemRepository, times(1)).findByIdAndRestaurantId(foodItemId, restaurantId);
-        verify(foodItemWebMapper, times(1)).foodItemToFoodItemQueryPort(foodItem);
     }
 
     @Test
@@ -55,28 +57,21 @@ class FindFoodItemByIdUseCaseTest {
         UUID foodItemId = UUID.randomUUID();
         UUID restaurantId = UUID.randomUUID();
         when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.empty());
-
-        assertThrows(FoodItemNotFoundException.class, () -> useCase.execute(restaurantId, foodItemId));
-
+        assertThatThrownBy(() -> useCase.execute(restaurantId, foodItemId))
+                .isInstanceOf(FoodItemNotFoundException.class);
         verify(foodItemRepository, times(1)).findByIdAndRestaurantId(foodItemId, restaurantId);
-        verify(foodItemWebMapper, never()).foodItemToFoodItemQueryPort(any());
     }
 
     @Test
-    void shouldCorrectlyMapFoodItemWithRestaurant() {
+    void shouldThrowRestaurantInactiveExceptionWhenRestaurantIsInactive() {
         FoodItem foodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
         UUID foodItemId = foodItem.getId();
-        UUID restaurantId = foodItem.getRestaurant().getId();
-        FoodItemQueryPort queryPort = mock(FoodItemQueryPort.class);
+        Restaurant restaurant = foodItem.getRestaurant();
+        UUID restaurantId = restaurant.getId();
+        restaurant.deactivate();
         when(foodItemRepository.findByIdAndRestaurantId(foodItemId, restaurantId)).thenReturn(Optional.of(foodItem));
-        when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
-
-        useCase.execute(restaurantId, foodItemId);
-
-        verify(foodItemWebMapper).foodItemToFoodItemQueryPort(argThat(item ->
-                item.getName().equals("Test Food") &&
-                        item.getDescription().equals("Delicious test food") &&
-                        item.getRestaurant() != null
-        ));
+        assertThatThrownBy(() -> useCase.execute(restaurantId, foodItemId))
+                .isInstanceOf(RestaurantInactiveException.class);
+        verify(foodItemRepository, times(1)).findByIdAndRestaurantId(foodItemId, restaurantId);
     }
 }

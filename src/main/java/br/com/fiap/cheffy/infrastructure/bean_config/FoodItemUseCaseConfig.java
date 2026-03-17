@@ -17,7 +17,7 @@ public class FoodItemUseCaseConfig {
     }
 
     @Bean
-    FindFoodItemByIdUseCase findFoodItemByIdUseCase(FoodItemRepository foodItemRepository, FoodItemWebMapper foodItemWebMapper) {
-        return new FindFoodItemByIdUseCase(foodItemRepository, foodItemWebMapper);
+    FindFoodItemByIdUseCase findFoodItemByIdUseCase(FoodItemRepository foodItemRepository) {
+        return new FindFoodItemByIdUseCase(foodItemRepository);
     }
 }

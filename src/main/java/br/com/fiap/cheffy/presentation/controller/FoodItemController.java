@@ -80,7 +80,7 @@ public class FoodItemController {
             @ApiResponse(responseCode = "404", description = "Item do cardápio não encontrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    public ResponseEntity<Object> getFoodItemById(@PathVariable UUID restaurantId, @PathVariable UUID foodItemId) {
+    public ResponseEntity<FoodItemQueryPort> getFoodItemById(@PathVariable UUID restaurantId, @PathVariable UUID foodItemId) {
 
 
         log.info("FoodItemController.getFoodItemById - START - Finding food item [{}] for restaurant [{}]", foodItemId, restaurantId);
