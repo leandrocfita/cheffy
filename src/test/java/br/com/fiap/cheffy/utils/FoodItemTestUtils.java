@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.utils;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
@@ -43,5 +44,22 @@ public class FoodItemTestUtils {
         entity.setRestaurant(restaurant);
         
         return entity;
+    }
+
+    public static FoodItem createTestFoodItemDomainPatchEntity(){
+
+        return FoodItem.create(
+                "Test Food",
+                "Delicious test food",
+                new BigDecimal("19.99"),
+                "test-photo-key",
+                true,
+                true,
+                RestaurantTestUtils.createTestRestaurantDomainEntity()
+        );
+    }
+
+    public static FoodItemCommandPort createTestCommandPort(){
+        return new FoodItemCommandPort("teste", "teste", new BigDecimal("12.90"), "teste", UUID.randomUUID(), true, true, true);
     }
 }

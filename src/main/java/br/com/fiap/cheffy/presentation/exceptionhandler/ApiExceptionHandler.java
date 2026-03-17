@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemDoesNotExist;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
@@ -350,6 +351,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
 
+    @ExceptionHandler(FoodItemDoesNotExist.class)
+    public ResponseEntity<Object> handleFoodItemDoesNotExist(FoodItemDoesNotExist ex, WebRequest request){
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+
 
 
     @Override
@@ -477,7 +493,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .userMessage(getMessage(GENERIC_ERROR_MESSAGE))
                 .build();
 
-        log.error("EXCEÇÃO NÃO TRATADA: {}", String.valueOf(ex));
+        log.error("EXCEÇÃO NÃO TRATADA: {} | errorDetails: {}", String.valueOf(ex), ex.getMessage());
 
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);

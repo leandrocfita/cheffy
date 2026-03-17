@@ -124,7 +124,7 @@ public class Restaurant {
     public boolean isOwnedByUser (UUID userId) {
         return this.user.getId().equals(userId)
                 && user.getProfiles().stream()
-                .anyMatch(profile -> ProfileType.OWNER.name().equals(profile.getType()))
+                .anyMatch(profile -> ProfileType.OWNER.getType().equals(profile.getType()))
                 && user.isActive();
     }
 

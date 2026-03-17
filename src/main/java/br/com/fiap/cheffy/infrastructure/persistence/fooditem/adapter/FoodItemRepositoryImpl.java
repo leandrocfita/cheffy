@@ -42,7 +42,7 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
 
     @Override
     public Optional<FoodItem> findById(UUID foodItemId) {
-        return Optional.empty();
+        return foodItemJpaRepository.findById(foodItemId).map(foodItemPersistenceMapper::toDomain);
     }
 
     @Override
