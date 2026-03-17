@@ -33,10 +33,9 @@ public class ListFoodItemsByRestaurantUseCase implements ListFoodItemsByRestaura
             throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_INACTIVE);
         }
 
-        PageResult<FoodItem> page = foodItemRepository.findAllByRestaurantId(restaurantId, pageRequest);
+        PageResult<FoodItem> page = foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest);
 
         List<FoodItemQueryPort> content = page.content().stream()
-                .filter(FoodItem::isActive)
                 .map(item -> new FoodItemQueryPort(
                         item.getId(),
                         item.getName(),
