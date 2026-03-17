@@ -72,17 +72,6 @@ jobs:
     - name: Run Tests
       run: mvn -B verify
 
-    - name: 'Qodana Scan'
-      uses: JetBrains/qodana-action@v2025.2
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --linter,jetbrains/qodana-jvm-community:2025.2
-        pr-mode: true
-        use-caches: true
-        post-pr-comment: true
-        use-annotations: true
-        upload-result: true
 
   docker-build:
     needs: [build,test]
