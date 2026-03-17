@@ -2,9 +2,12 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.domain.common.PageRequest;
+import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.FindFoodItemByIdInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.ListFoodItemsByRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +35,45 @@ public class FoodItemController {
 
     private final CreateFoodItemInput createFoodItemInput;
     private final FindFoodItemByIdInput findFoodItemByIdInput;
+    private final ListFoodItemsByRestaurantInput listFoodItemsByRestaurantInput;
     private final FoodItemWebMapper foodItemWebMapper;
 
-    public FoodItemController(CreateFoodItemInput createFoodItemInput, FindFoodItemByIdInput findFoodItemByIdInput, FoodItemWebMapper foodItemWebMapper){
-        this.createFoodItemInput= createFoodItemInput;
+    public FoodItemController(CreateFoodItemInput createFoodItemInput,
+                              ListFoodItemsByRestaurantInput listFoodItemsByRestaurantInput,
+                              FindFoodItemByIdInput findFoodItemByIdInput,
+                              FoodItemWebMapper foodItemWebMapper) {
+        this.createFoodItemInput = createFoodItemInput;
         this.findFoodItemByIdInput = findFoodItemByIdInput;
+        this.listFoodItemsByRestaurantInput = listFoodItemsByRestaurantInput;
         this.foodItemWebMapper = foodItemWebMapper;
+    }
+
+    @GetMapping
+    @Operation(summary = "Listar food items do restaurante", description = "Retorna lista paginada de food items de um restaurante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<PageResult<FoodItemQueryPort>> listFoodItemsByRestaurant(
+            @PathVariable UUID restaurantId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+            @RequestParam(defaultValue = "false") boolean includeInactive) {
+
+        log.info("FoodItemController.listFoodItemsByRestaurant - START - restaurantId=[{}], page={}, size={}, includeInactive={}", restaurantId, page, size, includeInactive);
+
+        PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
+                ? PageRequest.SortDirection.DESC
+                : PageRequest.SortDirection.ASC;
+
+        PageResult<FoodItemQueryPort> result = listFoodItemsByRestaurantInput.execute(restaurantId, PageRequest.of(page, size, sortBy, sortDirection), includeInactive);
+
+        log.info("FoodItemController.listFoodItemsByRestaurant - END - Found [{}] items", result.numberOfElements());
+
+        return ResponseEntity.ok(result);
     }
 
     @Transactional

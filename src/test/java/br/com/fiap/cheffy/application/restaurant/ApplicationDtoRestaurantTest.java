@@ -4,7 +4,7 @@ import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
-import br.com.fiap.cheffy.domain.valueobject.Money;
+import br.com.fiap.cheffy.utils.FoodItemTestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ class ApplicationDtoRestaurantTest {
     void restaurantQueryPortFields() {
         UUID id = UUID.randomUUID();
         UUID foodId = UUID.randomUUID();
-        FoodItemQueryPort food = new FoodItemQueryPort(foodId, "Prato", "Desc", BigDecimal.TEN, "key", id, true, true, true);
+        FoodItemQueryPort food = FoodItemTestUtils.createTestFoodItemQueryPort(foodId, id);
         AddressCommandPort addr = new AddressCommandPort("St", 1, "City", "12345678", "Hood", "SP", null, true);
         OffsetTime opening = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
         OffsetTime closing = OffsetTime.of(18, 0, 0, 0, ZoneOffset.UTC);
@@ -49,11 +49,11 @@ class ApplicationDtoRestaurantTest {
     void foodItemQueryPortFields() {
         UUID id = UUID.randomUUID();
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort dto = new FoodItemQueryPort(id, "Prato", "Desc",BigDecimal.TEN, "key", restaurantId, true, true, true);
+        FoodItemQueryPort dto = FoodItemTestUtils.createTestFoodItemQueryPort(id, restaurantId);
 
         assertThat(dto.id()).isEqualTo(id);
-        assertThat(dto.name()).isEqualTo("Prato");
-        assertThat(dto.price()).isEqualTo(BigDecimal.TEN);
+        assertThat(dto.name()).isEqualTo("Test Food");
+        assertThat(dto.price()).isEqualTo(new BigDecimal("19.99"));
         assertThat(dto.restaurantId()).isEqualTo(restaurantId);
         assertThat(dto.deliveryAvailable()).isTrue();
         assertThat(dto.available()).isTrue();
