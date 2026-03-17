@@ -53,10 +53,7 @@ class FoodItemControllerTest {
     void getFoodItemByIdReturnsOkWithFoodItem() {
         UUID restaurantId = UUID.randomUUID();
         UUID foodItemId = UUID.randomUUID();
-        FoodItemQueryPort queryPort = new FoodItemQueryPort(
-                foodItemId, "Pizza", "Margherita", BigDecimal.TEN,
-                "photo-key", restaurantId, true, true, true
-        );
+        FoodItemQueryPort queryPort = FoodItemTestUtils.createTestFoodItemQueryPort(foodItemId, restaurantId);
         when(findFoodItemByIdInput.execute(restaurantId, foodItemId)).thenReturn(queryPort);
         ResponseEntity<FoodItemQueryPort> response = controller.getFoodItemById(restaurantId, foodItemId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -70,10 +67,7 @@ class FoodItemControllerTest {
     @DisplayName("GET should return 200 with paginated food items")
     void listFoodItemsByRestaurantReturnsOk() {
         UUID restaurantId = UUID.randomUUID();
-        FoodItemQueryPort queryPort = new FoodItemQueryPort(
-                UUID.randomUUID(), "X-Burger", "desc", BigDecimal.TEN,
-                "key", restaurantId, true, true, true
-        );
+        FoodItemQueryPort queryPort = FoodItemTestUtils.createTestFoodItemQueryPort(UUID.randomUUID(), restaurantId);
         PageResult<FoodItemQueryPort> page = PageResult.of(List.of(queryPort), 0, 10, 1L);
 
         when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class))).thenReturn(page);
