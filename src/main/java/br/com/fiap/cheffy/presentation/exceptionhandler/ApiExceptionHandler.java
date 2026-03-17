@@ -1,8 +1,10 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantInactiveException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
@@ -321,6 +323,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
 
+    @ExceptionHandler(RestaurantInactiveException.class)
+    private ResponseEntity<Object> handleRestaurantInactiveException(RestaurantInactiveException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
     @ExceptionHandler(RestaurantDoesNotExistException.class)
     public ResponseEntity<Object> handleRestaurantDoesNotExist(RestaurantDoesNotExistException ex, WebRequest request) {
 
@@ -412,6 +431,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+
+    @ExceptionHandler(FoodItemNotFoundException.class)
+    public ResponseEntity<Object> handleFoodItemNotFoundException(FoodItemNotFoundException ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
     }
 
 

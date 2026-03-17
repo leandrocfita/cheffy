@@ -10,6 +10,7 @@ public interface FoodItemRepository {
 
     FoodItem save(FoodItem foodItem);
     Optional<FoodItem> findById(UUID foodItemId);
+    Optional<FoodItem> findByIdAndRestaurantId(UUID foodItemId, UUID restaurantId);
     List<FoodItem> findAllByRestaurantId(UUID restaurantId);
     boolean existsInRestaurantById(UUID restaurantId, UUID foodItemId);
     boolean existsByNameIgnoreCaseAndRestaurantId(String foodName, UUID restaurantId);
