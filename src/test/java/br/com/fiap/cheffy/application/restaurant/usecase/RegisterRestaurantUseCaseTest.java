@@ -2,6 +2,7 @@ package br.com.fiap.cheffy.application.restaurant.usecase;
 
 import br.com.fiap.cheffy.application.restaurant.RestaurantCommandPortTestBuilder;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
+import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
@@ -12,12 +13,15 @@ import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.shared.exception.InvalidDataException;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
+import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,11 +45,14 @@ class RegisterRestaurantUseCaseTest {
     @Mock
     private ProfileRepository profileRepository;
 
+    @Mock
+    private RestaurantServiceHelper restaurantServiceHelper;
+
     private RegisterRestaurantUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new RegisterRestaurantUseCase(userServiceHelper, restaurantRepository, profileRepository);
+        useCase = new RegisterRestaurantUseCase(userServiceHelper, restaurantRepository, profileRepository, restaurantServiceHelper);
     }
 
     @Test
@@ -60,6 +67,7 @@ class RegisterRestaurantUseCaseTest {
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
         when(profileRepository.findByType(ProfileType.OWNER.name())).thenReturn(Optional.of(ownerProfile));
+        when(restaurantServiceHelper.extractZoneId(command.zoneId())).thenReturn(ZoneId.of(command.zoneId()));
 
         UUID savedRestaurantId = UUID.randomUUID();
         Restaurant savedRestaurant = mock(Restaurant.class);
@@ -92,6 +100,7 @@ class RegisterRestaurantUseCaseTest {
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
+        when(restaurantServiceHelper.extractZoneId(command.zoneId())).thenReturn(ZoneId.of(command.zoneId()));
 
         Restaurant savedRestaurant = mock(Restaurant.class);
         when(savedRestaurant.getId()).thenReturn(savedRestaurantId);
@@ -140,6 +149,7 @@ class RegisterRestaurantUseCaseTest {
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
+        when(restaurantServiceHelper.extractZoneId(command.zoneId())).thenReturn(ZoneId.of(command.zoneId()));
 
         UUID savedRestaurantId = UUID.randomUUID();
         Restaurant savedRestaurant = mock(Restaurant.class);
@@ -164,6 +174,7 @@ class RegisterRestaurantUseCaseTest {
         when(restaurantRepository.existsByName(command.name())).thenReturn(false);
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
+        when(restaurantServiceHelper.extractZoneId("Invalid")).thenThrow(new InvalidDataException(ExceptionsKeys.ZONE_ID_DO_NOT_EXIST));
 
         assertThrows(InvalidDataException.class, () -> useCase.execute(command, userId));
 
@@ -185,6 +196,7 @@ class RegisterRestaurantUseCaseTest {
         when(restaurantRepository.existsByCnpj(command.cnpj())).thenReturn(false);
         when(userServiceHelper.getUserOrFail(userId)).thenReturn(user);
         when(profileRepository.findByType(ProfileType.OWNER.name())).thenReturn(Optional.of(ownerProfile));
+        when(restaurantServiceHelper.extractZoneId(command.zoneId())).thenReturn(ZoneId.of(command.zoneId()));
 
         Restaurant savedRestaurant = mock(Restaurant.class);
         when(savedRestaurant.getId()).thenReturn(UUID.randomUUID());

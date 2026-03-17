@@ -26,6 +26,8 @@ out/
 ############################
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
 
 ############################
 # Gradle
