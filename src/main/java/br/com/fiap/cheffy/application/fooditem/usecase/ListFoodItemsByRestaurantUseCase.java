@@ -26,14 +26,16 @@ public class ListFoodItemsByRestaurantUseCase implements ListFoodItemsByRestaura
     }
 
     @Override
-    public PageResult<FoodItemQueryPort> execute(UUID restaurantId, PageRequest pageRequest) {
+    public PageResult<FoodItemQueryPort> execute(UUID restaurantId, PageRequest pageRequest, boolean includeInactive) {
         Restaurant restaurant = restaurantServiceHelper.getRestaurantOrFail(restaurantId);
 
         if (!restaurant.isActive()) {
             throw new RestaurantOperationNotAllowedException(RESTAURANT_IS_INACTIVE);
         }
 
-        PageResult<FoodItem> page = foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest);
+        PageResult<FoodItem> page = includeInactive
+                ? foodItemRepository.findAllByRestaurantId(restaurantId, pageRequest)
+                : foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest);
 
         List<FoodItemQueryPort> content = page.content().stream()
                 .map(item -> new FoodItemQueryPort(

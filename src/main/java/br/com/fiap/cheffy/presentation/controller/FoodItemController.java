@@ -60,15 +60,16 @@ public class FoodItemController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+            @RequestParam(defaultValue = "false") boolean includeInactive) {
 
-        log.info("FoodItemController.listFoodItemsByRestaurant - START - restaurantId=[{}], page={}, size={}", restaurantId, page, size);
+        log.info("FoodItemController.listFoodItemsByRestaurant - START - restaurantId=[{}], page={}, size={}, includeInactive={}", restaurantId, page, size, includeInactive);
 
         PageRequest.SortDirection sortDirection = direction == Sort.Direction.DESC
                 ? PageRequest.SortDirection.DESC
                 : PageRequest.SortDirection.ASC;
 
-        PageResult<FoodItemQueryPort> result = listFoodItemsByRestaurantInput.execute(restaurantId, PageRequest.of(page, size, sortBy, sortDirection));
+        PageResult<FoodItemQueryPort> result = listFoodItemsByRestaurantInput.execute(restaurantId, PageRequest.of(page, size, sortBy, sortDirection), includeInactive);
 
         log.info("FoodItemController.listFoodItemsByRestaurant - END - Found [{}] items", result.numberOfElements());
 

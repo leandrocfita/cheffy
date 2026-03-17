@@ -25,6 +25,14 @@ public interface FoodItemJpaRepository extends JpaRepository<FoodItemJpaEntity, 
     @Query(value = """
         SELECT f FROM FoodItemJpaEntity f
         JOIN FETCH f.restaurant r
+        WHERE r.id = :restaurantId
+    """,
+    countQuery = "SELECT COUNT(f) FROM FoodItemJpaEntity f WHERE f.restaurant.id = :restaurantId")
+    Page<FoodItemJpaEntity> findAllByRestaurantId(@Param("restaurantId") UUID restaurantId, Pageable pageable);
+
+    @Query(value = """
+        SELECT f FROM FoodItemJpaEntity f
+        JOIN FETCH f.restaurant r
         WHERE r.id = :restaurantId AND f.active = true
     """,
     countQuery = "SELECT COUNT(f) FROM FoodItemJpaEntity f WHERE f.restaurant.id = :restaurantId AND f.active = true")

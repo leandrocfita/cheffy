@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface ListFoodItemsByRestaurantInput {
 
-    PageResult<FoodItemQueryPort> execute(UUID restaurantId, PageRequest pageRequest);
+    PageResult<FoodItemQueryPort> execute(UUID restaurantId, PageRequest pageRequest, boolean includeInactive);
 }

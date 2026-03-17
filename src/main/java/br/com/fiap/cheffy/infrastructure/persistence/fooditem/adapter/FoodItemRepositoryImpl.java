@@ -71,6 +71,14 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
     }
 
     @Override
+    public PageResult<FoodItem> findAllByRestaurantId(UUID restaurantId, PageRequest pageRequest) {
+        Pageable springPageable = PageMapper.toSpringPageable(pageRequest);
+        Page<FoodItemJpaEntity> springPage = foodItemJpaRepository.findAllByRestaurantId(restaurantId, springPageable);
+        Page<FoodItem> domainPage = springPage.map(foodItemPersistenceMapper::toDomain);
+        return PageMapper.toDomainPageResult(domainPage);
+    }
+
+    @Override
     public PageResult<FoodItem> findAllActiveByRestaurantId(UUID restaurantId, PageRequest pageRequest) {
         Pageable springPageable = PageMapper.toSpringPageable(pageRequest);
         Page<FoodItemJpaEntity> springPage = foodItemJpaRepository.findAllActiveByRestaurantId(restaurantId, springPageable);
