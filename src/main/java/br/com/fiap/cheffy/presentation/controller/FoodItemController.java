@@ -14,7 +14,6 @@ import br.com.fiap.cheffy.presentation.dto.FoodItemUpdateDto;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -85,6 +84,7 @@ public class FoodItemController {
     }
 
     @PostMapping()
+    @Transactional
     @Operation(summary = "Create a new food item", description = "Creates a new food item associated with a specific restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Item criado no cardápio com sucesso"),
@@ -105,6 +105,7 @@ public class FoodItemController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
+    @Transactional
     @PutMapping("/{foodItemId}")
     @Operation(summary = "Update an existing food item", description = "Updates an existing food item associated with a specific restaurant")
     @ApiResponses(value = {

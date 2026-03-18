@@ -34,16 +34,16 @@ public class UpdateFoodItemUseCase implements UpdateFoodItemInput {
 
        FoodItem originalFoodItem = validateFoodItemExistence(foodItemId);
 
-       logger.info(String.format("Existência do food item confirmada no banco de dados. foodItemId:%s | Flow: %s", originalFoodItem.getId() ,FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW));
+       logger.info(String.format("Existência do food item confirmada no banco de dados. foodItemId:%s | Flow: %s", originalFoodItem.getId() ,FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
 
        Restaurant restaurant = validateRestaurantExistence(restaurantId, originalFoodItem);
 
-       logger.info(String.format("Existência do restaurante e posse do food item confirmadas. RestaurantId: %s | FoodItemId: %s | Flow: %s", restaurantId, foodItemId, FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW));
+       logger.info(String.format("Existência do restaurante e posse do food item confirmadas. RestaurantId: %s | FoodItemId: %s | Flow: %s", restaurantId, foodItemId, FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
 
        Boolean isOwner = validateOwnership(restaurant, userid);
 
        if (!isOwner){
-           String errorMessage = String.format("O usuário de id: %s não é dono do restaurante selecionado. RestaurantId: %s | Flow: %s",userid, restaurantId, FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW );
+           String errorMessage = String.format("O usuário de id: %s não é dono do restaurante selecionado. RestaurantId: %s | Flow: %s",userid, restaurantId, FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW.getName() );
 
            logger.severe(errorMessage);
            throw new RestaurantOperationNotAllowedException(ExceptionsKeys.RESTAURANT_USER_DOES_NOT_HAVE_OWNERSHIP_OR_IS_INACTIVE);
@@ -67,7 +67,7 @@ public class UpdateFoodItemUseCase implements UpdateFoodItemInput {
 
        this.foodItemRepository.save(originalFoodItem);
 
-       logger.info(String.format("Atualização do food-item realizada com sucesso. FoodItemId: %s | Flow: %s", originalFoodItem.getId(), FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW));
+       logger.info(String.format("Atualização do food-item realizada com sucesso. FoodItemId: %s | Flow: %s", originalFoodItem.getId(), FlowConstants.TRIAGE_UPDATE_USE_CASE_FOOD_ITEM_FLOW.getName()));
 
     }
 
