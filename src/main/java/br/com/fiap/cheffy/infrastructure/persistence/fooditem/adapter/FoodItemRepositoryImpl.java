@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.output.FoodItemRepository;
+import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper.FoodItemPersistenceMapper;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.repository.FoodItemJpaRepository;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +54,15 @@ public class FoodItemRepositoryImpl implements FoodItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<FoodItem> findByIdAndRestaurantId(UUID foodItemId, UUID restaurantId) {
         return foodItemJpaRepository.findByIdAndRestaurantId(foodItemId, restaurantId)
-                .map(this::mapToDomainWithRestaurant);
+                .map(entity -> {
+                    FoodItem foodItem = foodItemPersistenceMapper.toDomain(entity);
+                    Restaurant restaurant = restaurantPersistenceMapper.toDomain(entity.getRestaurant());
+                    foodItem.setRestaurant(restaurant);
+                    return foodItem;
+                });
     }
 
     private FoodItem mapToDomainWithRestaurant(FoodItemJpaEntity entity) {
