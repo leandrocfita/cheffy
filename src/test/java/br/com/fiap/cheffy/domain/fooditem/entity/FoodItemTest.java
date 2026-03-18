@@ -41,9 +41,39 @@ class FoodItemTest {
         item.makeUnavailable();
         assertThat(item.isAvailable()).isFalse();
 
-        item.disable();
+        item.deactivate();
         assertThat(item.isActive()).isFalse();
         assertThat(item.isAvailable()).isFalse();
+    }
+
+    @Test
+    void reactivateSetsActiveAndAvailable() {
+        FoodItem item = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", false, false, false);
+
+        item.reactivate();
+
+        assertThat(item.isActive()).isTrue();
+        assertThat(item.isAvailable()).isTrue();
+        assertThat(item.isDeliveryAvailable()).isTrue();
+    }
+
+    @Test
+    void updateAvailabilityWithAvailableFalseSetsDeliveryFalse() {
+        FoodItem item = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", true, true, true);
+
+        item.updateAvailability(false, null);
+
+        assertThat(item.isAvailable()).isFalse();
+        assertThat(item.isDeliveryAvailable()).isFalse();
+    }
+
+    @Test
+    void updateAvailabilityWithNullAvailableKeepsCurrentAndUpdatesDelivery() {
+        FoodItem item = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", false, true, true);
+
+        item.updateAvailability(null, true);
+
+        assertThat(item.isDeliveryAvailable()).isTrue();
     }
 
     @Test
@@ -70,6 +100,47 @@ class FoodItemTest {
         assertThat(item.getDescription()).isEqualTo("Delicious test food");
         assertThat(item.getPrice().value()).isEqualByComparingTo("19.99");
         assertThat(item.getPhotoKey()).isEqualTo("test-photo-key");
+        assertThat(item.isDeliveryAvailable()).isTrue();
+    }
+
+    @Test
+    void equalsReturnsFalseWhenNullId() {
+        FoodItem withId = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", true, true, true);
+        FoodItem withoutId = FoodItem.create("Prato", "Desc", BigDecimal.TEN, "key", true, true, null);
+
+        assertThat(withId).isNotEqualTo(withoutId);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentType() {
+        FoodItem item = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", true, true, true);
+
+        assertThat(item).isNotEqualTo("string");
+    }
+
+    @Test
+    void equalsReturnsTrueForSameInstance() {
+        FoodItem item = FoodItem.reconstitute(UUID.randomUUID(), "Prato", "Desc", BigDecimal.TEN, "key", true, true, true);
+
+        assertThat(item).isEqualTo(item);
+    }
+
+    @Test
+    void hashCodeWithNullIdUsesIdentityHash() {
+        FoodItem item = FoodItem.create("Prato", "Desc", BigDecimal.TEN, "key", true, true, null);
+
+        assertThat(item.hashCode()).isEqualTo(System.identityHashCode(item));
+    }
+
+    @Test
+    void gettersReturnCorrectValues() {
+        UUID id = UUID.randomUUID();
+        FoodItem item = FoodItem.reconstitute(id, "Prato", "Desc", BigDecimal.TEN, "key", true, true, true);
+
+        assertThat(item.getId()).isEqualTo(id);
+        assertThat(item.getName()).isEqualTo("Prato");
+        assertThat(item.getDescription()).isEqualTo("Desc");
+        assertThat(item.getPhotoKey()).isEqualTo("key");
         assertThat(item.isDeliveryAvailable()).isTrue();
     }
 }

@@ -1,5 +1,9 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.fooditem.service.FoodItemServiceHelper;
+import br.com.fiap.cheffy.application.fooditem.usecase.DeactivateFoodItemUseCase;
+import br.com.fiap.cheffy.application.fooditem.usecase.ReactivateFoodItemUseCase;
+import br.com.fiap.cheffy.application.fooditem.usecase.UpdateFoodItemAvailabilityUseCase;
 import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
 import br.com.fiap.cheffy.application.fooditem.usecase.ListFoodItemsByRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
@@ -15,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class FoodItemUseCaseConfigTest {
+
     @Mock
     private FoodItemRepository foodItemRepository;
 
@@ -23,6 +28,15 @@ class FoodItemUseCaseConfigTest {
 
     @Mock
     private RestaurantServiceHelper restaurantServiceHelper;
+
+    @Mock
+    private FoodItemServiceHelper foodItemServiceHelper;
+
+    @Test
+    void foodItemServiceHelperCreatesBean() {
+        FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
+        assertThat(config.foodItemServiceHelper(foodItemRepository, restaurantRepository)).isNotNull();
+    }
 
     @Test
     void createFoodItemUseCaseCreatesBean() {
@@ -46,6 +60,27 @@ class FoodItemUseCaseConfigTest {
     void findFoodItemByIdUseCaseCreatesBean() {
         FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
         FindFoodItemByIdUseCase useCase = config.findFoodItemByIdUseCase(foodItemRepository);
+        assertThat(useCase).isNotNull();
+    }
+
+    @Test
+    void deactivateFoodItemUseCaseCreatesBean() {
+        FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
+        DeactivateFoodItemUseCase useCase = config.deactivateFoodItemUseCase(foodItemServiceHelper);
+        assertThat(useCase).isNotNull();
+    }
+
+    @Test
+    void reactivateFoodItemUseCaseCreatesBean() {
+        FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
+        ReactivateFoodItemUseCase useCase = config.reactivateFoodItemUseCase(foodItemServiceHelper);
+        assertThat(useCase).isNotNull();
+    }
+
+    @Test
+    void updateFoodItemAvailabilityUseCaseCreatesBean() {
+        FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
+        UpdateFoodItemAvailabilityUseCase useCase = config.updateFoodItemAvailabilityUseCase(foodItemServiceHelper);
         assertThat(useCase).isNotNull();
     }
 }

@@ -77,4 +77,22 @@ class PresentationDtoTest {
         assertThat(dto.nameType()).isEqualTo("CLIENT");
         assertThat(dto.message()).isEqualTo("created");
     }
+
+    @Test
+    void foodItemAvailabilityDtoValidWhenAtLeastOneFieldPresent() {
+        FoodItemAvailabilityDTO dto = new FoodItemAvailabilityDTO(true, null);
+        assertThat(dto.isAtLeastOneFieldPresent()).isTrue();
+    }
+
+    @Test
+    void foodItemAvailabilityDtoInvalidWhenBothFieldsNull() {
+        FoodItemAvailabilityDTO dto = new FoodItemAvailabilityDTO(null, null);
+        assertThat(dto.isAtLeastOneFieldPresent()).isFalse();
+    }
+
+    @Test
+    void foodItemAvailabilityDtoValidWhenDeliveryAvailablePresent() {
+        FoodItemAvailabilityDTO dto = new FoodItemAvailabilityDTO(null, false);
+        assertThat(dto.isAtLeastOneFieldPresent()).isTrue();
+    }
 }
