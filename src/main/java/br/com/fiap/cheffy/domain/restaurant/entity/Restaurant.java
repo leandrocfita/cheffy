@@ -27,7 +27,7 @@ public class Restaurant {
     private String culinary;
     private Address address;
 
-    private User user;
+    private User owner;
 
     private Menu menu;
     private boolean active;
@@ -139,10 +139,10 @@ public class Restaurant {
     }
 
     public boolean isOwnedByUser (UUID userId) {
-        return this.user.getId().equals(userId)
-                && user.getProfiles().stream()
+        return this.owner.getId().equals(userId)
+                && owner.getProfiles().stream()
                 .anyMatch(profile -> ProfileType.OWNER.getType().equals(profile.getType()))
-                && user.isActive();
+                && owner.isActive();
     }
 
     //reconstitute
@@ -155,7 +155,7 @@ public class Restaurant {
             WorkingHours workingHours,
             boolean active,
             Address address,
-            User user,
+            User owner,
             Menu menu
     ) {
         this.id = id;
@@ -166,7 +166,7 @@ public class Restaurant {
         this.workingHours = workingHours;
         this.active = active;
         this.address = address;
-        this.user = user;
+        this.owner = owner;
         this.menu = menu;
     }
 
@@ -181,12 +181,12 @@ public class Restaurant {
             boolean open24hours,
             boolean active,
             Address address,
-            User user,
+            User owner,
             Menu menu
     ) {
 
 
-        Restaurant restaurant = new Restaurant(
+        return new Restaurant(
                 id,
                 name,
                 cnpj,
@@ -195,14 +195,8 @@ public class Restaurant {
                 WorkingHours.reconstitute(openingTime, closingTime, open24hours),
                 active,
                 address,
-                user,
+                owner,
                 menu);
-
-//        menu.getItems().forEach(item -> {
-//            restaurant.addFoodItem(item);
-//        });
-
-        return restaurant;
     }
 
     public boolean isOpenAt(Instant instant) {
@@ -222,7 +216,7 @@ public class Restaurant {
     }
 
     public void setOwner(User user) {
-        this.user = user;
+        this.owner = user;
     }
 
     public void addAddress(Address address) {
@@ -282,8 +276,8 @@ public class Restaurant {
         return address;
     }
 
-    public User getUser() {
-        return user;
+    public User getOwner() {
+        return owner;
     }
 
     public boolean isActive() {

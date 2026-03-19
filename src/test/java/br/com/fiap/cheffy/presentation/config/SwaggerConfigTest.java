@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.config;
 
+import br.com.fiap.cheffy.presentation.config.swagger.SwaggerConfig;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.responses.ApiResponses;
@@ -9,7 +10,6 @@ import org.springframework.web.method.HandlerMethod;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class SwaggerConfigTest {
 

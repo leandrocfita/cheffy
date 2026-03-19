@@ -1,7 +1,10 @@
 package br.com.fiap.cheffy.application.fooditem;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.application.fooditem.usecase.ListFoodItemsByRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
+import br.com.fiap.cheffy.application.restaurant.mapper.ResturantQueryMapper;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
@@ -37,6 +40,9 @@ class ListFoodItemsByRestaurantUseCaseTest {
     @InjectMocks
     private ListFoodItemsByRestaurantUseCase useCase;
 
+    @Mock
+    private FoodItemQueryMapper mapper;
+
     @Test
     @DisplayName("Should return paginated active food items for an active restaurant")
     void shouldReturnPaginatedFoodItemsForActiveRestaurant() {
@@ -44,11 +50,17 @@ class ListFoodItemsByRestaurantUseCaseTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Restaurant restaurant = RestaurantTestUtils.createTestRestaurantDomainEntity();
         FoodItem activeFoodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
+        FoodItemQueryPort foodItemQueryPort = FoodItemTestUtils.createTestFoodItemQueryPort(UUID.randomUUID(), restaurantId);
 
         PageResult<FoodItem> page = PageResult.of(List.of(activeFoodItem), 0, 10, 1L);
 
         when(restaurantServiceHelper.getRestaurantOrFail(restaurantId)).thenReturn(restaurant);
         when(foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest)).thenReturn(page);
+        when(mapper.toQueryPort(any(), any()))
+                .thenAnswer(invocation -> {
+                    FoodItem item = invocation.getArgument(0);
+                    return foodItemQueryPort;
+                });
 
         PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest, false);
 
@@ -65,6 +77,7 @@ class ListFoodItemsByRestaurantUseCaseTest {
         UUID restaurantId = UUID.randomUUID();
         PageRequest pageRequest = PageRequest.of(0, 10);
         Restaurant restaurant = RestaurantTestUtils.createTestRestaurantDomainEntity();
+        FoodItemQueryPort foodItemQueryPort = FoodItemTestUtils.createTestFoodItemQueryPort(UUID.randomUUID(), restaurantId);
 
         FoodItem activeItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
         FoodItem inactiveItem = FoodItem.reconstitute(
@@ -76,6 +89,11 @@ class ListFoodItemsByRestaurantUseCaseTest {
 
         when(restaurantServiceHelper.getRestaurantOrFail(restaurantId)).thenReturn(restaurant);
         when(foodItemRepository.findAllByRestaurantId(restaurantId, pageRequest)).thenReturn(page);
+        when(mapper.toQueryPort(any(), any()))
+                .thenAnswer(invocation -> {
+                    FoodItem item = invocation.getArgument(0);
+                    return foodItemQueryPort;
+                });
 
         PageResult<FoodItemQueryPort> result = useCase.execute(restaurantId, pageRequest, true);
 

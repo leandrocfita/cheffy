@@ -1,11 +1,12 @@
 package br.com.fiap.cheffy.presentation.controller;
 
-import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.UpdateRestaurantInput;
+import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
+import br.com.fiap.cheffy.domain.restaurant.port.input.*;
+import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultApiErrors;
+import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultNotFoundApiResponse;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantUpdateDTO;
+import br.com.fiap.cheffy.presentation.exceptionhandler.model.Problem;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,18 +32,22 @@ public class RestaurantController {
     private final DeactivateRestaurantInput deactivateRestaurantInput;
     private final ReactivateRestaurantInput reactivateRestaurantInput;
     private final UpdateRestaurantInput updateRestaurantInput;
+    private final FindRestaurantByIdInput findRestaurantByIdInput;
     private final RestaurantWebMapper mapper;
 
     public RestaurantController(
             RegisterRestaurantInput restaurantInput,
             DeactivateRestaurantInput deactivateRestaurantInput,
-            ReactivateRestaurantInput reactivateRestaurantInput, UpdateRestaurantInput updateRestaurantInput,
+            ReactivateRestaurantInput reactivateRestaurantInput,
+            UpdateRestaurantInput updateRestaurantInput,
+            FindRestaurantByIdInput findRestaurantByIdInput,
             RestaurantWebMapper mapper
     ) {
         this.restaurantInput = restaurantInput;
         this.deactivateRestaurantInput = deactivateRestaurantInput;
         this.reactivateRestaurantInput = reactivateRestaurantInput;
         this.updateRestaurantInput = updateRestaurantInput;
+        this.findRestaurantByIdInput = findRestaurantByIdInput;
         this.mapper = mapper;
     }
 
@@ -140,6 +145,31 @@ public class RestaurantController {
         updateRestaurantInput.execute(id, userId, mapper.toUpdateCommand(restaurantUpdateDTO));
         log.info("RestaurantController.updateRestaurant - END - Restaurant updated - id: [{}]", id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Buscar restaurante por ID",
+            description = "Retorna os dados completos de um restaurante com seu cardápio"
+    )
+    @DefaultApiErrors
+    @DefaultNotFoundApiResponse
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Restaurante encontrado com sucesso",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantQueryPort.class)
+                    )
+            ),
+    })
+    public ResponseEntity<RestaurantQueryPort> findRestaurantById(@PathVariable UUID id) {
+
+        var user = findRestaurantByIdInput.execute(id);
+
+        return ResponseEntity.ok(user);
     }
 
 

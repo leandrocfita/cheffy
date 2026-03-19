@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.utils;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
 import br.com.fiap.cheffy.domain.restaurant.entity.Menu;
 import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.domain.user.entity.Address;
@@ -11,12 +13,33 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class RestaurantTestUtils {
 
     public static Restaurant createTestRestaurant24hDomainEntity(){
         return Restaurant.create24h("teste", "cnpj-teste", "culinaria-teste", ZoneId.systemDefault(), UserTestUtils.createOwnerUserDomainEntity());
+    }
+
+    public static RestaurantQueryPort createTestRestaurantQueryPort(){
+        UUID restaurantId = UUID.randomUUID();
+        Set<FoodItemQueryPort> foodItems = new HashSet<>();
+        foodItems.add(FoodItemTestUtils.createTestFoodItemQueryPort(UUID.randomUUID(),restaurantId));
+        return new RestaurantQueryPort(
+                restaurantId,
+                "Test Restaurant",
+                "Brazilian",
+                LocalTime.of(10, 0),
+                LocalTime.of(22, 0),
+                false,
+                AddressTestUtils.createAddressQueryPort(),
+                UUID.randomUUID(),
+                foodItems
+
+
+
+        );
     }
 
     public static Restaurant createTestRestaurantDomainEntity() {

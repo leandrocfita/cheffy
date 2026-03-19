@@ -110,7 +110,7 @@ class RestaurantPersistenceMapperTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(id);
         assertThat(result.getAddress()).isEqualTo(address);
-        assertThat(result.getUser()).isEqualTo(owner);
+        assertThat(result.getOwner()).isEqualTo(owner);
         assertThat(result.getMenu().getItems()).hasSize(1);
     }
 

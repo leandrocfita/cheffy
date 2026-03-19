@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
+import br.com.fiap.cheffy.application.user.dto.AddressQueryPort;
 import br.com.fiap.cheffy.utils.FoodItemTestUtils;
 import org.junit.jupiter.api.Test;
 
@@ -35,10 +36,10 @@ class ApplicationDtoRestaurantTest {
         UUID id = UUID.randomUUID();
         UUID foodId = UUID.randomUUID();
         FoodItemQueryPort food = FoodItemTestUtils.createTestFoodItemQueryPort(foodId, id);
-        AddressCommandPort addr = new AddressCommandPort("St", 1, "City", "12345678", "Hood", "SP", null, true);
-        OffsetTime opening = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
-        OffsetTime closing = OffsetTime.of(18, 0, 0, 0, ZoneOffset.UTC);
-        RestaurantQueryPort dto = new RestaurantQueryPort(id, "Name", "Brasileira", opening, closing, addr, Set.of(food));
+        AddressQueryPort addr = new AddressQueryPort(1l,"St", 1, "City", "12345678", "Hood", "SP", null, true);
+        LocalTime opening = LocalTime.of(9, 0, 0, 0);
+        LocalTime closing = LocalTime.of(18, 0, 0, 0);
+        RestaurantQueryPort dto = new RestaurantQueryPort(id, "Name", "Brasileira", opening, closing,false, addr, id ,Set.of(food));
 
         assertThat(dto.id()).isEqualTo(id);
         assertThat(dto.name()).isEqualTo("Name");

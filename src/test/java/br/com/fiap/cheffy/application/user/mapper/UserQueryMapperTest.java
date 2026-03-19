@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.user.mapper;
 
+import br.com.fiap.cheffy.application.address.mapper.AddressQueryMapper;
 import br.com.fiap.cheffy.application.user.dto.AddressQueryPort;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
@@ -15,10 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserQueryMapperTest {
 
     private UserQueryMapper mapper;
+    private AddressQueryMapper addresMapper;
 
     @BeforeEach
     void setUp() {
-        mapper = new UserQueryMapper();
+        addresMapper = new AddressQueryMapper();
+        mapper = new UserQueryMapper(addresMapper);
     }
 
     @Test
