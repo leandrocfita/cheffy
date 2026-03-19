@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.controller;
 
+import br.com.fiap.cheffy.application.fooditem.dto.FoodItemAvailabilityCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.domain.common.PageRequest;
@@ -8,6 +9,10 @@ import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.UpdateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.ListFoodItemsByRestaurantInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.DeactivateFoodItemInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.ReactivateFoodItemInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.UpdateFoodItemAvailabilityInput;
+import br.com.fiap.cheffy.presentation.dto.FoodItemAvailabilityDTO;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
 import br.com.fiap.cheffy.domain.fooditem.port.input.FindFoodItemByIdInput;
 import br.com.fiap.cheffy.presentation.dto.FoodItemUpdateDto;
@@ -28,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -47,6 +53,15 @@ class FoodItemControllerTest {
 
     @Mock
     private UpdateFoodItemInput updateFoodItemInput;
+
+    @Mock
+    private DeactivateFoodItemInput deactivateFoodItemInput;
+
+    @Mock
+    private ReactivateFoodItemInput reactivateFoodItemInput;
+
+    @Mock
+    private UpdateFoodItemAvailabilityInput updateFoodItemAvailabilityInput;
 
     @Mock
     private FoodItemWebMapper foodItemWebMapper;
@@ -101,17 +116,16 @@ class FoodItemControllerTest {
     }
 
     @Test
-    @DisplayName("POST should return 201 with created food item")
     void postFoodItemReturnsCreated() {
         UUID restaurantId = UUID.randomUUID();
         FoodItemDTO dto = new FoodItemDTO("Name", "Desc", BigDecimal.TEN, "photo", true, true, true);
-        FoodItemCommandPort commandPort = new FoodItemCommandPort("Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
-        FoodItem createdItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
-        FoodItemQueryPort queryPort = new FoodItemQueryPort(createdItem.getId(), "Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
+        FoodItemCommandPort command = new FoodItemCommandPort("Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
+        FoodItem foodItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
+        FoodItemQueryPort queryPort = new FoodItemQueryPort(foodItem.getId(), "Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
 
-        when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(commandPort);
-        when(createFoodItemInput.execute(commandPort)).thenReturn(createdItem);
-        when(foodItemWebMapper.foodItemToFoodItemQueryPort(createdItem)).thenReturn(queryPort);
+        when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(command);
+        when(createFoodItemInput.execute(command)).thenReturn(foodItem);
+        when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
 
         ResponseEntity<Object> response = foodItemController.postFoodItem(dto, restaurantId);
 
@@ -134,5 +148,42 @@ class FoodItemControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(updateFoodItemInput).update(eq(foodItemId), eq(restaurantId), eq(userId), eq(commandPort));
+    }
+
+    @Test
+    void deactivateFoodItemReturnsNoContent() {
+        UUID restaurantId = UUID.randomUUID();
+        UUID foodItemId = UUID.randomUUID();
+
+        ResponseEntity<Void> response = foodItemController.deactivateFoodItem(restaurantId, foodItemId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(deactivateFoodItemInput).execute(restaurantId, foodItemId);
+    }
+
+    @Test
+    void reactivateFoodItemReturnsNoContent() {
+        UUID restaurantId = UUID.randomUUID();
+        UUID foodItemId = UUID.randomUUID();
+
+        ResponseEntity<Void> response = foodItemController.reactivateFoodItem(restaurantId, foodItemId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(reactivateFoodItemInput).execute(restaurantId, foodItemId);
+    }
+
+    @Test
+    void updateFoodItemAvailabilityReturnsNoContent() {
+        UUID restaurantId = UUID.randomUUID();
+        UUID foodItemId = UUID.randomUUID();
+        FoodItemAvailabilityDTO dto = new FoodItemAvailabilityDTO(true, false);
+        FoodItemAvailabilityCommandPort command = new FoodItemAvailabilityCommandPort(true, false);
+
+        when(foodItemWebMapper.toAvailabilityCommand(dto)).thenReturn(command);
+
+        ResponseEntity<Void> response = foodItemController.updateFoodItemAvailability(restaurantId, foodItemId, dto);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(updateFoodItemAvailabilityInput).execute(restaurantId, foodItemId, command);
     }
 }
