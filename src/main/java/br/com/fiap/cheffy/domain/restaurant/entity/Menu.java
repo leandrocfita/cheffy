@@ -48,7 +48,7 @@ public class Menu {
 
     void deactivate() {
         this.active = false;
-        items.forEach(FoodItem::disable);
+        items.forEach(FoodItem::deactivate);
     }
 
     boolean hasActiveItems() {

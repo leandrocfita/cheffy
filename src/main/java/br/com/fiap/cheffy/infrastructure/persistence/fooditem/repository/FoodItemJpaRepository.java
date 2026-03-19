@@ -39,8 +39,6 @@ public interface FoodItemJpaRepository extends JpaRepository<FoodItemJpaEntity, 
     Page<FoodItemJpaEntity> findAllActiveByRestaurantId(@Param("restaurantId") UUID restaurantId, Pageable pageable);
 
     
-
-
     boolean existsByNameIgnoreCaseAndRestaurantId(String name, UUID restaurantId);
 
     @Query("""
@@ -58,7 +56,6 @@ public interface FoodItemJpaRepository extends JpaRepository<FoodItemJpaEntity, 
         WHERE f.id = :foodItemId
         AND r.id = :restaurantId
     """)
-    Optional<FoodItemJpaEntity> findByIdAndRestaurantId(@Param("foodItemId") UUID foodItemId, @Param("restaurantId") UUID restaurantId
-    );
+    Optional<FoodItemJpaEntity> findByIdAndRestaurantId(@Param("foodItemId") UUID foodItemId, @Param("restaurantId") UUID restaurantId);
 
 }

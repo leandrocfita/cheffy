@@ -110,8 +110,28 @@ public class FoodItem {
         this.restaurant = restaurant;
     }
 
-    public void disable() {
+    public void deactivate() {
         this.active = false;
+        this.available = false;
+        this.deliveryAvailable = false;
+    }
+
+    public void reactivate() {
+        this.active = true;
+        this.available = true;
+        this.deliveryAvailable = true;
+    }
+
+    public void updateAvailability(Boolean available, Boolean deliveryAvailable) {
+        if (available != null) {
+            this.available = available;
+            if (!available) {
+                this.deliveryAvailable = false;
+            }
+        }
+        if (deliveryAvailable != null) {
+            this.deliveryAvailable = deliveryAvailable;
+        }
     }
 
     public boolean isAvailable() {
