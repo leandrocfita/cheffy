@@ -1,10 +1,9 @@
 package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.restaurant.dto.RestaurantCommandPort;
+import br.com.fiap.cheffy.application.restaurant.dto.RestaurantQueryPort;
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
-import br.com.fiap.cheffy.domain.restaurant.port.input.DeactivateRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.ReactivateRestaurantInput;
-import br.com.fiap.cheffy.domain.restaurant.port.input.RegisterRestaurantInput;
+import br.com.fiap.cheffy.domain.restaurant.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.RestaurantAddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +34,12 @@ class RestaurantControllerTest {
 
     @Mock
     private ReactivateRestaurantInput reactivateRestaurantInput;
+
+    @Mock
+    private UpdateRestaurantInput updateRestaurantInput;
+
+    @Mock
+    private FindRestaurantByIdInput findRestaurantByIdInput;
 
     @Mock
     private RestaurantWebMapper mapper;
@@ -107,5 +113,28 @@ class RestaurantControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(reactivateRestaurantInput).execute(id, userId);
+    }
+
+    @Test
+    void findRestaurantByIdReturnsOkWithRestaurantPayload() {
+        UUID id = UUID.randomUUID();
+        RestaurantQueryPort queryPort = new RestaurantQueryPort(
+                id,
+                "Restaurante",
+                "Brasileira",
+                LocalTime.of(9, 0),
+                LocalTime.of(18, 0),
+                null,
+                UUID.randomUUID(),
+                Set.of()
+        );
+
+        when(findRestaurantByIdInput.execute(id)).thenReturn(queryPort);
+
+        ResponseEntity<RestaurantQueryPort> response = controller.findRestaurantById(id);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(queryPort);
+        verify(findRestaurantByIdInput).execute(id);
     }
 }

@@ -20,6 +20,7 @@ class UserQueryMapperTest {
 
     @BeforeEach
     void setUp() {
+        addresMapper = new AddressQueryMapper();
         mapper = new UserQueryMapper(addresMapper);
     }
 

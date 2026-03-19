@@ -32,6 +32,7 @@ class FindFoodItemByIdUseCaseTest {
 
     @BeforeEach
     void setUp() {
+        foodItemQueryMapper = new FoodItemQueryMapper();
         useCase = new FindFoodItemByIdUseCase(foodItemRepository, foodItemQueryMapper);
     }
 
