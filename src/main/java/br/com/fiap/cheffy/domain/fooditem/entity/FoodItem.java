@@ -156,13 +156,13 @@ public class FoodItem {
 
     public void patch(FoodItem patchEntity){
 
-        if(patchEntity.getName() != null) this.name = patchEntity.getName();
+        if(patchEntity.getName() != null && !patchEntity.getName().isBlank()) this.name = patchEntity.getName();
 
-        if(patchEntity.getDescription() != null) this.description = patchEntity.getDescription();
+        if(patchEntity.getDescription() != null && !patchEntity.getDescription().isBlank()) this.description = patchEntity.getDescription();
 
-        if(patchEntity.getPhotoKey() != null) this.photoKey = patchEntity.getPhotoKey();
+        if(patchEntity.getPhotoKey() != null && !patchEntity.getPhotoKey().isBlank()) this.photoKey = patchEntity.getPhotoKey();
 
-        if (patchEntity.getPrice() != null) this.price = patchEntity.getPrice();
+        if (patchEntity.getPrice() != null && !patchEntity.getPrice().isZero()) this.price = patchEntity.getPrice();
 
         if (patchEntity.isDeliveryAvailable() != this.deliveryAvailable) this.deliveryAvailable = patchEntity.isDeliveryAvailable();
 

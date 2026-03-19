@@ -106,12 +106,10 @@ class FoodItemControllerTest {
         UUID restaurantId = UUID.randomUUID();
         FoodItemDTO dto = new FoodItemDTO("Name", "Desc", BigDecimal.TEN, "photo", true, true, true);
         FoodItemCommandPort commandPort = new FoodItemCommandPort("Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
-        FoodItem createdFoodItem = FoodItem.reconstitute(UUID.randomUUID(), "Name", "Desc", BigDecimal.TEN, "photo", true, true, true);
-        FoodItemQueryPort queryPort = new FoodItemQueryPort(createdFoodItem.getId(), "Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
         FoodItem createdItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
+        FoodItemQueryPort queryPort = new FoodItemQueryPort(createdItem.getId(), "Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
 
         when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(commandPort);
-        when(createFoodItemInput.execute(commandPort)).thenReturn(createdFoodItem);
         when(createFoodItemInput.execute(commandPort)).thenReturn(createdItem);
         when(foodItemWebMapper.foodItemToFoodItemQueryPort(createdItem)).thenReturn(queryPort);
 

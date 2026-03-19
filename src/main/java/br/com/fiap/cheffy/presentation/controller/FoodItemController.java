@@ -106,7 +106,7 @@ public class FoodItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
     @Transactional
-    @PutMapping("/{foodItemId}")
+    @PatchMapping("/{foodItemId}")
     @Operation(summary = "Update an existing food item", description = "Updates an existing food item associated with a specific restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Item atualizado com sucesso"),
