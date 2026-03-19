@@ -2,6 +2,7 @@ package br.com.fiap.cheffy.infrastructure.bean_config;
 
 import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
+import br.com.fiap.cheffy.application.fooditem.usecase.UpdateFoodItemUseCase;
 import br.com.fiap.cheffy.application.fooditem.usecase.ListFoodItemsByRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.application.fooditem.usecase.FindFoodItemByIdUseCase;
@@ -17,6 +18,11 @@ public class FoodItemUseCaseConfig {
     @Bean
     CreateFoodItemUseCase createFoodItemUseCase(FoodItemRepository foodItemRepository, RestaurantRepository restaurantRepository) {
         return new CreateFoodItemUseCase(foodItemRepository, restaurantRepository);
+    }
+
+    @Bean
+    UpdateFoodItemUseCase updateFoodItemUseCase(FoodItemRepository foodItemRepository, RestaurantRepository restaurantRepository){
+        return new UpdateFoodItemUseCase(foodItemRepository, restaurantRepository);
     }
 
     @Bean

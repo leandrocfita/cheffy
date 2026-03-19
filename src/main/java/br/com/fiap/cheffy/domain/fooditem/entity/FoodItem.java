@@ -108,7 +108,6 @@ public class FoodItem {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
-//        restaurant.addFoodItem(this);
     }
 
     public void disable() {
@@ -153,6 +152,23 @@ public class FoodItem {
 
     public boolean isDeliveryAvailable() {
         return deliveryAvailable;
+    }
+
+    public void patch(FoodItem patchEntity){
+
+        if(patchEntity.getName() != null && !patchEntity.getName().isBlank()) this.name = patchEntity.getName();
+
+        if(patchEntity.getDescription() != null && !patchEntity.getDescription().isBlank()) this.description = patchEntity.getDescription();
+
+        if(patchEntity.getPhotoKey() != null && !patchEntity.getPhotoKey().isBlank()) this.photoKey = patchEntity.getPhotoKey();
+
+        if (patchEntity.getPrice() != null && !patchEntity.getPrice().isZero()) this.price = patchEntity.getPrice();
+
+        if (patchEntity.isDeliveryAvailable() != this.deliveryAvailable) this.deliveryAvailable = patchEntity.isDeliveryAvailable();
+
+        if (patchEntity.isAvailable() != this.available) this.available = patchEntity.isAvailable();
+
+        if (patchEntity.isActive() != this.active) this.active = patchEntity.isActive();
     }
 
     @Override

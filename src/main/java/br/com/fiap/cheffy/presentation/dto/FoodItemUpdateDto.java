@@ -1,20 +1,17 @@
 package br.com.fiap.cheffy.presentation.dto;
 
 import br.com.fiap.cheffy.presentation.interfaces.FoodItemRequest;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
+import br.com.fiap.cheffy.presentation.validation.NotBlankIfPresent;
 
 import java.math.BigDecimal;
 
-public record FoodItemDTO(
-
-        @NotBlank
+public record FoodItemUpdateDto(
+        @NotBlankIfPresent
         String name,
-        @NotBlank
+        @NotBlankIfPresent
         String description,
-        @DecimalMin("0.1")
         BigDecimal price,
-        @NotBlank
+        @NotBlankIfPresent
         String photoKey,
         boolean deliveryAvailable,
         boolean available,

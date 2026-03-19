@@ -3,7 +3,7 @@ package br.com.fiap.cheffy.presentation.mapper;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemCommandPort;
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
-import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
+import br.com.fiap.cheffy.presentation.interfaces.FoodItemRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class FoodItemWebMapper {
         );
     }
 
-    public FoodItemCommandPort foodItemDtoToFoodItemCommandPort(FoodItemDTO foodItemDTO, UUID restaurantId){
+    public <T extends FoodItemRequest> FoodItemCommandPort foodItemDtoToFoodItemCommandPort(T foodItemDTO, UUID restaurantId){
 
         return new FoodItemCommandPort(
                 foodItemDTO.name(),
@@ -35,7 +35,9 @@ public class FoodItemWebMapper {
                 foodItemDTO.photoKey(),
                 restaurantId,
                 foodItemDTO.deliveryAvailable(),
-                foodItemDTO.available()
+                foodItemDTO.available(),
+                foodItemDTO.active()
         );
     }
+
 }

@@ -1,11 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.persistence.fooditem.mapper;
 
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
-import br.com.fiap.cheffy.domain.restaurant.entity.Restaurant;
 import br.com.fiap.cheffy.infrastructure.persistence.fooditem.entity.FoodItemJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.restaurant.entity.RestaurantJpaEntity;
-import br.com.fiap.cheffy.infrastructure.persistence.restaurant.mapper.RestaurantPersistenceMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component

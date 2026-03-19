@@ -2,8 +2,8 @@ package br.com.fiap.cheffy.domain.profile;
 
 public enum ProfileType {
 
-    CLIENT("cliente"),
-    OWNER("dono");
+    CLIENT("CLIENT"),
+    OWNER("OWNER");
 
     private final String value;
 

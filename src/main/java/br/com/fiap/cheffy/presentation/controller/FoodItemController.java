@@ -6,13 +6,14 @@ import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.UpdateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.FindFoodItemByIdInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.ListFoodItemsByRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
+import br.com.fiap.cheffy.presentation.dto.FoodItemUpdateDto;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +21,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,18 +36,23 @@ import java.util.UUID;
 public class FoodItemController {
 
     private final CreateFoodItemInput createFoodItemInput;
+    private final UpdateFoodItemInput updateFoodItemInput;
     private final FindFoodItemByIdInput findFoodItemByIdInput;
     private final ListFoodItemsByRestaurantInput listFoodItemsByRestaurantInput;
     private final FoodItemWebMapper foodItemWebMapper;
 
-    public FoodItemController(CreateFoodItemInput createFoodItemInput,
-                              ListFoodItemsByRestaurantInput listFoodItemsByRestaurantInput,
-                              FindFoodItemByIdInput findFoodItemByIdInput,
-                              FoodItemWebMapper foodItemWebMapper) {
+    public FoodItemController(
+            CreateFoodItemInput createFoodItemInput,
+            ListFoodItemsByRestaurantInput listFoodItemsByRestaurantInput,
+            FindFoodItemByIdInput findFoodItemByIdInput,
+            FoodItemWebMapper foodItemWebMapper,
+            UpdateFoodItemInput updateFoodItemInput
+    ) {
         this.createFoodItemInput = createFoodItemInput;
         this.findFoodItemByIdInput = findFoodItemByIdInput;
         this.listFoodItemsByRestaurantInput = listFoodItemsByRestaurantInput;
         this.foodItemWebMapper = foodItemWebMapper;
+        this.updateFoodItemInput = updateFoodItemInput;
     }
 
     @GetMapping
@@ -76,8 +83,8 @@ public class FoodItemController {
         return ResponseEntity.ok(result);
     }
 
-    @Transactional
     @PostMapping()
+    @Transactional
     @Operation(summary = "Create a new food item", description = "Creates a new food item associated with a specific restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Item criado no cardápio com sucesso"),
@@ -90,14 +97,37 @@ public class FoodItemController {
             @RequestBody @Valid FoodItemDTO foodItemDTO,
             @PathVariable @Valid UUID restaurantId){
 
-        FoodItemCommandPort foodItemQueryPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemDTO, restaurantId);
+        FoodItemCommandPort foodItemCommandPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemDTO, restaurantId);
 
-        FoodItem createdFoodItem = createFoodItemInput.execute(foodItemQueryPort);
+        FoodItem createdFoodItem = createFoodItemInput.execute(foodItemCommandPort);
 
         FoodItemQueryPort responseObject = foodItemWebMapper.foodItemToFoodItemQueryPort(createdFoodItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
+    @Transactional
+    @PatchMapping("/{foodItemId}")
+    @Operation(summary = "Update an existing food item", description = "Updates an existing food item associated with a specific restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Item atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados de atualização do Item são inválidos"),
+            @ApiResponse(responseCode = "403", description = "Operação não permitida. O usuário não tem permissão para alterar este restaurante"),
+            @ApiResponse(responseCode = "404", description = "Restaurante ou Item não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Object> updateFoodItem(
+            @RequestBody @Valid FoodItemUpdateDto foodItemUpdateDTO,
+            @PathVariable @Valid UUID restaurantId,
+            @RequestAttribute("userId") UUID userId,
+            @PathVariable @Valid UUID foodItemId
+    ){
+        FoodItemCommandPort foodItemCommandPort = foodItemWebMapper.foodItemDtoToFoodItemCommandPort(foodItemUpdateDTO, restaurantId);
+
+        updateFoodItemInput.update(foodItemId, restaurantId, userId, foodItemCommandPort);
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(204)).body(null);
+    }
+
 
     @Transactional(readOnly = true)
     @GetMapping("/{foodItemId}")
