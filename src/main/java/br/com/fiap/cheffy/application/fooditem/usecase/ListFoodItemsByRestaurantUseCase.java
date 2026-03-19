@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.fooditem.usecase;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
 import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
@@ -19,10 +20,16 @@ public class ListFoodItemsByRestaurantUseCase implements ListFoodItemsByRestaura
 
     private final FoodItemRepository foodItemRepository;
     private final RestaurantServiceHelper restaurantServiceHelper;
+    private final FoodItemQueryMapper mapper;
 
-    public ListFoodItemsByRestaurantUseCase(FoodItemRepository foodItemRepository, RestaurantServiceHelper restaurantServiceHelper) {
+    public ListFoodItemsByRestaurantUseCase(
+            FoodItemRepository foodItemRepository,
+            RestaurantServiceHelper restaurantServiceHelper,
+            FoodItemQueryMapper mapper
+    ) {
         this.foodItemRepository = foodItemRepository;
         this.restaurantServiceHelper = restaurantServiceHelper;
+        this.mapper = mapper;
     }
 
     @Override
@@ -38,17 +45,8 @@ public class ListFoodItemsByRestaurantUseCase implements ListFoodItemsByRestaura
                 : foodItemRepository.findAllActiveByRestaurantId(restaurantId, pageRequest);
 
         List<FoodItemQueryPort> content = page.content().stream()
-                .map(item -> new FoodItemQueryPort(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getPrice().value(),
-                        item.getPhotoKey(),
-                        restaurantId,
-                        item.isDeliveryAvailable(),
-                        item.isAvailable(),
-                        item.isActive()
-                ))
+                .map(item -> mapper.toQueryPort(item, restaurantId)
+                )
                 .toList();
 
         return PageResult.from(page, content);

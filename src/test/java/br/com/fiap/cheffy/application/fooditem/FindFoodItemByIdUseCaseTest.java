@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.fooditem;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.application.fooditem.usecase.FindFoodItemByIdUseCase;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
@@ -27,10 +28,11 @@ class FindFoodItemByIdUseCaseTest {
     @Mock
     private FoodItemRepository foodItemRepository;
     private FindFoodItemByIdUseCase useCase;
+    private FoodItemQueryMapper foodItemQueryMapper;
 
     @BeforeEach
     void setUp() {
-        useCase = new FindFoodItemByIdUseCase(foodItemRepository);
+        useCase = new FindFoodItemByIdUseCase(foodItemRepository, foodItemQueryMapper);
     }
 
     @Test

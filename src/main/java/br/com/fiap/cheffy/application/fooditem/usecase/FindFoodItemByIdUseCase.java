@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.fooditem.usecase;
 
 import br.com.fiap.cheffy.application.fooditem.dto.FoodItemQueryPort;
+import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
 import br.com.fiap.cheffy.domain.fooditem.port.input.FindFoodItemByIdInput;
@@ -13,10 +14,16 @@ import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.FOOD_ITEM_
 import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.RESTAURANT_IS_INACTIVE;
 
 public class FindFoodItemByIdUseCase implements FindFoodItemByIdInput {
-    private final FoodItemRepository foodItemRepository;
 
-    public FindFoodItemByIdUseCase(FoodItemRepository foodItemRepository) {
+    private final FoodItemRepository foodItemRepository;
+    private final FoodItemQueryMapper mapper;
+
+    public FindFoodItemByIdUseCase(
+            FoodItemRepository foodItemRepository,
+            FoodItemQueryMapper mapper
+    ) {
         this.foodItemRepository = foodItemRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -26,16 +33,6 @@ public class FindFoodItemByIdUseCase implements FindFoodItemByIdInput {
         if (!foodItem.getRestaurant().isActive()) {
             throw new RestaurantInactiveException(RESTAURANT_IS_INACTIVE, restaurantId);
         }
-        return new FoodItemQueryPort(
-                foodItem.getId(),
-                foodItem.getName(),
-                foodItem.getDescription(),
-                foodItem.getPrice().value(),
-                foodItem.getPhotoKey(),
-                restaurantId,
-                foodItem.isDeliveryAvailable(),
-                foodItem.isAvailable(),
-                foodItem.isActive()
-        );
+        return mapper.toQueryPort(foodItem, restaurantId);
     }
 }

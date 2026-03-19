@@ -37,7 +37,7 @@ class RestaurantTest {
                 owner
         );
 
-        assertThat(restaurant.getUser()).isEqualTo(owner);
+        assertThat(restaurant.getOwner()).isEqualTo(owner);
         assertThat(restaurant.isActive()).isTrue();
         assertThat(restaurant.getMenu().getItems()).isEmpty();
     }
@@ -55,7 +55,7 @@ class RestaurantTest {
                 owner
         );
 
-        assertThat(restaurant.getUser()).isEqualTo(owner);
+        assertThat(restaurant.getOwner()).isEqualTo(owner);
         assertThat(restaurant.isActive()).isTrue();
         assertThat(restaurant.getMenu().getItems()).isEmpty();
         assertThat(restaurant.isOpen24hours()).isTrue();

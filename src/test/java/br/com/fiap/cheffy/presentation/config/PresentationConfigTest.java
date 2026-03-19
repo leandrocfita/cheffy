@@ -1,5 +1,7 @@
 package br.com.fiap.cheffy.presentation.config;
 
+import br.com.fiap.cheffy.presentation.config.swagger.OpenApiConfiguration;
+import br.com.fiap.cheffy.presentation.config.swagger.SwaggerConfig;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.junit.jupiter.api.Test;

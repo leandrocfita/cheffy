@@ -1,10 +1,8 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.restaurant.mapper.ResturantQueryMapper;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
-import br.com.fiap.cheffy.application.restaurant.usecase.DeactivateRestaurantUseCase;
-import br.com.fiap.cheffy.application.restaurant.usecase.ReactivateRestaurantUseCase;
-import br.com.fiap.cheffy.application.restaurant.usecase.RegisterRestaurantUseCase;
-import br.com.fiap.cheffy.application.restaurant.usecase.UpdateRestaurantUseCase;
+import br.com.fiap.cheffy.application.restaurant.usecase.*;
 import br.com.fiap.cheffy.application.user.service.UserServiceHelper;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.restaurant.port.output.RestaurantRepository;
@@ -59,4 +57,13 @@ public class RestaurantUseCaseConfig {
     public UpdateRestaurantUseCase updateRestaurantUseCase(RestaurantServiceHelper restaurantServiceHelper) {
         return new UpdateRestaurantUseCase(restaurantServiceHelper);
     }
+
+    @Bean
+    public FindRestaurantByIdUseCase findRestaurantByIdUseCase(
+            RestaurantServiceHelper restaurantServiceHelper,
+            ResturantQueryMapper resturantQueryMapper
+    ){
+        return new FindRestaurantByIdUseCase(restaurantServiceHelper, resturantQueryMapper);
+    }
+
 }

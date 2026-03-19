@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.bean_config;
 
+import br.com.fiap.cheffy.application.fooditem.mapper.FoodItemQueryMapper;
 import br.com.fiap.cheffy.application.fooditem.usecase.CreateFoodItemUseCase;
 import br.com.fiap.cheffy.application.fooditem.usecase.ListFoodItemsByRestaurantUseCase;
 import br.com.fiap.cheffy.application.restaurant.service.RestaurantServiceHelper;
@@ -24,6 +25,9 @@ class FoodItemUseCaseConfigTest {
     @Mock
     private RestaurantServiceHelper restaurantServiceHelper;
 
+    @Mock
+    private FoodItemQueryMapper mapper;
+
     @Test
     void createFoodItemUseCaseCreatesBean() {
         FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
@@ -37,7 +41,7 @@ class FoodItemUseCaseConfigTest {
     void listFoodItemsByRestaurantUseCaseCreatesBean() {
         FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
 
-        ListFoodItemsByRestaurantUseCase useCase = config.listFoodItemsByRestaurantUseCase(foodItemRepository, restaurantServiceHelper);
+        ListFoodItemsByRestaurantUseCase useCase = config.listFoodItemsByRestaurantUseCase(foodItemRepository, restaurantServiceHelper, mapper);
 
         assertThat(useCase).isNotNull();
     }
@@ -45,7 +49,7 @@ class FoodItemUseCaseConfigTest {
     @Test
     void findFoodItemByIdUseCaseCreatesBean() {
         FoodItemUseCaseConfig config = new FoodItemUseCaseConfig();
-        FindFoodItemByIdUseCase useCase = config.findFoodItemByIdUseCase(foodItemRepository);
+        FindFoodItemByIdUseCase useCase = config.findFoodItemByIdUseCase(foodItemRepository, mapper);
         assertThat(useCase).isNotNull();
     }
 }

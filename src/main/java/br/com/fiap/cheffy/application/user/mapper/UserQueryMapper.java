@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.user.mapper;
 
+import br.com.fiap.cheffy.application.address.mapper.AddressQueryMapper;
 import br.com.fiap.cheffy.application.user.dto.AddressQueryPort;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
@@ -10,6 +11,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserQueryMapper {
+
+    private AddressQueryMapper addressQueryMapper;
+
+    public UserQueryMapper(AddressQueryMapper addressQueryMapper) {
+        this.addressQueryMapper = addressQueryMapper;
+    }
 
     public UserQueryPort toQuery(User user) {
         return new UserQueryPort(
@@ -30,21 +37,7 @@ public class UserQueryMapper {
 
     private Set<AddressQueryPort> toAddressQueries(User user) {
         return user.getAddresses().stream()
-                .map(this::toAddressQuery)
+                .map(address -> addressQueryMapper.toQueryPort(address))
                 .collect(Collectors.toSet());
-    }
-
-    private AddressQueryPort toAddressQuery(Address address) {
-        return new AddressQueryPort(
-                address.getId(),
-                address.getStreetName(),
-                address.getNumber(),
-                address.getCity(),
-                address.getPostalCode(),
-                address.getNeighborhood(),
-                address.getStateProvince(),
-                address.getAddressLine(),
-                address.isMain()
-        );
     }
 }
