@@ -10,6 +10,7 @@ public record FoodItemCommandPort(
         String photoKey,
         UUID restaurantId,
         Boolean deliveryAvailable,
-        Boolean available
+        Boolean available,
+        boolean active
 ) {
 }

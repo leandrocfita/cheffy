@@ -6,9 +6,11 @@ import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.fooditem.entity.FoodItem;
 import br.com.fiap.cheffy.domain.fooditem.port.input.CreateFoodItemInput;
+import br.com.fiap.cheffy.domain.fooditem.port.input.UpdateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.ListFoodItemsByRestaurantInput;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
 import br.com.fiap.cheffy.domain.fooditem.port.input.FindFoodItemByIdInput;
+import br.com.fiap.cheffy.presentation.dto.FoodItemUpdateDto;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
 import br.com.fiap.cheffy.utils.FoodItemTestUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -44,10 +46,13 @@ class FoodItemControllerTest {
     private FindFoodItemByIdInput findFoodItemByIdInput;
 
     @Mock
+    private UpdateFoodItemInput updateFoodItemInput;
+
+    @Mock
     private FoodItemWebMapper foodItemWebMapper;
 
     @InjectMocks
-    private FoodItemController controller;
+    private FoodItemController foodItemController;
 
     @Test
     void getFoodItemByIdReturnsOkWithFoodItem() {
@@ -55,7 +60,7 @@ class FoodItemControllerTest {
         UUID foodItemId = UUID.randomUUID();
         FoodItemQueryPort queryPort = FoodItemTestUtils.createTestFoodItemQueryPort(foodItemId, restaurantId);
         when(findFoodItemByIdInput.execute(restaurantId, foodItemId)).thenReturn(queryPort);
-        ResponseEntity<FoodItemQueryPort> response = controller.getFoodItemById(restaurantId, foodItemId);
+        ResponseEntity<FoodItemQueryPort> response = foodItemController.getFoodItemById(restaurantId, foodItemId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(queryPort);
         assertThat(response.getBody().id()).isEqualTo(foodItemId);
@@ -73,7 +78,7 @@ class FoodItemControllerTest {
         when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class), eq(false))).thenReturn(page);
 
         ResponseEntity<PageResult<FoodItemQueryPort>> response =
-                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.ASC, false);
+                foodItemController.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.ASC, false);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
@@ -90,7 +95,7 @@ class FoodItemControllerTest {
         when(listFoodItemsByRestaurantInput.execute(eq(restaurantId), any(PageRequest.class), eq(false))).thenReturn(page);
 
         ResponseEntity<PageResult<FoodItemQueryPort>> response =
-                controller.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.DESC, false);
+                foodItemController.listFoodItemsByRestaurant(restaurantId, 0, 10, "name", Sort.Direction.DESC, false);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -99,22 +104,35 @@ class FoodItemControllerTest {
     @DisplayName("POST should return 201 with created food item")
     void postFoodItemReturnsCreated() {
         UUID restaurantId = UUID.randomUUID();
-        FoodItemDTO dto = new FoodItemDTO("X-Burger", "desc", BigDecimal.TEN, "key", true, true);
+        FoodItemDTO dto = new FoodItemDTO("Name", "Desc", BigDecimal.TEN, "photo", true, true, true);
+        FoodItemCommandPort commandPort = new FoodItemCommandPort("Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
         FoodItem createdItem = FoodItemTestUtils.createTestFoodItemDomainEntity();
-        FoodItemCommandPort commandPort = new FoodItemCommandPort("X-Burger", "desc", BigDecimal.TEN, "key", restaurantId, true, true);
-        FoodItemQueryPort queryPort = new FoodItemQueryPort(
-                createdItem.getId(), createdItem.getName(), createdItem.getDescription(),
-                createdItem.getPrice().value(), createdItem.getPhotoKey(),
-                restaurantId, createdItem.isDeliveryAvailable(), createdItem.isAvailable(), createdItem.isActive()
-        );
+        FoodItemQueryPort queryPort = new FoodItemQueryPort(createdItem.getId(), "Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
 
         when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(commandPort);
         when(createFoodItemInput.execute(commandPort)).thenReturn(createdItem);
         when(foodItemWebMapper.foodItemToFoodItemQueryPort(createdItem)).thenReturn(queryPort);
 
-        ResponseEntity<Object> response = controller.postFoodItem(dto, restaurantId);
+        ResponseEntity<Object> response = foodItemController.postFoodItem(dto, restaurantId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isEqualTo(queryPort);
+    }
+
+    @Test
+    @DisplayName("Should return 204 No Content when a food item is successfully updated")
+    void updateFoodItemReturnsNoContent() {
+        UUID restaurantId = UUID.randomUUID();
+        UUID foodItemId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        FoodItemUpdateDto dto = new FoodItemUpdateDto("Name", "Desc", BigDecimal.TEN, "photo", true, true, true);
+        FoodItemCommandPort commandPort = new FoodItemCommandPort("Name", "Desc", BigDecimal.TEN, "photo", restaurantId, true, true, true);
+
+        when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(commandPort);
+
+        ResponseEntity<Object> response = foodItemController.updateFoodItem(dto, restaurantId, userId, foodItemId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(updateFoodItemInput).update(eq(foodItemId), eq(restaurantId), eq(userId), eq(commandPort));
     }
 }

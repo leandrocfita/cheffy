@@ -8,11 +8,11 @@ class ProfileTypeTest {
 
     @Test
     void clientProfileType() {
-        assertThat(ProfileType.CLIENT.getType()).isEqualTo("cliente");
+        assertThat(ProfileType.CLIENT.getType()).isEqualTo("CLIENT");
     }
 
     @Test
     void ownerProfileType() {
-        assertThat(ProfileType.OWNER.getType()).isEqualTo("dono");
+        assertThat(ProfileType.OWNER.getType()).isEqualTo("OWNER");
     }
 }

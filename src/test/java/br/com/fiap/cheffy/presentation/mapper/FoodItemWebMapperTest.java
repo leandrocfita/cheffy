@@ -44,7 +44,7 @@ class FoodItemWebMapperTest {
     @DisplayName("foodItemDtoToFoodItemCommandPort maps FoodItemDTO to FoodItemCommandPort")
     void foodItemDtoToFoodItemCommandPortMapsCorrectly() {
         UUID restaurantId = UUID.randomUUID();
-        FoodItemDTO dto = new FoodItemDTO("X-Burger", "desc", BigDecimal.TEN, "key", true, false);
+        FoodItemDTO dto = new FoodItemDTO("X-Burger", "desc", BigDecimal.TEN, "key", true, false, true);
 
         FoodItemCommandPort result = mapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId);
 
