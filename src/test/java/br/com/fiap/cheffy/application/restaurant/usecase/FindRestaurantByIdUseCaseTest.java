@@ -40,6 +40,7 @@ class FindRestaurantByIdUseCaseTest {
                 restaurant.getCulinary(),
                 restaurant.getOpeningTime(),
                 restaurant.getClosingTime(),
+                false,
                 null,
                 restaurant.getOwner().getId(),
                 Set.of()

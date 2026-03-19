@@ -32,6 +32,7 @@ public class RestaurantTestUtils {
                 "Brazilian",
                 LocalTime.of(10, 0),
                 LocalTime.of(22, 0),
+                false,
                 AddressTestUtils.createAddressQueryPort(),
                 UUID.randomUUID(),
                 foodItems

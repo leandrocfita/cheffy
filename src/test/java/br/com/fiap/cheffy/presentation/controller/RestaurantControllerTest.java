@@ -7,6 +7,7 @@ import br.com.fiap.cheffy.domain.restaurant.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.RestaurantAddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.RestaurantCreateDTO;
 import br.com.fiap.cheffy.presentation.mapper.RestaurantWebMapper;
+import br.com.fiap.cheffy.utils.RestaurantTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -118,16 +119,7 @@ class RestaurantControllerTest {
     @Test
     void findRestaurantByIdReturnsOkWithRestaurantPayload() {
         UUID id = UUID.randomUUID();
-        RestaurantQueryPort queryPort = new RestaurantQueryPort(
-                id,
-                "Restaurante",
-                "Brasileira",
-                LocalTime.of(9, 0),
-                LocalTime.of(18, 0),
-                null,
-                UUID.randomUUID(),
-                Set.of()
-        );
+        RestaurantQueryPort queryPort = RestaurantTestUtils.createTestRestaurantQueryPort();
 
         when(findRestaurantByIdInput.execute(id)).thenReturn(queryPort);
 

@@ -29,6 +29,7 @@ class ResturantQueryMapperTest {
         assertThat(result.culinary()).isEqualTo(restaurant.getCulinary());
         assertThat(result.openingTime()).isEqualTo(restaurant.getOpeningTime());
         assertThat(result.closingTime()).isEqualTo(restaurant.getClosingTime());
+        assertThat(result.open24hours()).isEqualTo(restaurant.isOpen24hours());
         assertThat(result.ownerId()).isEqualTo(restaurant.getOwner().getId());
         assertThat(result.address()).isNotNull();
         assertThat(result.address().streetName()).isEqualTo(restaurant.getAddress().getStreetName());

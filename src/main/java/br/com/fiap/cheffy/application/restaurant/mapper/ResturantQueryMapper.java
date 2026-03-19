@@ -29,6 +29,7 @@ public class ResturantQueryMapper {
                 restaurant.getCulinary(),
                 restaurant.getOpeningTime(),
                 restaurant.getClosingTime(),
+                restaurant.isOpen24hours(),
                 addressQueryMapper.toQueryPort(restaurant.getAddress()),
                 ownerId,
                 restaurant.getMenu().getItems()

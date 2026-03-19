@@ -39,7 +39,7 @@ class ApplicationDtoRestaurantTest {
         AddressQueryPort addr = new AddressQueryPort(1l,"St", 1, "City", "12345678", "Hood", "SP", null, true);
         LocalTime opening = LocalTime.of(9, 0, 0, 0);
         LocalTime closing = LocalTime.of(18, 0, 0, 0);
-        RestaurantQueryPort dto = new RestaurantQueryPort(id, "Name", "Brasileira", opening, closing, addr, id ,Set.of(food));
+        RestaurantQueryPort dto = new RestaurantQueryPort(id, "Name", "Brasileira", opening, closing,false, addr, id ,Set.of(food));
 
         assertThat(dto.id()).isEqualTo(id);
         assertThat(dto.name()).isEqualTo("Name");
