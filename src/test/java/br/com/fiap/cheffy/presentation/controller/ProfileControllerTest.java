@@ -53,7 +53,7 @@ class ProfileControllerTest {
         Long createdId = 1L;
         when(profileCreateInput.create(any(ProfileInputPort.class))).thenReturn(createdId);
 
-        ResponseEntity<Object> response = profileController.createProfile(inputDto);
+        ResponseEntity<ProfileCreateReponseDto> response = profileController.createProfile(inputDto);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isInstanceOf(ProfileCreateReponseDto.class);
