@@ -16,6 +16,7 @@ public class UserWebMapper {
                 userCreateDTO.email(),
                 userCreateDTO.login(),
                 userCreateDTO.password(),
+                userCreateDTO.profileType(),
                 new AddressCommandPort(
                         address.streetName(),
                         address.number(),
@@ -34,6 +35,7 @@ public class UserWebMapper {
                 null,
                 null,
                 userUpdatePasswordDTO.password(),
+                null,
                 null
         );
     }
@@ -43,6 +45,7 @@ public class UserWebMapper {
                 userUpdateDTO.name(),
                 userUpdateDTO.email(),
                 userUpdateDTO.login(),
+                null,
                 null,
                 null
         );

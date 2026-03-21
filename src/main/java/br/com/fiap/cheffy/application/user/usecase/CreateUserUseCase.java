@@ -1,7 +1,6 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
-import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
@@ -62,12 +61,12 @@ public class CreateUserUseCase implements CreateUserInput {
                 command.email(),
                 command.login(),
                 processPassword(command.password()),
-                findClientProfile()
+                findProfile(command)
         );
     }
 
-    private Profile findClientProfile() {
-        String profileType = ProfileType.CLIENT.name();
+    private Profile findProfile(UserCommandPort command) {
+        String profileType = command.profileType().name();
 
         return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,

@@ -39,7 +39,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldUpdateUserNameSuccessfully() {
-        UserCommandPort command = new UserCommandPort("Jane Doe", null, null, null, null);
+        UserCommandPort command = new UserCommandPort("Jane Doe", null, null, null, null, null);
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
@@ -52,7 +52,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldUpdateUserEmailSuccessfully() {
-        UserCommandPort command = new UserCommandPort(null, "newemail@email.com", null, null, null);
+        UserCommandPort command = new UserCommandPort(null, "newemail@email.com", null, null, null, null);
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByEmail("newemail@email.com")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
@@ -66,7 +66,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldUpdateUserLoginSuccessfully() {
-        UserCommandPort command = new UserCommandPort(null, null, "newlogin", null, null);
+        UserCommandPort command = new UserCommandPort(null, null, "newlogin", null, null, null);
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByLogin("newlogin")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
@@ -80,7 +80,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
-        UserCommandPort command = new UserCommandPort("Jane Doe", null, null, null, null);
+        UserCommandPort command = new UserCommandPort("Jane Doe", null, null, null, null, null);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> updateUserUseCase.execute(userId, command));
@@ -91,7 +91,7 @@ class UpdateUserUseCaseTest {
     void shouldThrowInvalidOperationExceptionWhenEmailAlreadyExists() {
         UUID otherUserId = UUID.randomUUID();
         User otherUser = new User(otherUserId, "Other", "new@email.com", "other", "pass", true);
-        UserCommandPort command = new UserCommandPort(null, "new@email.com", null, null, null);
+        UserCommandPort command = new UserCommandPort(null, "new@email.com", null, null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByEmail("new@email.com")).thenReturn(Optional.of(otherUser));
@@ -104,7 +104,7 @@ class UpdateUserUseCaseTest {
     void shouldThrowInvalidOperationExceptionWhenLoginAlreadyExists() {
         UUID otherUserId = UUID.randomUUID();
         User otherUser = new User(otherUserId, "Other", "other@email.com", "newlogin", "pass", true);
-        UserCommandPort command = new UserCommandPort(null, null, "newlogin", null, null);
+        UserCommandPort command = new UserCommandPort(null, null, "newlogin", null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByLogin("newlogin")).thenReturn(Optional.of(otherUser));
@@ -115,7 +115,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldAllowUpdateWithSameUserEmailAndLogin() {
-        UserCommandPort command = new UserCommandPort(null, "john@email.com", "john.doe", null, null);
+        UserCommandPort command = new UserCommandPort(null, "john@email.com", "john.doe", null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByEmail("john@email.com")).thenReturn(Optional.of(existingUser));
@@ -128,7 +128,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldNotValidateEmailWhenNull() {
-        UserCommandPort command = new UserCommandPort("New Name", null, null, null, null);
+        UserCommandPort command = new UserCommandPort("New Name", null, null, null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
@@ -141,7 +141,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldNotValidateLoginWhenNull() {
-        UserCommandPort command = new UserCommandPort("New Name", null, null, null, null);
+        UserCommandPort command = new UserCommandPort("New Name", null, null, null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
@@ -154,7 +154,7 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldUpdateAllFieldsAtOnce() {
-        UserCommandPort command = new UserCommandPort("New Name", "new@email.com", "newlogin", null, null);
+        UserCommandPort command = new UserCommandPort("New Name", "new@email.com", "newlogin", null, null, null);
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByEmail("new@email.com")).thenReturn(Optional.empty());

@@ -34,7 +34,7 @@ class UpdateUserPasswordInputTest {
         };
 
         UUID testId = UUID.randomUUID();
-        UserCommandPort command = new UserCommandPort(null, null, null, "password", null);
+        UserCommandPort command = new UserCommandPort(null, null, null, "password", null, null);
         
         assertDoesNotThrow(() -> implementation.execute(command, testId));
     }
@@ -46,11 +46,12 @@ class UpdateUserPasswordInputTest {
             assertNull(command.email());
             assertNull(command.login());
             assertNotNull(command.password());
+            assertNull(command.profileType());
             assertNull(command.address());
         };
 
         UUID testId = UUID.randomUUID();
-        UserCommandPort command = new UserCommandPort(null, null, null, "ValidPassword@123", null);
+        UserCommandPort command = new UserCommandPort(null, null, null, "ValidPassword@123", null, null);
         
         assertDoesNotThrow(() -> implementation.execute(command, testId));
     }

@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.application.user.dto;
 
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,12 +31,13 @@ class ApplicationDtoTest {
 
     @Test
     void createUserCommandPort() {
-        UserCommandPort dto = new UserCommandPort("Name", "email@test.com", "login", "pass", null);
+        UserCommandPort dto = new UserCommandPort("Name", "email@test.com", "login", "pass", ProfileType.CLIENT, null);
         
         assertThat(dto.name()).isEqualTo("Name");
         assertThat(dto.email()).isEqualTo("email@test.com");
         assertThat(dto.login()).isEqualTo("login");
         assertThat(dto.password()).isEqualTo("pass");
+        assertThat(dto.profileType()).isEqualTo(ProfileType.CLIENT);
     }
 
     @Test

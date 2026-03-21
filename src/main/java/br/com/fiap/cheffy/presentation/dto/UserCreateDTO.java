@@ -24,6 +24,9 @@ public record UserCreateDTO(
         String password,
 
         @NotNull
+        ProfileType profileType,
+
+        @NotNull
         AddressCreateDTO address
 ) {
 }

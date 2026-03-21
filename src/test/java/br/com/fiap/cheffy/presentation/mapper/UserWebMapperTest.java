@@ -2,6 +2,7 @@ package br.com.fiap.cheffy.presentation.mapper;
 
 import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
@@ -16,13 +17,14 @@ class UserWebMapperTest {
     void toCommandFromUserCreateDTO() {
         UserWebMapper mapper = new UserWebMapper();
         AddressCreateDTO addressDTO = new AddressCreateDTO("St", 1, "City", "12345678", "Hood", "ST", null, true);
-        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "pass", addressDTO);
+        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "pass", ProfileType.OWNER, addressDTO);
 
         UserCommandPort result = mapper.toCommand(dto);
 
         assertThat(result).isNotNull();
         assertThat(result.name()).isEqualTo("Name");
         assertThat(result.email()).isEqualTo("email@test.com");
+        assertThat(result.profileType()).isEqualTo(ProfileType.OWNER);
     }
 
     @Test

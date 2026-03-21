@@ -45,7 +45,7 @@ class UpdateUserPasswordUseCaseTest {
     void shouldUpdatePasswordSuccessfully() {
         String rawPassword = "NewPassword@123";
         String encodedPassword = "encodedNewPassword";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn(encodedPassword);
@@ -62,7 +62,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
         String rawPassword = "NewPassword@123";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -75,7 +75,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenPasswordIsTooShort() {
         String rawPassword = "Short@1";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn("encoded");
@@ -88,7 +88,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenPasswordHasNoUppercase() {
         String rawPassword = "nouppercas@123";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn("encoded");
@@ -100,7 +100,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenPasswordHasNoLowercase() {
         String rawPassword = "NOLOWERCASE@123";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn("encoded");
@@ -112,7 +112,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenPasswordHasNoDigit() {
         String rawPassword = "NoDigitPass@word";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn("encoded");
@@ -124,7 +124,7 @@ class UpdateUserPasswordUseCaseTest {
     @Test
     void shouldThrowExceptionWhenPasswordHasNoSymbol() {
         String rawPassword = "NoSymbolPass123";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn("encoded");
@@ -135,7 +135,7 @@ class UpdateUserPasswordUseCaseTest {
 
     @Test
     void shouldThrowExceptionWhenPasswordIsNull() {
-        UserCommandPort command = new UserCommandPort(null, null, null, null, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, null, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(null)).thenReturn("encoded");
@@ -148,7 +148,7 @@ class UpdateUserPasswordUseCaseTest {
     void shouldEncodePasswordBeforeValidation() {
         String rawPassword = "ValidPassword@123";
         String encodedPassword = "encodedValidPassword";
-        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null);
+        UserCommandPort command = new UserCommandPort(null, null, null, rawPassword, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncoderPort.encode(rawPassword)).thenReturn(encodedPassword);

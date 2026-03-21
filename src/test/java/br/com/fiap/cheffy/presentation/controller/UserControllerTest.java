@@ -4,6 +4,7 @@ import br.com.fiap.cheffy.application.user.dto.AddressCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.domain.common.PageResult;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.*;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
@@ -47,9 +48,9 @@ class UserControllerTest {
     @Test
     void createUserReturnsCreated() {
         AddressCreateDTO address = new AddressCreateDTO("St", 1, "City", "12345678", "Hood", "ST", null, true);
-        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "Pass123!", address);
+        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "Pass123!", ProfileType.CLIENT, address);
         String userId = UUID.randomUUID().toString();
-        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort("Name", "email@test.com", "login", "Pass123!", null));
+        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort("Name", "email@test.com", "login", "Pass123!", ProfileType.CLIENT, null));
         when(createUserInput.execute(any())).thenReturn(userId);
 
         ResponseEntity<String> response = userController.createUser(dto);
@@ -62,7 +63,7 @@ class UserControllerTest {
     void updateUserPasswordReturnsOk() {
         UUID id = UUID.randomUUID();
         UserUpdatePasswordDTO dto = new UserUpdatePasswordDTO("NewPass@123");
-        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort(null, null, null, "NewPass@123", null));
+        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort(null, null, null, "NewPass@123", null, null));
 
         ResponseEntity<UUID> response = userController.updateUserPassword(id, dto);
 
@@ -75,7 +76,7 @@ class UserControllerTest {
     void updateUserReturnsNoContent() {
         UUID id = UUID.randomUUID();
         UserUpdateDTO dto = new UserUpdateDTO("Name", "email@test.com", "login");
-        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort("Name", "email@test.com", "login", null, null));
+        when(mapper.toCommand(dto)).thenReturn(new UserCommandPort("Name", "email@test.com", "login", null, null, null));
 
         ResponseEntity<Void> response = userController.updateUser(id, dto);
 

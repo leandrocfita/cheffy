@@ -1,5 +1,6 @@
 package br.com.fiap.cheffy.presentation.dto;
 
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,10 +41,11 @@ class PresentationDtoTest {
     @Test
     void createUserCreateDTO() {
         AddressCreateDTO address = new AddressCreateDTO("St", 1, "City", "12345678", "Hood", "ST", null, true);
-        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "pass", address);
+        UserCreateDTO dto = new UserCreateDTO("Name", "email@test.com", "login", "pass", ProfileType.CLIENT, address);
         
         assertThat(dto.name()).isEqualTo("Name");
         assertThat(dto.email()).isEqualTo("email@test.com");
+        assertThat(dto.profileType()).isEqualTo(ProfileType.CLIENT);
         assertThat(dto.address()).isNotNull();
     }
 
