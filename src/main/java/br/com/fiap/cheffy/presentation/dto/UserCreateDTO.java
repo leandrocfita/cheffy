@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.presentation.dto;
 
 import br.com.fiap.cheffy.domain.profile.ProfileType;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ public record UserCreateDTO(
         @NotBlank
         String password,
 
+        @Valid
         @NotNull
         AddressCreateDTO address
 ) {
