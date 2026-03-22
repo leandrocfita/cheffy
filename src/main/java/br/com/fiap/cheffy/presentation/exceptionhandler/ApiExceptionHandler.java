@@ -157,7 +157,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getMinPasswordLength()) ) ;
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getMinPasswordLength());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 
