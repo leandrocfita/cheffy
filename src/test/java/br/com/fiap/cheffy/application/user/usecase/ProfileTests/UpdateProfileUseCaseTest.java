@@ -53,7 +53,6 @@ public class UpdateProfileUseCaseTest {
 
         // Then
         assertEquals(newProfileType, existingProfile.getType());
-        verify(profileRepository, times(1)).findById(profileId);
         verify(profileRepository, times(1)).save(existingProfile);
     }
 
@@ -70,7 +69,6 @@ public class UpdateProfileUseCaseTest {
 
         // When & Then
         assertThrows(ProfileNotFoundException.class, () -> updateProfileUseCase.updateById(profileId, inputDto));
-        verify(profileRepository, times(1)).findById(profileId);
         verify(profileRepository, never()).save(any(Profile.class));
     }
 

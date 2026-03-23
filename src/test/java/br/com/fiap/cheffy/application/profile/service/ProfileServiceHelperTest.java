@@ -67,15 +67,12 @@ class ProfileServiceHelperTest {
         Long id = 2L;
         Profile clientProfile = Profile.create(id, ProfileType.CLIENT.name());
 
-        when(profileRepository.findById(id)).thenReturn(Optional.of(clientProfile));
-
         ProfileIsOwnerOrClientException exception = assertThrows(
                 ProfileIsOwnerOrClientException.class,
-                () -> profileServiceHelper.getProfileOrFail(id)
+                () -> profileServiceHelper.validateProfileModification(clientProfile)
         );
 
         assertEquals(PROFILE_IS_OWNER_OR_CLIENT.toString(), exception.getMessage());
-        verify(profileRepository, times(1)).findById(id);
     }
 
     @Test
@@ -84,14 +81,11 @@ class ProfileServiceHelperTest {
         Long id = 3L;
         Profile ownerProfile = Profile.create(id, ProfileType.OWNER.name());
 
-        when(profileRepository.findById(id)).thenReturn(Optional.of(ownerProfile));
-
         ProfileIsOwnerOrClientException exception = assertThrows(
                 ProfileIsOwnerOrClientException.class,
-                () -> profileServiceHelper.getProfileOrFail(id)
+                () -> profileServiceHelper.validateProfileModification(ownerProfile)
         );
 
         assertEquals(PROFILE_IS_OWNER_OR_CLIENT.toString(), exception.getMessage());
-        verify(profileRepository, times(1)).findById(id);
     }
 }

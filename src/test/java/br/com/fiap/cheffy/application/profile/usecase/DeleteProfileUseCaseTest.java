@@ -36,6 +36,8 @@ class DeleteProfileUseCaseTest {
         Profile profile = Profile.create(id, "ADMIN");
 
         when(profileServiceHelper.getProfileOrFail(id)).thenReturn(profile);
+        when(profileServiceHelper.validateProfileModification(profile)).thenReturn(profile);
+        doNothing().when(profileRepository).delete(any(Profile.class));
 
         useCase.execute(id);
 
