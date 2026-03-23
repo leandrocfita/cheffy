@@ -19,6 +19,7 @@ public enum ExceptionsKeys {
 
     //Adress
     ADDRESS_NOT_FOUND_EXCEPTION,
+    FIRST_ADDRESS_MUST_BE_MAIN,
 
     //User
     USER_NOT_FOUND_EXCEPTION,
