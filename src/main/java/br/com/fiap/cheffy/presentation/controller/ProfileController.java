@@ -2,13 +2,9 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
 import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
-import br.com.fiap.cheffy.domain.profile.port.input.FindProfileByInput;
-import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
 import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
-import br.com.fiap.cheffy.domain.profile.port.input.ListAllProfilesInput;
-import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
-import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
+import br.com.fiap.cheffy.domain.profile.port.input.*;
 import br.com.fiap.cheffy.presentation.config.swagger.docs.ProfileControllerDocs;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
 import br.com.fiap.cheffy.presentation.dto.ProfileInputDto;
@@ -22,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,16 +29,19 @@ public class ProfileController implements ProfileControllerDocs {
     private final ProfileUpdateInput profileUpdateInput;
     private final FindProfileByInput findProfileByIdInput;
     private final ListAllProfilesInput listAllProfilesInput;
+    private final ProfileDeleteInput profileDeleteInput;
 
     public ProfileController(
             ProfileCreateInput profileCreateInput,
             ProfileUpdateInput profileUpdateInput,
             ListAllProfilesInput listAllProfilesInput,
-            FindProfileByInput findProfileByIdInput) {
+            FindProfileByInput findProfileByIdInput,
+            ProfileDeleteInput profileDeleteInput) {
         this.profileCreateInput = profileCreateInput;
         this.profileUpdateInput = profileUpdateInput;
         this.findProfileByIdInput = findProfileByIdInput;
         this.listAllProfilesInput = listAllProfilesInput;
+        this.profileDeleteInput = profileDeleteInput;
     }
 
     @Override
@@ -104,5 +105,15 @@ public class ProfileController implements ProfileControllerDocs {
         log.info("ProfileController.listAllProfiles - END - Found [{}] profiles in page [{}]", profiles.numberOfElements(), page);
 
         return ResponseEntity.ok(profiles);
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
+        log.info("ProfileController.deleteProfile - START - Deleting profile with ID [{}]", id);
+        profileDeleteInput.execute(id);
+        log.info("ProfileController.deleteProfile - END - Profile with ID [{}] deleted successfully", id);
+        MDC.clear();
+        return ResponseEntity.noContent().build();
     }
 }

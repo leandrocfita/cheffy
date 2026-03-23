@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileIsOwnerOrClientException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
 import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
@@ -221,11 +222,16 @@ class ApiExceptionHandlerIntegrationTest {
     @Test
     void shouldHandleProfileAlreadyExistException() throws Exception {
         when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Profile %s already exists");
-
         ProfileAlreadyExistException ex = new ProfileAlreadyExistException(ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION, "CLIENT");
-
         ResponseEntity<Object> response = handler.handleProfileAlreadyExist(ex, webRequest);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
 
+    @Test
+    void shouldHandleProfileIsOwnerOrClientException() throws Exception {
+        when(messageSource.getMessage(any(String.class), any(), any())).thenReturn("Não é permitida a exclusão dos perfis padrão OWNER e CLIENT.");
+        ProfileIsOwnerOrClientException ex = new ProfileIsOwnerOrClientException(ExceptionsKeys.PROFILE_IS_OWNER_OR_CLIENT);
+        ResponseEntity<Object> response = handler.handleProfileIsOwnerOrClientException(ex, webRequest);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 

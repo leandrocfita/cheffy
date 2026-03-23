@@ -15,4 +15,6 @@ public interface ProfileRepository {
     Long save(Profile profile);
 
     PageResult<Profile> findAll(PageRequest pageRequest);
+
+    void delete(Profile profile);
 }

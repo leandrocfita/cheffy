@@ -21,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Sort;
 
+import java.util.UUID;
+
 @Tag(name = "3. Profiles", description = "Consulta e manutenção de perfis de usuário")
 public interface ProfileControllerDocs {
 
@@ -83,4 +85,11 @@ public interface ProfileControllerDocs {
     )
     @DefaultPublicApiErrors
     ResponseEntity<PageResult<ProfileQueryPort>> listAllProfiles(int page, int size, String sortBy, Sort.Direction direction);
+
+    @Operation(summary = "Excluir perfil")
+    @ApiResponse(responseCode = "204", description = "Perfil excluído com sucesso")
+    @DefaultBadRequestApiResponse
+    @DefaultApiErrors
+    @DefaultNotFoundApiResponse
+    ResponseEntity<Void> deleteProfile(Long id);
 }
