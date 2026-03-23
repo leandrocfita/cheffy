@@ -127,7 +127,7 @@ class FoodItemControllerTest {
         when(createFoodItemInput.execute(command)).thenReturn(foodItem);
         when(foodItemWebMapper.foodItemToFoodItemQueryPort(foodItem)).thenReturn(queryPort);
 
-        ResponseEntity<Object> response = foodItemController.postFoodItem(dto, restaurantId);
+        ResponseEntity<FoodItemQueryPort> response = foodItemController.postFoodItem(dto, restaurantId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isEqualTo(queryPort);
@@ -144,7 +144,7 @@ class FoodItemControllerTest {
 
         when(foodItemWebMapper.foodItemDtoToFoodItemCommandPort(dto, restaurantId)).thenReturn(commandPort);
 
-        ResponseEntity<Object> response = foodItemController.updateFoodItem(dto, restaurantId, userId, foodItemId);
+        ResponseEntity<Void> response = foodItemController.updateFoodItem(dto, restaurantId, userId, foodItemId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(updateFoodItemInput).update(eq(foodItemId), eq(restaurantId), eq(userId), eq(commandPort));

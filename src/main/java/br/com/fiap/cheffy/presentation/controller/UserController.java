@@ -4,17 +4,13 @@ import br.com.fiap.cheffy.domain.common.PageRequest;
 import br.com.fiap.cheffy.domain.common.PageResult;
 import br.com.fiap.cheffy.domain.user.port.input.*;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
+import br.com.fiap.cheffy.presentation.config.swagger.docs.UserControllerDocs;
 import br.com.fiap.cheffy.presentation.dto.AddressCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdatePasswordDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserController {
+public class UserController implements UserControllerDocs {
 
     private final CreateUserInput createUserInput;
     private final DeactivateUserInput deactivateUserInput;
@@ -78,26 +74,8 @@ public class UserController {
         this.findUserByNameInput = findUserByNameInput;
     }
 
+    @Override
     @PostMapping
-    @Operation(
-            summary = "Criar novo usuário",
-            description = "Cadastra novo usuário"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Usuário criado com sucesso - Retorna UUID do novo usuário",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(type = "string", format = "uuid")
-                    )
-            ),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou malformados"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "409", description = "Conflito - Email ou Login já cadastrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<String> createUser(@RequestBody @Valid final UserCreateDTO userCreateDTO) {
         log.info("UserController.createTbUser - START - Create user");
         var createdId = createUserInput.execute(mapper.toCommand(userCreateDTO));
@@ -106,16 +84,8 @@ public class UserController {
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
+    @Override
     @PatchMapping("/{id}/password")
-    @Operation(summary = "Atualizar senha do usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Nova senha inválida"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<UUID> updateUserPassword(@PathVariable final UUID id,
                                                    @RequestBody @Valid final UserUpdatePasswordDTO userUpdatePasswordDTO) {
         log.info("UserController.updateUserPassword - START - Update password for user [{}]", id);
@@ -124,20 +94,8 @@ public class UserController {
         return ResponseEntity.ok(id);
     }
 
+    @Override
     @PatchMapping("/{id}")
-    @Operation(
-            summary = "Atualizar usuário",
-            description = "Atualização parcial - apenas campos enviados são modificados"
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Usuário atualizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados de atualização inválidos"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Conflito - Email já cadastrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> updateUser(@PathVariable final UUID id,
                                            @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
         log.info("UserController.updateUser - START - Update user");
@@ -146,16 +104,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PatchMapping("/{id}/deactivate")
-    @Operation(summary = "Desativar usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> deactivateUser(@PathVariable final UUID id) {
         log.info("UserController.deactivateUser - START - Deactivate user");
         deactivateUserInput.execute(id);
@@ -163,16 +113,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PatchMapping("/{id}/reactivate")
-    @Operation(summary = "Reativa usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Usuário reativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> reactivateUser(@PathVariable final UUID id) {
         log.info("UserController.reactivateUser - START - Reactivate user");
         reactivateUserInput.execute(id);
@@ -181,14 +123,8 @@ public class UserController {
     }
 
     //ADDRESSES
+    @Override
     @PostMapping("/{userId}/addresses")
-    @Operation(summary = "Adicionar novo endereço ao usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Long> addAddress(
             @PathVariable UUID userId,
             @RequestBody @Valid AddressCreateDTO dto) {
@@ -203,14 +139,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     @PatchMapping("/{userId}/addresses/{addressId}")
-    @Operation(summary = "Atualizar parcialmente um endereço do usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Endereço atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou endereço não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> updateAddress(
             @PathVariable UUID userId,
             @PathVariable Long addressId,
@@ -226,14 +156,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @DeleteMapping("/{userId}/addresses/{addressId}")
-    @Operation(summary = "Remover endereço do usuário")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Endereço removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou endereço não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Operação não permitida"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> removeAddress(
             @PathVariable UUID userId,
             @PathVariable Long addressId) {
@@ -248,22 +172,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping
-    @Operation(
-            summary = "Listar todos os usuários",
-            description = "Retorna lista paginada de todos os usuários cadastrados"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Lista de usuários retornada com sucesso",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
-    public ResponseEntity<?> listAllUsers(
+    public ResponseEntity<PageResult<UserQueryPort>> listAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
@@ -287,23 +198,9 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @Override
     @GetMapping("/{id}")
-    @Operation(
-            summary = "Buscar usuário por ID",
-            description = "Retorna os dados completos de um usuário específico"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Usuário encontrado com sucesso",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
-    public ResponseEntity<?> findUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserQueryPort> findUserById(@PathVariable UUID id) {
         log.info("UserController.findUserById - START - Finding user [{}]", id);
 
         var user = findUserByIdInput.execute(id);
@@ -314,23 +211,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Override
     @GetMapping(params = "name")
-    @Operation(
-            summary = "Buscar usuários por nome",
-            description = "Retorna lista paginada de usuários filtrados pelo nome"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Usuários encontrados com sucesso",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ),
-            @ApiResponse(responseCode = "400", description = "Parâmetro inválido"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
-    public ResponseEntity<?> searchUsersByName(
+    public ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(
             @RequestParam @NotBlank String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

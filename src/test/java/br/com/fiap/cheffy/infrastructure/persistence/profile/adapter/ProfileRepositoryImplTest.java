@@ -20,7 +20,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileRepositoryImplTest {
@@ -84,5 +85,37 @@ class ProfileRepositoryImplTest {
 
         assertThat(result.content()).hasSize(1);
         assertThat(result.content().getFirst()).isEqualTo(profile);
+    }
+
+    @Test
+    void deleteShouldMapAndDelegateToJpaRepository() {
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
+        ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
+
+        when(mapper.toJpaReference(profile)).thenReturn(jpaEntity);
+
+        profileRepository.delete(profile);
+
+        verify(mapper).toJpaReference(profile);
+        verify(jpaRepository).delete(jpaEntity);
+    }
+
+    @Test
+    void deleteShouldPropagateExceptionWhenJpaDeleteFails() {
+        Profile profile = Profile.create(1L, ProfileType.CLIENT.name());
+        ProfileJpaEntity jpaEntity = new ProfileJpaEntity();
+
+        when(mapper.toJpaReference(profile)).thenReturn(jpaEntity);
+        doThrow(new RuntimeException("delete failed"))
+                .when(jpaRepository).delete(jpaEntity);
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> profileRepository.delete(profile)
+        );
+
+        assertThat(exception).hasMessage("delete failed");
+        verify(mapper).toJpaReference(profile);
+        verify(jpaRepository).delete(jpaEntity);
     }
 }

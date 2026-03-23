@@ -12,15 +12,11 @@ import br.com.fiap.cheffy.domain.fooditem.port.input.ListFoodItemsByRestaurantIn
 import br.com.fiap.cheffy.domain.fooditem.port.input.DeactivateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.ReactivateFoodItemInput;
 import br.com.fiap.cheffy.domain.fooditem.port.input.UpdateFoodItemAvailabilityInput;
+import br.com.fiap.cheffy.presentation.config.swagger.docs.FoodItemControllerDocs;
 import br.com.fiap.cheffy.presentation.dto.FoodItemAvailabilityDTO;
 import br.com.fiap.cheffy.presentation.dto.FoodItemDTO;
 import br.com.fiap.cheffy.presentation.dto.FoodItemUpdateDto;
 import br.com.fiap.cheffy.presentation.mapper.FoodItemWebMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -36,8 +32,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/v1/restaurants/{restaurantId}/food-items", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@Tag(name = "Food Item", description = "Operações relacionadas ao food items")
-public class FoodItemController {
+public class FoodItemController implements FoodItemControllerDocs {
 
     private final CreateFoodItemInput createFoodItemInput;
     private final DeactivateFoodItemInput deactivateFoodItemInput;
@@ -66,13 +61,8 @@ public class FoodItemController {
         this.updateFoodItemInput = updateFoodItemInput;
     }
 
+    @Override
     @GetMapping
-    @Operation(summary = "Listar food items do restaurante", description = "Retorna lista paginada de food items de um restaurante")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<PageResult<FoodItemQueryPort>> listFoodItemsByRestaurant(
             @PathVariable UUID restaurantId,
             @RequestParam(defaultValue = "0") int page,
@@ -94,17 +84,10 @@ public class FoodItemController {
         return ResponseEntity.ok(result);
     }
 
+    @Override
     @PostMapping()
     @Transactional
-    @Operation(summary = "Create a new food item", description = "Creates a new food item associated with a specific restaurant")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Item criado no cardápio com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados de cadastro do Item são inválidos"),
-            @ApiResponse(responseCode = "404", description = "O restaurante em que o Item deve ser cadastrado não existe"),
-            @ApiResponse(responseCode = "409", description = "O item ja existe no cardápio do restaurante"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Object> postFoodItem(
+    public ResponseEntity<FoodItemQueryPort> postFoodItem(
             @RequestBody @Valid FoodItemDTO foodItemDTO,
             @PathVariable @Valid UUID restaurantId){
 
@@ -116,17 +99,10 @@ public class FoodItemController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
+    @Override
     @Transactional
     @PatchMapping("/{foodItemId}")
-    @Operation(summary = "Update an existing food item", description = "Updates an existing food item associated with a specific restaurant")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Item atualizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados de atualização do Item são inválidos"),
-            @ApiResponse(responseCode = "403", description = "Operação não permitida. O usuário não tem permissão para alterar este restaurante"),
-            @ApiResponse(responseCode = "404", description = "Restaurante ou Item não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Object> updateFoodItem(
+    public ResponseEntity<Void> updateFoodItem(
             @RequestBody @Valid FoodItemUpdateDto foodItemUpdateDTO,
             @PathVariable @Valid UUID restaurantId,
             @RequestAttribute("userId") UUID userId,
@@ -136,28 +112,13 @@ public class FoodItemController {
 
         updateFoodItemInput.update(foodItemId, restaurantId, userId, foodItemCommandPort);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(204)).body(null);
+        return ResponseEntity.noContent().build();
     }
 
 
+    @Override
     @Transactional(readOnly = true)
     @GetMapping("/{foodItemId}")
-    @Operation(
-            summary = "Buscar item do cardápio por ID",
-            description = "Retorna os dados completos de um item específico do cardápio de um restaurante"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Item do cardápio encontrado com sucesso",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "401", description = "Token expirado"),
-            @ApiResponse(responseCode = "403", description = "Sem permissão para acessar este recurso"),
-            @ApiResponse(responseCode = "404", description = "Item do cardápio não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<FoodItemQueryPort> getFoodItemById(@PathVariable UUID restaurantId, @PathVariable UUID foodItemId) {
 
 
@@ -169,15 +130,8 @@ public class FoodItemController {
         return ResponseEntity.ok(foodItemQueryPort);
     }
 
+    @Override
     @PatchMapping("/{foodItemId}/deactivate")
-    @Operation(summary = "Desativar food item de um restaurante")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Food item desativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "404", description = "Restaurante ou food item não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Food item já está inativo"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> deactivateFoodItem(
             @PathVariable UUID restaurantId,
             @PathVariable UUID foodItemId) {
@@ -187,15 +141,8 @@ public class FoodItemController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PatchMapping("/{foodItemId}/reactivate")
-    @Operation(summary = "Reativar food item de um restaurante")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Food item reativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "404", description = "Restaurante ou food item não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Food item já está ativo"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> reactivateFoodItem(
             @PathVariable UUID restaurantId,
             @PathVariable UUID foodItemId) {
@@ -205,18 +152,8 @@ public class FoodItemController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PatchMapping("/{foodItemId}/availability")
-    @Operation(
-            summary = "Atualizar disponibilidade de um food item",
-            description = "Atualiza available e/ou deliveryAvailable. Para habilitar deliveryAvailable o item deve estar active e available. Para habilitar available o item deve estar active."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Disponibilidade atualizada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "ID inválido - formato UUID incorreto"),
-            @ApiResponse(responseCode = "404", description = "Restaurante ou food item não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Operação não permitida para o estado atual do food item"),
-            @ApiResponse(responseCode = "500", description = "Erro interno")
-    })
     public ResponseEntity<Void> updateFoodItemAvailability(
             @PathVariable UUID restaurantId,
             @PathVariable UUID foodItemId,
