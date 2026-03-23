@@ -83,6 +83,7 @@ public interface ProfileControllerDocs {
     @Operation(summary = "Excluir perfil")
     @ApiResponse(responseCode = "204", description = "Perfil excluído com sucesso")
     @DefaultBadRequestApiResponse
+    @DefaultConflictApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
     ResponseEntity<Void> deleteProfile(Long id);

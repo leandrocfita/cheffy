@@ -126,7 +126,7 @@ class ApiExceptionHandlerIntegrationTest {
         
         ResponseEntity<Object> response = (ResponseEntity<Object>) method.invoke(handler, ex, webRequest);
         
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test

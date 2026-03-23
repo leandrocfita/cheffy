@@ -108,10 +108,13 @@ public class ProfileController implements ProfileControllerDocs {
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
-        log.info("ProfileController.deleteProfile - START - Deleting profile with ID [{}]", id);
-        profileDeleteInput.execute(id);
-        log.info("ProfileController.deleteProfile - END - Profile with ID [{}] deleted successfully", id);
-        MDC.clear();
-        return ResponseEntity.noContent().build();
+        try {
+            log.info("ProfileController.deleteProfile - START - Deleting profile with ID [{}]", id);
+            profileDeleteInput.execute(id);
+            log.info("ProfileController.deleteProfile - END - Profile with ID [{}] deleted successfully", id);
+            return ResponseEntity.noContent().build();
+        } finally {
+            MDC.clear();
+        }
     }
 }

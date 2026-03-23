@@ -221,7 +221,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String message = getMessage(ex.getMessage());
         message = String.format(message, ex.getType());
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
