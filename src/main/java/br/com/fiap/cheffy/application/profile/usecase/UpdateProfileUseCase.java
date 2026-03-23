@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.profile.usecase;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.service.ProfileServiceHelper;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
@@ -16,9 +17,15 @@ public class UpdateProfileUseCase implements ProfileUpdateInput {
     private final Logger logger = Logger.getLogger(UpdateProfileUseCase.class.getName());
 
     private final ProfileRepository profileRepository;
+    private final ProfileServiceHelper profileServiceHelper;
 
-    public UpdateProfileUseCase(ProfileRepository profileRepository){
+    public UpdateProfileUseCase(
+            ProfileRepository profileRepository,
+            ProfileServiceHelper profileServiceHelper
+    )
+    {
         this.profileRepository = profileRepository;
+        this.profileServiceHelper = profileServiceHelper;
     }
 
     @Override
@@ -28,13 +35,10 @@ public class UpdateProfileUseCase implements ProfileUpdateInput {
 
         String newProfileType = profileInputPort.name();
 
-        Profile profileFoundById = profileRepository.findById(id).orElse(null);
+        Profile profileFound = profileServiceHelper.getProfileOrFail(id);
 
-        if (profileFoundById == null) {
-            logger.log(Level.WARNING, "Profile with id {0} not found, aborting the profile type update", id);
-            throw  new ProfileNotFoundException(ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION, id.toString());
-        }
-        
+        profileServiceHelper.validateProfileModification(profileFound);
+
         Profile profileNameAlreadyExist = profileRepository.findByType(profileInputPort.name()).orElse(null);
         
         if (profileNameAlreadyExist != null){
@@ -42,11 +46,11 @@ public class UpdateProfileUseCase implements ProfileUpdateInput {
             logger.severe(msg);
             throw new ProfileAlreadyExistException(ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION, profileInputPort.name());
         }
-        
-        
-        profileFoundById.patch(newProfileType);
 
-        profileRepository.save(profileFoundById);
+
+        profileFound.patch(newProfileType);
+
+        profileRepository.save(profileFound);
 
         logger.info("End of UpdateProfileUseCase: Profile updated complete");
 

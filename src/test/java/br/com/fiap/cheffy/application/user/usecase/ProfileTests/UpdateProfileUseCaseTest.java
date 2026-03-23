@@ -1,6 +1,7 @@
 package br.com.fiap.cheffy.application.user.usecase.ProfileTests;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
+import br.com.fiap.cheffy.application.profile.service.ProfileServiceHelper;
 import br.com.fiap.cheffy.application.profile.usecase.UpdateProfileUseCase;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
@@ -24,6 +25,9 @@ public class UpdateProfileUseCaseTest {
     @Mock
     private ProfileRepository profileRepository;
 
+    @Mock
+    private ProfileServiceHelper profileServiceHelper;
+
     @InjectMocks
     private UpdateProfileUseCase updateProfileUseCase;
 
@@ -37,7 +41,9 @@ public class UpdateProfileUseCaseTest {
         Profile existingProfile = Profile.create(profileId, "Client");
 
         // Mock findById to return the existing profile
-        when(profileRepository.findById(profileId)).thenReturn(Optional.of(existingProfile));
+        when(profileServiceHelper.getProfileOrFail(profileId)).thenReturn(existingProfile);
+
+        when(profileServiceHelper.validateProfileModification(existingProfile)).thenReturn(existingProfile);
         
         // Mock save
         when(profileRepository.save(any(Profile.class))).thenReturn(profileId);
@@ -47,7 +53,6 @@ public class UpdateProfileUseCaseTest {
 
         // Then
         assertEquals(newProfileType, existingProfile.getType());
-        verify(profileRepository, times(1)).findById(profileId);
         verify(profileRepository, times(1)).save(existingProfile);
     }
 
@@ -60,11 +65,10 @@ public class UpdateProfileUseCaseTest {
         ProfileInputPort inputDto = new ProfileInputPort(newProfileType);
 
         // Mock findById to return empty
-        when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
+        when(profileServiceHelper.getProfileOrFail(profileId)).thenThrow(ProfileNotFoundException.class);
 
         // When & Then
         assertThrows(ProfileNotFoundException.class, () -> updateProfileUseCase.updateById(profileId, inputDto));
-        verify(profileRepository, times(1)).findById(profileId);
         verify(profileRepository, never()).save(any(Profile.class));
     }
 

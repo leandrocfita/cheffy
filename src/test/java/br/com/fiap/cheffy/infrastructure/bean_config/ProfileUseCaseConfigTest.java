@@ -45,7 +45,7 @@ class ProfileUseCaseConfigTest {
     void updateProfileUseCaseCreatesBean() {
         ProfileUseCaseConfig config = new ProfileUseCaseConfig();
 
-        UpdateProfileUseCase useCase = config.updateProfileUseCase(profileRepository);
+        UpdateProfileUseCase useCase = config.updateProfileUseCase(profileRepository, profileServiceHelper);
 
         assertThat(useCase).isNotNull();
     }
