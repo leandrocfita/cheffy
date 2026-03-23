@@ -51,5 +51,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         return PageMapper.toDomainPageResult(domainPage);
     }
 
-
+    @Override
+    public void delete(Profile profileDomain) {
+        ProfileJpaEntity profileJpa = mapper.toJpaReference(profileDomain);
+        profileJpaRepository.delete(profileJpa);
+    }
 }

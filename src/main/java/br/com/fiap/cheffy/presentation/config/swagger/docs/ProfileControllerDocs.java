@@ -2,11 +2,7 @@ package br.com.fiap.cheffy.presentation.config.swagger.docs;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
 import br.com.fiap.cheffy.domain.common.PageResult;
-import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultApiErrors;
-import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultBadRequestApiResponse;
-import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultConflictApiResponse;
-import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultNotFoundApiResponse;
-import br.com.fiap.cheffy.presentation.config.doc_helper.DefaultPublicApiErrors;
+import br.com.fiap.cheffy.presentation.config.doc_helper.*;
 import br.com.fiap.cheffy.presentation.config.swagger.schema.ProfilePageResponseSchema;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
 import br.com.fiap.cheffy.presentation.dto.ProfileInputDto;
@@ -17,9 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Sort;
 
 @Tag(name = "3. Profiles", description = "Consulta e manutenção de perfis de usuário")
 public interface ProfileControllerDocs {
@@ -83,4 +79,12 @@ public interface ProfileControllerDocs {
     )
     @DefaultPublicApiErrors
     ResponseEntity<PageResult<ProfileQueryPort>> listAllProfiles(int page, int size, String sortBy, Sort.Direction direction);
+
+    @Operation(summary = "Excluir perfil")
+    @ApiResponse(responseCode = "204", description = "Perfil excluído com sucesso")
+    @DefaultBadRequestApiResponse
+    @DefaultConflictApiResponse
+    @DefaultApiErrors
+    @DefaultNotFoundApiResponse
+    ResponseEntity<Void> deleteProfile(Long id);
 }

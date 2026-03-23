@@ -2,14 +2,14 @@ package br.com.fiap.cheffy.presentation.controller;
 
 import br.com.fiap.cheffy.application.profile.dto.ProfileInputPort;
 import br.com.fiap.cheffy.application.profile.dto.ProfileQueryPort;
-import br.com.fiap.cheffy.domain.profile.ProfileType;
-import br.com.fiap.cheffy.domain.profile.port.input.FindProfileByInput;
 import br.com.fiap.cheffy.domain.common.PageResult;
-import br.com.fiap.cheffy.domain.profile.port.input.ListAllProfilesInput;
-import br.com.fiap.cheffy.domain.profile.port.input.ProfileCreateInput;
-import br.com.fiap.cheffy.domain.profile.port.input.ProfileUpdateInput;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileIsOwnerOrClientException;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
+import br.com.fiap.cheffy.domain.profile.port.input.*;
 import br.com.fiap.cheffy.presentation.dto.ProfileCreateReponseDto;
 import br.com.fiap.cheffy.presentation.dto.ProfileInputDto;
+import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +42,9 @@ class ProfileControllerTest {
 
     @Mock
     private ListAllProfilesInput listAllProfilesInput;
+
+    @Mock
+    private ProfileDeleteInput profileDeleteInput;
 
     @InjectMocks
     private ProfileController profileController;
@@ -112,5 +115,41 @@ class ProfileControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(listAllProfilesInput, times(1)).execute(any());
+    }
+
+    @Test
+    @DisplayName("Should return 204 No Content when deleting an existing profile id")
+    void deleteProfileExistingIdReturnsNoContent() {
+        Long id = 1L;
+
+        var response = profileController.deleteProfile(id);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(profileDeleteInput).execute(id);
+    }
+
+    @Test
+    @DisplayName("Should throw ProfileNotFoundException when deleting a non-existing profile id")
+    void deleteProfileNonExistingIdThrowsProfileNotFoundException() {
+        Long id = 999L;
+        doThrow(new ProfileNotFoundException(ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION, id.toString()))
+                .when(profileDeleteInput).execute(id);
+
+        Assertions.assertThrows(ProfileNotFoundException.class, () -> profileController.deleteProfile(id));
+
+        verify(profileDeleteInput).execute(id);
+    }
+
+    @Test
+    @DisplayName("Should throw ProfileIsOwnerOrClientException when trying to delete CLIENT or OWNER profile")
+    void deleteProfileClientThrowsProfileIsOwnerOrClientException() {
+        Long clientProfileId = 2L;
+        doThrow(new ProfileIsOwnerOrClientException(ExceptionsKeys.PROFILE_IS_OWNER_OR_CLIENT))
+                .when(profileDeleteInput).execute(clientProfileId);
+
+        Assertions.assertThrows(ProfileIsOwnerOrClientException.class,
+                () -> profileController.deleteProfile(clientProfileId));
+
+        verify(profileDeleteInput).execute(clientProfileId);
     }
 }
