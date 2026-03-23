@@ -25,8 +25,10 @@ public class ProfileUseCaseConfig {
     }
 
     @Bean
-    UpdateProfileUseCase updateProfileUseCase(ProfileRepository profileRepository) {
-        return new UpdateProfileUseCase(profileRepository);
+    UpdateProfileUseCase updateProfileUseCase(
+            ProfileRepository profileRepository,
+            ProfileServiceHelper profileServiceHelper) {
+        return new UpdateProfileUseCase(profileRepository, profileServiceHelper);
     }
 
     @Bean

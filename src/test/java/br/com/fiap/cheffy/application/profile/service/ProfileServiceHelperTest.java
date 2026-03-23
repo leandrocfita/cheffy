@@ -37,7 +37,7 @@ class ProfileServiceHelperTest {
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
 
-        Profile result = profileServiceHelper.validateDeleteProfile(id);
+        Profile result = profileServiceHelper.getProfileOrFail(id);
 
         assertNotNull(result);
         assertEquals(profile, result);
@@ -53,7 +53,7 @@ class ProfileServiceHelperTest {
 
         ProfileNotFoundException exception = assertThrows(
                 ProfileNotFoundException.class,
-                () -> profileServiceHelper.validateDeleteProfile(id)
+                () -> profileServiceHelper.getProfileOrFail(id)
         );
 
         assertEquals(PROFILE_NOT_FOUND_EXCEPTION.toString(), exception.getMessage());
@@ -71,7 +71,7 @@ class ProfileServiceHelperTest {
 
         ProfileIsOwnerOrClientException exception = assertThrows(
                 ProfileIsOwnerOrClientException.class,
-                () -> profileServiceHelper.validateDeleteProfile(id)
+                () -> profileServiceHelper.getProfileOrFail(id)
         );
 
         assertEquals(PROFILE_IS_OWNER_OR_CLIENT.toString(), exception.getMessage());
@@ -88,7 +88,7 @@ class ProfileServiceHelperTest {
 
         ProfileIsOwnerOrClientException exception = assertThrows(
                 ProfileIsOwnerOrClientException.class,
-                () -> profileServiceHelper.validateDeleteProfile(id)
+                () -> profileServiceHelper.getProfileOrFail(id)
         );
 
         assertEquals(PROFILE_IS_OWNER_OR_CLIENT.toString(), exception.getMessage());

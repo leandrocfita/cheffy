@@ -35,11 +35,11 @@ class DeleteProfileUseCaseTest {
         Long id = 1L;
         Profile profile = Profile.create(id, "ADMIN");
 
-        when(profileServiceHelper.validateDeleteProfile(id)).thenReturn(profile);
+        when(profileServiceHelper.getProfileOrFail(id)).thenReturn(profile);
 
         useCase.execute(id);
 
-        verify(profileServiceHelper, times(1)).validateDeleteProfile(id);
+        verify(profileServiceHelper, times(1)).getProfileOrFail(id);
         verify(profileRepository, times(1)).delete(profile);
     }
 
@@ -48,12 +48,12 @@ class DeleteProfileUseCaseTest {
     void shouldThrowWhenIdDoesNotExist() {
         Long id = 999L;
 
-        when(profileServiceHelper.validateDeleteProfile(id))
+        when(profileServiceHelper.getProfileOrFail(id))
                 .thenThrow(new ProfileNotFoundException(ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION, id.toString()));
 
         assertThrows(ProfileNotFoundException.class, () -> useCase.execute(id));
 
-        verify(profileServiceHelper, times(1)).validateDeleteProfile(id);
+        verify(profileServiceHelper, times(1)).getProfileOrFail(id);
         verify(profileRepository, never()).delete(any(Profile.class));
     }
 
@@ -63,12 +63,12 @@ class DeleteProfileUseCaseTest {
         Long id = 2L;
         Profile client = Profile.create(id, ProfileType.CLIENT.name());
 
-        when(profileServiceHelper.validateDeleteProfile(id))
+        when(profileServiceHelper.getProfileOrFail(id))
                 .thenThrow(new ProfileIsOwnerOrClientException(ExceptionsKeys.PROFILE_IS_OWNER_OR_CLIENT));
 
         assertThrows(ProfileIsOwnerOrClientException.class, () -> useCase.execute(id));
 
-        verify(profileServiceHelper, times(1)).validateDeleteProfile(id);
+        verify(profileServiceHelper, times(1)).getProfileOrFail(id);
         verify(profileRepository, never()).delete(client);
         verify(profileRepository, never()).delete(any(Profile.class));
     }
@@ -79,12 +79,12 @@ class DeleteProfileUseCaseTest {
         Long id = 3L;
         Profile owner = Profile.create(id, ProfileType.OWNER.name());
 
-        when(profileServiceHelper.validateDeleteProfile(id))
+        when(profileServiceHelper.getProfileOrFail(id))
                 .thenThrow(new ProfileIsOwnerOrClientException(ExceptionsKeys.PROFILE_IS_OWNER_OR_CLIENT));
 
         assertThrows(ProfileIsOwnerOrClientException.class, () -> useCase.execute(id));
 
-        verify(profileServiceHelper, times(1)).validateDeleteProfile(id);
+        verify(profileServiceHelper, times(1)).getProfileOrFail(id);
         verify(profileRepository, never()).delete(owner);
         verify(profileRepository, never()).delete(any(Profile.class));
     }

@@ -19,16 +19,16 @@ public class ProfileServiceHelper {
         this.profileRepository = profileRepository;
     }
 
-    public Profile validateDeleteProfile(Long id) {
-        return validateProfileIsOwnerOrClient(getProfileOrFail(id));
+    public Profile validateProfileModification(Profile profile) {
+        return thorwExceptionCaseProfileIsOwnerOrClient(profile);
     }
 
-    private Profile getProfileOrFail(Long id) {
+    public Profile getProfileOrFail(Long id) {
         return profileRepository.findById(id)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION, id.toString()));
     }
 
-    private Profile validateProfileIsOwnerOrClient(Profile profile) {
+    private Profile thorwExceptionCaseProfileIsOwnerOrClient(Profile profile) {
         return Optional.ofNullable(profile)
                 .filter(p -> !p.getType().equalsIgnoreCase(ProfileType.OWNER.name())
                         && !p.getType().equalsIgnoreCase(ProfileType.CLIENT.name()))
