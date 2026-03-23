@@ -12,8 +12,7 @@ import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION;
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.REGISTER_FAILED_EXCEPTION;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 public class CreateUserUseCase implements CreateUserInput {
 
@@ -44,6 +43,11 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     private Address createAddressDomain(UserCommandPort command) {
+
+        if(command.address().main().equals(Boolean.FALSE)){
+            throw new RegisterFailedException(FIRST_ADDRESS_MUST_BE_MAIN);
+        }
+
                return Address.create(
                         command.address().streetName(),
                         command.address().number(),
@@ -52,7 +56,7 @@ public class CreateUserUseCase implements CreateUserInput {
                         command.address().neighborhood(),
                         command.address().stateProvince(),
                         command.address().addressLine(),
-                        true
+                        command.address().main()
                 );
     }
 
