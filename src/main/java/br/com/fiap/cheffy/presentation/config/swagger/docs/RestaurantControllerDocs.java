@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -64,21 +65,21 @@ public interface RestaurantControllerDocs {
                     )
             )
     )
-    ResponseEntity<String> registerRestaurant(RestaurantCreateDTO restaurantCreateDTO, UUID userId);
+    ResponseEntity<String> registerRestaurant(@Valid RestaurantCreateDTO restaurantCreateDTO, @Valid UUID userId);
 
     @Operation(summary = "Desativar restaurante de um usuário")
     @ApiResponse(responseCode = "204", description = "Restaurante desativado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> deactivateRestaurant(UUID id, UUID userId);
+    ResponseEntity<Void> deactivateRestaurant(@Valid UUID id, @Valid UUID userId);
 
     @Operation(summary = "Reativar restaurante de um usuário")
     @ApiResponse(responseCode = "204", description = "Restaurante reativado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> reactivateRestaurant(UUID id, UUID userId);
+    ResponseEntity<Void> reactivateRestaurant(@Valid UUID id, @Valid UUID userId);
 
     @Operation(summary = "Atualizar dados de um restaurante", description = "Atualiza os dados de um restaurante existente. Somente o proprietário pode atualizar. Restaurantes desativados não podem ser atualizados.")
     @ApiResponse(responseCode = "204", description = "Restaurante atualizado com sucesso")
@@ -86,7 +87,7 @@ public interface RestaurantControllerDocs {
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
     @DefaultConflictApiResponse
-    ResponseEntity<Void> updateRestaurant(UUID id, UUID userId, RestaurantUpdateDTO restaurantUpdateDTO);
+    ResponseEntity<Void> updateRestaurant(UUID id, UUID userId, @Valid RestaurantUpdateDTO restaurantUpdateDTO);
 
     @Operation(summary = "Buscar restaurante por ID", description = "Retorna os dados completos de um restaurante com seu cardápio")
     @DefaultApiErrors

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,21 +40,21 @@ public interface ProfileControllerDocs {
                     )
             )
     )
-    ResponseEntity<ProfileCreateReponseDto> createProfile(ProfileInputDto profileInputDto);
+    ResponseEntity<ProfileCreateReponseDto> createProfile(@Valid ProfileInputDto profileInputDto);
 
     @Operation(summary = "Atualizar perfil por ID", description = "Atualiza um tipo de perfil existente identificado pelo seu ID")
     @ApiResponse(responseCode = "204", description = "Perfil atualizado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultNotFoundApiResponse
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    ResponseEntity<Void> updateProfileById(Long id, ProfileInputDto profileInputDto);
+    ResponseEntity<Void> updateProfileById(Long id, @Valid ProfileInputDto profileInputDto);
 
     @Operation(summary = "Atualizar perfil por nome", description = "Atualiza um tipo de perfil existente identificado pelo seu nome")
     @ApiResponse(responseCode = "204", description = "Perfil atualizado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultNotFoundApiResponse
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    ResponseEntity<Void> updateProfileByName(String name, ProfileInputDto profileInputDto);
+    ResponseEntity<Void> updateProfileByName(String name, @Valid ProfileInputDto profileInputDto);
 
     @Operation(summary = "Buscar perfil por ID", description = "Retorna os dados completos de um perfil específico")
     @ApiResponse(

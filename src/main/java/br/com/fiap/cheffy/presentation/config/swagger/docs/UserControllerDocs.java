@@ -19,6 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -68,14 +70,14 @@ public interface UserControllerDocs {
                     )
             )
     )
-    ResponseEntity<String> createUser(UserCreateDTO userCreateDTO);
+    ResponseEntity<String> createUser(@Valid UserCreateDTO userCreateDTO);
 
     @Operation(summary = "Atualizar senha do usuário")
     @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<UUID> updateUserPassword(UUID id, UserUpdatePasswordDTO userUpdatePasswordDTO);
+    ResponseEntity<UUID> updateUserPassword(UUID id, @Valid UserUpdatePasswordDTO userUpdatePasswordDTO);
 
     @Operation(summary = "Atualizar usuário", description = "Atualização parcial - apenas campos enviados são modificados")
     @ApiResponse(responseCode = "204", description = "Usuário atualizado com sucesso")
@@ -83,7 +85,7 @@ public interface UserControllerDocs {
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
     @DefaultConflictApiResponse
-    ResponseEntity<Void> updateUser(UUID id, UserUpdateDTO userUpdateDTO);
+    ResponseEntity<Void> updateUser(UUID id, @Valid UserUpdateDTO userUpdateDTO);
 
     @Operation(summary = "Desativar usuário")
     @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso")
@@ -104,14 +106,14 @@ public interface UserControllerDocs {
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Long> addAddress(UUID userId, AddressCreateDTO dto);
+    ResponseEntity<Long> addAddress(UUID userId, @Valid AddressCreateDTO dto);
 
     @Operation(summary = "Atualizar parcialmente um endereço do usuário")
     @ApiResponse(responseCode = "204", description = "Endereço atualizado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> updateAddress(UUID userId, Long addressId, AddressPatchDTO dto);
+    ResponseEntity<Void> updateAddress(UUID userId, Long addressId, @Valid AddressPatchDTO dto);
 
     @Operation(summary = "Remover endereço do usuário")
     @ApiResponse(responseCode = "204", description = "Endereço removido com sucesso")
@@ -156,5 +158,5 @@ public interface UserControllerDocs {
     )
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
-    ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(String name, int page, int size, String sortBy, org.springframework.data.domain.Sort.Direction direction);
+    ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(@NotBlank String name, int page, int size, String sortBy, org.springframework.data.domain.Sort.Direction direction);
 }

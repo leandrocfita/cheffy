@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 
 @Tag(name = "1. Authentication", description = "Autenticação e obtenção de token JWT")
@@ -45,5 +46,5 @@ public interface AuthControllerDocs {
                     )
             )
     )
-    LoginResultPort login(LoginRequestDTO loginRequestDTO);
+    LoginResultPort login(@Valid LoginRequestDTO loginRequestDTO);
 }
