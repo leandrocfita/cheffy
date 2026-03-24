@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
@@ -65,7 +66,7 @@ public interface FoodItemControllerDocs {
                     )
             )
     )
-    ResponseEntity<FoodItemQueryPort> postFoodItem(FoodItemDTO foodItemDTO, UUID restaurantId);
+    ResponseEntity<FoodItemQueryPort> postFoodItem(@Valid FoodItemDTO foodItemDTO, @Valid UUID restaurantId);
 
     @Operation(summary = "Update an existing food item", description = "Updates an existing food item associated with a specific restaurant")
     @ApiResponse(responseCode = "204", description = "Item atualizado com sucesso")
@@ -73,7 +74,7 @@ public interface FoodItemControllerDocs {
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
     @DefaultConflictApiResponse
-    ResponseEntity<Void> updateFoodItem(FoodItemUpdateDto foodItemUpdateDTO, UUID restaurantId, UUID userId, UUID foodItemId);
+    ResponseEntity<Void> updateFoodItem(@Valid FoodItemUpdateDto foodItemUpdateDTO, @Valid UUID restaurantId, UUID userId, @Valid UUID foodItemId);
 
     @Operation(summary = "Buscar item do cardápio por ID", description = "Retorna os dados completos de um item específico do cardápio de um restaurante")
     @ApiResponse(
@@ -127,5 +128,5 @@ public interface FoodItemControllerDocs {
                     )
             )
     )
-    ResponseEntity<Void> updateFoodItemAvailability(UUID restaurantId, UUID foodItemId, FoodItemAvailabilityDTO dto);
+    ResponseEntity<Void> updateFoodItemAvailability(UUID restaurantId, UUID foodItemId, @Valid FoodItemAvailabilityDTO dto);
 }
