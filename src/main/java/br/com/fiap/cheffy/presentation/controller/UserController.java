@@ -212,9 +212,9 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @GetMapping(params = "name")
+    @GetMapping("/filter")
     public ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(
-            @RequestParam @NotBlank String name,
+            @RequestParam(name = "name") @NotBlank String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,

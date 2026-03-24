@@ -19,8 +19,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -68,14 +73,15 @@ public interface UserControllerDocs {
                     )
             )
     )
-    ResponseEntity<String> createUser(UserCreateDTO userCreateDTO);
+    ResponseEntity<String> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO);
 
     @Operation(summary = "Atualizar senha do usuário")
     @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<UUID> updateUserPassword(UUID id, UserUpdatePasswordDTO userUpdatePasswordDTO);
+    ResponseEntity<UUID> updateUserPassword(@PathVariable final UUID id,
+                                            @RequestBody @Valid final UserUpdatePasswordDTO userUpdatePasswordDTO);
 
     @Operation(summary = "Atualizar usuário", description = "Atualização parcial - apenas campos enviados são modificados")
     @ApiResponse(responseCode = "204", description = "Usuário atualizado com sucesso")
@@ -83,42 +89,47 @@ public interface UserControllerDocs {
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
     @DefaultConflictApiResponse
-    ResponseEntity<Void> updateUser(UUID id, UserUpdateDTO userUpdateDTO);
+    ResponseEntity<Void> updateUser(@PathVariable final UUID id,
+                                    @RequestBody @Valid UserUpdateDTO userUpdateDTO);
 
     @Operation(summary = "Desativar usuário")
     @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> deactivateUser(UUID id);
+    ResponseEntity<Void> deactivateUser(@PathVariable final UUID id);
 
     @Operation(summary = "Reativar usuário")
     @ApiResponse(responseCode = "204", description = "Usuário reativado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> reactivateUser(UUID id);
+    ResponseEntity<Void> reactivateUser(@PathVariable final UUID id);
 
     @Operation(summary = "Adicionar novo endereço ao usuário")
     @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Long> addAddress(UUID userId, AddressCreateDTO dto);
+    ResponseEntity<Long> addAddress(@PathVariable UUID userId,
+                                    @RequestBody @Valid AddressCreateDTO dto);
 
     @Operation(summary = "Atualizar parcialmente um endereço do usuário")
     @ApiResponse(responseCode = "204", description = "Endereço atualizado com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> updateAddress(UUID userId, Long addressId, AddressPatchDTO dto);
+    ResponseEntity<Void> updateAddress( @PathVariable UUID userId,
+                                        @PathVariable Long addressId,
+                                        @RequestBody @Valid AddressPatchDTO dto);
 
     @Operation(summary = "Remover endereço do usuário")
     @ApiResponse(responseCode = "204", description = "Endereço removido com sucesso")
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<Void> removeAddress(UUID userId, Long addressId);
+    ResponseEntity<Void> removeAddress(@PathVariable UUID userId,
+                                       @PathVariable Long addressId);
 
     @Operation(summary = "Listar todos os usuários", description = "Retorna lista paginada de todos os usuários cadastrados")
     @ApiResponse(
@@ -130,7 +141,10 @@ public interface UserControllerDocs {
             )
     )
     @DefaultApiErrors
-    ResponseEntity<PageResult<UserQueryPort>> listAllUsers(int page, int size, String sortBy, org.springframework.data.domain.Sort.Direction direction);
+    ResponseEntity<PageResult<UserQueryPort>> listAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size,
+                                                           @RequestParam(defaultValue = "name") String sortBy,
+                                                           @RequestParam(defaultValue = "ASC") Sort.Direction direction);
 
     @Operation(summary = "Buscar usuário por ID", description = "Retorna os dados completos de um usuário específico")
     @ApiResponse(
@@ -143,7 +157,7 @@ public interface UserControllerDocs {
     )
     @DefaultApiErrors
     @DefaultNotFoundApiResponse
-    ResponseEntity<UserQueryPort> findUserById(UUID id);
+    ResponseEntity<UserQueryPort> findUserById(@PathVariable UUID id);
 
     @Operation(summary = "Buscar usuários por nome", description = "Retorna lista paginada de usuários filtrados pelo nome")
     @ApiResponse(
@@ -156,5 +170,9 @@ public interface UserControllerDocs {
     )
     @DefaultBadRequestApiResponse
     @DefaultApiErrors
-    ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(String name, int page, int size, String sortBy, org.springframework.data.domain.Sort.Direction direction);
+    ResponseEntity<PageResult<UserQueryPort>> searchUsersByName( @RequestParam(name = "name") @NotBlank String name,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size,
+                                                                 @RequestParam(defaultValue = "name") String sortBy,
+                                                                 @RequestParam(defaultValue = "ASC") Sort.Direction direction);
 }
