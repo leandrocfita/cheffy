@@ -3,6 +3,7 @@ package br.com.fiap.cheffy.integration.user;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.entity.ProfileJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.repository.ProfileJpaRepository;
+import br.com.fiap.cheffy.infrastructure.persistence.restaurant.repository.RestaurantJpaRepository;
 import br.com.fiap.cheffy.infrastructure.persistence.user.repository.UserJpaRepository;
 import br.com.fiap.cheffy.integration.helper.IntegrationTestUserHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,12 +37,16 @@ class UserCreationIntegrationTest {
 
     @Autowired
     private ProfileJpaRepository profileJpaRepository;
+    
+    @Autowired
+    private RestaurantJpaRepository restaurantJpaRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
+        restaurantJpaRepository.deleteAll();
         userJpaRepository.deleteAll();
         IntegrationTestUserHelper.ensureProfile(profileJpaRepository, ProfileType.CLIENT);
     }
@@ -92,4 +97,3 @@ class UserCreationIntegrationTest {
     }
 
 }
-
