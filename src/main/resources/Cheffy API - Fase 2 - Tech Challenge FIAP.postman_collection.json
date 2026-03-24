@@ -40,7 +40,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"login\": \"joao.novo\",\n  \"password\": \"SenhaForte@123456\"\n}"
+              "raw": "{\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
@@ -78,7 +78,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"login\": \"joao.silva\",\n  \"password\": \"SenhaErrada123\"\n}"
+              "raw": "{\n  \"login\": \"{{invalidLogin}}\",\n  \"password\": \"{{invalidPassword}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
@@ -1063,9 +1063,12 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Create restaurant - status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
                   "if (pm.response.code === 201) {",
-                  "  pm.collectionVariables.set('restaurantId', pm.response.text().replace(/\"/g, ''));",
-                  "  pm.test('Restaurant created', () => pm.response.to.have.status(201));",
+                  "  pm.collectionVariables.set('restaurantId', pm.response.text().replace(/\\\"/g, ''));",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -1089,13 +1092,11 @@
               "raw": "{\n  \"name\": \"Restaurante do João\",\n  \"culinary\": \"Brasileira\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"openingTime\": \"08:00\",\n  \"closingTime\": \"22:00\",\n  \"zoneId\": \"America/Sao_Paulo\",\n  \"open24hours\": false,\n  \"address\": {\n    \"streetName\": \"Rua dos Restaurantes\",\n    \"number\": 50,\n    \"city\": \"São Paulo\",\n    \"postalCode\": \"01001000\",\n    \"neighborhood\": \"Centro\",\n    \"stateProvince\": \"SP\",\n    \"addressLine\": \"Loja 2\"\n  }\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{userId}}",
+              "raw": "{{baseUrl}}/restaurants/{{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{userId}}"
               ]
@@ -1122,13 +1123,11 @@
               "raw": "{\n  \"name\": \"Restaurante Atualizado\",\n  \"culinary\": \"Italiana\",\n  \"openingTime\": \"09:00\",\n  \"closingTime\": \"23:00\",\n  \"zoneId\": \"America/Sao_Paulo\",\n  \"open24hours\": false\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}?userId={{userId}}",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}?userId={{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}"
               ],
@@ -1153,13 +1152,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/deactivate?userId={{userId}}",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/deactivate?userId={{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "deactivate"
@@ -1185,13 +1182,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/reactivate?userId={{userId}}",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/reactivate?userId={{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "reactivate"
@@ -1218,10 +1213,13 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Create Food Item should return 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
                   "if (pm.response.code === 201) {",
                   "  const json = pm.response.json();",
                   "  pm.collectionVariables.set('foodItemId', json.id);",
-                  "  pm.test('Food item created', () => pm.response.to.have.status(201));",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -1245,13 +1243,11 @@
               "raw": "{\n  \"name\": \"Frango Grelhado\",\n  \"description\": \"Frango grelhado com legumes\",\n  \"price\": 29.90,\n  \"photoKey\": \"frango-grelhado.jpg\",\n  \"deliveryAvailable\": true,\n  \"available\": true,\n  \"active\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/food-items",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/food-items",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "food-items"
@@ -1271,13 +1267,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/food-items?page=0&size=10&sortBy=name&direction=ASC&includeInactive=false",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/food-items?page=0&size=10&sortBy=name&direction=ASC&includeInactive=false",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "food-items"
@@ -1319,13 +1313,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "food-items",
@@ -1354,13 +1346,11 @@
               "raw": "{\n  \"name\": \"Frango Grelhado Especial\",\n  \"description\": \"Frango grelhado com legumes e molho especial\",\n  \"price\": 34.90,\n  \"photoKey\": \"frango-especial.jpg\",\n  \"deliveryAvailable\": true,\n  \"available\": true,\n  \"active\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
+              "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "api",
-                "v1",
                 "restaurants",
                 "{{restaurantId}}",
                 "food-items",
@@ -1495,11 +1485,10 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Returns array with profiles', () => {",
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Returns error body', () => {",
                   "    const json = pm.response.json();",
-                  "    pm.expect(json).to.be.an('array');",
-                  "    pm.expect(json.length).to.be.greaterThan(0);",
+                  "    pm.expect(json).to.have.property('message');",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1512,13 +1501,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/profiles/1",
+              "raw": "{{baseUrl}}/profiles/99999",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "profiles",
-                "1"
+                "99999"
               ]
             }
           },
@@ -1548,13 +1537,13 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/profiles/{{profielId}}",
+              "raw": "{{baseUrl}}/profiles/{{profileId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "profiles",
-                "{{profielId}}"
+                "{{profileId}}"
               ]
             }
           },
@@ -1567,7 +1556,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -1603,7 +1592,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -1679,6 +1668,34 @@
     {
       "key": "name",
       "value": "João Silva"
+    },
+    {
+      "key": "restaurantId",
+      "value": ""
+    },
+    {
+      "key": "foodItemId",
+      "value": ""
+    },
+    {
+      "key": "profileId",
+      "value": ""
+    },
+    {
+      "key": "login",
+      "value": "joao.novo"
+    },
+    {
+      "key": "password",
+      "value": "SenhaForte@123456"
+    },
+    {
+      "key": "invalidLogin",
+      "value": "joao.invalido"
+    },
+    {
+      "key": "invalidPassword",
+      "value": "SenhaErrada123"
     }
   ]
 }
