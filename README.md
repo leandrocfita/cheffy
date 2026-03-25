@@ -7,6 +7,8 @@
 
 Backend multi-tenant para gestão de restaurantes, desenvolvido como Tech Challenge da Pós-Graduação em Arquitetura e Desenvolvimento Java da FIAP.
 
+> Veja a versão anterior [aqui](https://github.com/thiagosslima/cheffy).
+
 ## 🚀 Stack
 
 | Camada | Tecnologia |
