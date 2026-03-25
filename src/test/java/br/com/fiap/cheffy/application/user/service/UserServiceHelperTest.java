@@ -62,7 +62,7 @@ class UserServiceHelperTest {
     @Test
     void userToQueryPortMapsUser() {
         User user = new User(UUID.randomUUID(), "Name", "email@test.com", "login", "pass", true);
-        UserQueryPort queryPort = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort queryPort = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login", true, null, null);
         when(mapper.toQuery(user)).thenReturn(queryPort);
 
         UserQueryPort result = userServiceHelper.userToQueryPort(user);

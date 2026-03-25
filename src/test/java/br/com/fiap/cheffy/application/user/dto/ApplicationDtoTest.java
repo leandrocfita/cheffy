@@ -42,10 +42,11 @@ class ApplicationDtoTest {
 
     @Test
     void createUserQueryPort() {
-        UserQueryPort dto = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort dto = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login",true, null, null);
         
         assertThat(dto.name()).isEqualTo("Name");
         assertThat(dto.email()).isEqualTo("email@test.com");
+        assertThat(dto.active()).isTrue();
     }
 
     @Test
