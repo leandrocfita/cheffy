@@ -12,7 +12,10 @@ import br.com.fiap.cheffy.presentation.dto.AddressPatchDTO;
 import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdatePasswordDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -122,7 +125,16 @@ public interface UserControllerDocs {
     @DefaultNotFoundApiResponse
     ResponseEntity<Void> removeAddress(UUID userId, Long addressId);
 
-    @Operation(summary = "Listar todos os usuários", description = "Retorna lista paginada de todos os usuários cadastrados")
+    @Operation(
+            summary = "Listar usuários",
+            description = "Retorna lista paginada de usuários. Quando o parâmetro opcional 'name' é informado, a resposta é filtrada por nome."
+    )
+    @Parameter(
+            name = "name",
+            in = ParameterIn.QUERY,
+            required = false,
+            description = "Filtro opcional para buscar usuários por nome"
+    )
     @ApiResponse(
             responseCode = "200",
             description = "Lista de usuários retornada com sucesso",
@@ -147,7 +159,7 @@ public interface UserControllerDocs {
     @DefaultNotFoundApiResponse
     ResponseEntity<UserQueryPort> findUserById(UUID id);
 
-    @Operation(summary = "Buscar usuários por nome", description = "Retorna lista paginada de usuários filtrados pelo nome")
+    @Hidden
     @ApiResponse(
             responseCode = "200",
             description = "Usuários encontrados com sucesso",

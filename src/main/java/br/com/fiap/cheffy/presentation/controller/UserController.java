@@ -11,6 +11,7 @@ import br.com.fiap.cheffy.presentation.dto.UserCreateDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdatePasswordDTO;
 import br.com.fiap.cheffy.presentation.dto.UserUpdateDTO;
 import br.com.fiap.cheffy.presentation.mapper.UserWebMapper;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
@@ -212,6 +213,7 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
+    @Hidden
     @GetMapping(params = "name")
     public ResponseEntity<PageResult<UserQueryPort>> searchUsersByName(
             @RequestParam @NotBlank String name,
