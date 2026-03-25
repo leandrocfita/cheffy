@@ -131,7 +131,7 @@ class UserControllerTest {
 
     @Test
     void listAllUsersReturnsOk() {
-        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", true, null, null);
         PageResult<UserQueryPort> pageResult = PageResult.of(List.of(queryPort), 0, 10, 1);
         when(listAllUsersInput.execute(any())).thenReturn(pageResult);
 
@@ -144,7 +144,7 @@ class UserControllerTest {
     @Test
     void findUserByIdReturnsOk() {
         UUID id = UUID.randomUUID();
-        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", true, null, null);
         when(findUserByIdInput.execute(id)).thenReturn(queryPort);
 
         ResponseEntity<?> response = userController.findUserById(id);
