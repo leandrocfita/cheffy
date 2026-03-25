@@ -76,6 +76,8 @@ docker compose down -v   # remove volumes
 
 ## API — Endpoints principais
 
+> Acesse já o `.json` da collection [aqui](https://github.com/leandrocfita/cheffy/blob/main/src/main/resources/Cheffy_Postman_Collection.json).
+
 | Recurso | Base path |
 |---|---|
 | Auth | `POST /api/v1/auth/login` |

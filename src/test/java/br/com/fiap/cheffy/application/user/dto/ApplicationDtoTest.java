@@ -2,6 +2,8 @@ package br.com.fiap.cheffy.application.user.dto;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ApplicationDtoTest {
@@ -40,7 +42,7 @@ class ApplicationDtoTest {
 
     @Test
     void createUserQueryPort() {
-        UserQueryPort dto = new UserQueryPort("Name", "email@test.com", "login", true, null, null);
+        UserQueryPort dto = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login",true, null, null);
         
         assertThat(dto.name()).isEqualTo("Name");
         assertThat(dto.email()).isEqualTo("email@test.com");
