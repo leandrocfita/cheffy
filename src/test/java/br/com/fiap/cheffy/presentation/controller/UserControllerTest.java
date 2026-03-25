@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -131,7 +129,7 @@ class UserControllerTest {
 
     @Test
     void listAllUsersReturnsOk() {
-        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort queryPort = new UserQueryPort(UUID.randomUUID().toString(),"Name", "email@test.com", "login", "pass", null, null);
         PageResult<UserQueryPort> pageResult = PageResult.of(List.of(queryPort), 0, 10, 1);
         when(listAllUsersInput.execute(any())).thenReturn(pageResult);
 
@@ -144,7 +142,7 @@ class UserControllerTest {
     @Test
     void findUserByIdReturnsOk() {
         UUID id = UUID.randomUUID();
-        UserQueryPort queryPort = new UserQueryPort("Name", "email@test.com", "login", "pass", null, null);
+        UserQueryPort queryPort = new UserQueryPort(id.toString(),"Name", "email@test.com", "login", "pass", null, null);
         when(findUserByIdInput.execute(id)).thenReturn(queryPort);
 
         ResponseEntity<?> response = userController.findUserById(id);

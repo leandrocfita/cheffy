@@ -4,7 +4,6 @@ import br.com.fiap.cheffy.application.address.mapper.AddressQueryMapper;
 import br.com.fiap.cheffy.application.user.dto.AddressQueryPort;
 import br.com.fiap.cheffy.application.user.dto.UserQueryPort;
 import br.com.fiap.cheffy.domain.profile.ProfileType;
-import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
 
 import java.util.Set;
@@ -20,6 +19,7 @@ public class UserQueryMapper {
 
     public UserQueryPort toQuery(User user) {
         return new UserQueryPort(
+                user.getId().toString(),
                 user.getName(),
                 user.getEmail(),
                 user.getLogin(),
