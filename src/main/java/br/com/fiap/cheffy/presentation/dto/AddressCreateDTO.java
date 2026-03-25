@@ -32,6 +32,7 @@ public record AddressCreateDTO(
         @Size(max = 255)
         String addressLine,
 
+        @NotNull
         Boolean main
 ) {
 }

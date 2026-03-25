@@ -2,7 +2,7 @@ package br.com.fiap.cheffy.infrastructure.security.service;
 
 
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
-import br.com.fiap.cheffy.infrastructure.security.model.AuthenticatedUser;
+import br.com.fiap.cheffy.infrastructure.security.model.SpringAuthenticatedUser;
 import br.com.fiap.cheffy.infrastructure.security.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,7 +33,7 @@ public class JwtService {
         this.issuer = props.getIssuer();
     }
 
-    public String generateToken(AuthenticatedUser user) {
+    public String generateToken(SpringAuthenticatedUser user) {
         return Jwts.builder()
                 .setId(user.getId().toString())
                 .setSubject(user.getUsername())

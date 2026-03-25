@@ -11,4 +11,4 @@ public record AddressCommandPort(
         String addressLine,
         Boolean main
 ){
-        }
+}

@@ -1,7 +1,10 @@
 package br.com.fiap.cheffy.domain.user.exception;
 
-public class UserOperationNotAllowedException extends RuntimeException{
-    public UserOperationNotAllowedException(String message){
+import br.com.fiap.cheffy.shared.exception.BusinessException;
+import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
+
+public class UserOperationNotAllowedException extends BusinessException {
+    public UserOperationNotAllowedException(ExceptionsKeys message){
         super(message);
     }
 }

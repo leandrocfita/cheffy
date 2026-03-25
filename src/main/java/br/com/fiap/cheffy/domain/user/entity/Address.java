@@ -1,20 +1,27 @@
 package br.com.fiap.cheffy.domain.user.entity;
 
+import br.com.fiap.cheffy.domain.user.exception.InvalidPostalCodeException;
+
 import java.util.Objects;
 
-public class Address {
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.INVALID_POSTAL_CODE_MSG;
 
-    private final Long id;
-    private final String streetName;
-    private final Integer number;
-    private final String city;
-    private final String postalCode;
-    private final String neighborhood;
-    private final String stateProvince;
-    private final String addressLine;
+public class Address {
+    private static final int MIN_POSTAL_CODE_LENGTH = 8; //TODO parametrizar
+
+    private Long id;
+    private String streetName;
+    private Integer number;
+    private String city;
+    private String postalCode;
+    private String neighborhood;
+    private String stateProvince;
+    private String addressLine;
 
     private boolean main;
     private User user;
+
+    protected Address() {}
 
     public Address(
             Long id,
@@ -48,6 +55,8 @@ public class Address {
             String addressLine,
             boolean isMain
     ) {
+        validatePostalCode(postalCode);
+
         return new Address(
                 null,
                 streetName,
@@ -59,6 +68,36 @@ public class Address {
                 addressLine,
                 isMain
         );
+    }
+
+    public void patch(
+            String streetName,
+            Integer number,
+            String city,
+            String postalCode,
+            String neighborhood,
+            String stateProvince,
+            String addressLine,
+            Boolean main
+    ) {
+        if (streetName != null) this.streetName = streetName;
+        if (number != null) this.number = number;
+        if (city != null) this.city = city;
+        if (postalCode != null) this.postalCode = postalCode;
+        if (neighborhood != null) this.neighborhood = neighborhood;
+        if (stateProvince != null) this.stateProvince = stateProvince;
+        if (addressLine != null) this.addressLine = addressLine;
+        if (main != null) this.main = main;
+    }
+
+    public static void validatePostalCode(String postalCode) {
+        boolean allDigits = postalCode.chars().allMatch(Character::isDigit);
+
+        if (!(postalCode.length() == MIN_POSTAL_CODE_LENGTH
+                && allDigits)) {
+            throw new InvalidPostalCodeException(
+                    INVALID_POSTAL_CODE_MSG, MIN_POSTAL_CODE_LENGTH);
+        }
     }
 
     /* Relationship control */

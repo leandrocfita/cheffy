@@ -1,13 +1,12 @@
 package br.com.fiap.cheffy.infrastructure.persistence.user.entity;
 
+import br.com.fiap.cheffy.infrastructure.persistence.address.entity.AddressJpaEntity;
 import br.com.fiap.cheffy.infrastructure.persistence.profile.entity.ProfileJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
@@ -48,11 +47,19 @@ public class UserJpaEntity {
     private Set<ProfileJpaEntity> profiles = new HashSet<>();
 
     @OneToMany(
-            mappedBy = "user",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "user_address",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id")
     )
     private Set<AddressJpaEntity> addresses = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean active;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

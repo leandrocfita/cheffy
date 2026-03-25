@@ -1,36 +1,12 @@
 {
   "info": {
-    "name": "Cheffy API - Tech Challenge FIAP",
+    "_postman_id": "0e64f4f8-9f32-40ee-9f3c-20f376832dae",
+    "name": "Cheffy API - Fase 2 - Tech Challenge FIAP",
     "description": "Collection completa para testes da API Cheffy com cenários de sucesso e falha",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4668094",
+    "_collection_link": "https://go.postman.co/collection/4668094-0e64f4f8-9f32-40ee-9f3c-20f376832dae?source=collection_link"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080/api/v1",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "addressId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "name",
-      "value": "João Silva",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "1. Autenticação",
@@ -48,7 +24,10 @@
                   "    pm.expect(json.token).to.exist;",
                   "    pm.collectionVariables.set('token', json.token);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -62,19 +41,20 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"login\": \"joao.silva\",\n  \"password\": \"SenhaForte@123456\"\n}"
+              "raw": "{\n  \"login\": \"rafaela.terto\",\n  \"password\": \"SenhaForte@56789\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/auth/login",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "auth",
                 "login"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Login Falhou - Credenciais Inválidas",
@@ -84,7 +64,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 401', () => pm.response.to.have.status(401));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -101,16 +84,17 @@
               "raw": "{\n  \"login\": \"joao.silva\",\n  \"password\": \"SenhaErrada123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/auth/login",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "auth",
                 "login"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Login Falhou - Campos Ausentes",
@@ -120,7 +104,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -137,16 +124,17 @@
               "raw": "{\n  \"login\": \"\",\n  \"password\": \"\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/auth/login",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "auth",
                 "login"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -154,7 +142,7 @@
       "name": "2. Gerenciamento de Usuários",
       "item": [
         {
-          "name": "✅ Criar Usuário - Cliente",
+          "name": "✅ Criar Usuário (Cliente)",
           "event": [
             {
               "listen": "test",
@@ -166,7 +154,10 @@
                   "    pm.expect(userId).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);",
                   "    pm.collectionVariables.set('userId', userId);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -180,53 +171,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"login\": \"joao.silva\",\n  \"password\": \"SenhaForte@123456\",\n  \"profileType\": \"CLIENT\",\n  \"address\": {\n    \"streetName\": \"Rua das Flores\",\n    \"number\": 123,\n    \"city\": \"São Paulo\",\n    \"postalCode\": \"12345678\",\n    \"neighborhood\": \"Centro\",\n    \"stateProvince\": \"SP\",\n    \"main\": true\n  }\n}"
+              "raw": "{\n    \"name\": \"Rafaela Terto\",\n    \"email\": \"rafaela.terto@email.com\",\n    \"login\": \"rafaela.terto\",\n    \"password\": \"SenhaForte@56789\",\n    \"address\": {\n        \"streetName\": \"Rua Doutor\",\n        \"number\": 645,\n        \"city\": \"Recife\",\n        \"postalCode\": \"13339440\",\n        \"neighborhood\": \"Boa Viagem\",\n        \"stateProvince\": \"PE\",\n        \"addressLine\": \"105\",\n        \"main\": true\n    }\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users"
               ]
             }
-          }
-        },
-        {
-          "name": "✅ Criar Usuário - Dono de Restaurante",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Maria Restaurante\",\n  \"email\": \"maria.owner@email.com\",\n  \"login\": \"maria.owner\",\n  \"password\": \"SenhaSegura@789\",\n  \"profileType\": \"OWNER\",\n  \"address\": {\n    \"streetName\": \"Av Paulista\",\n    \"number\": 1000,\n    \"city\": \"São Paulo\",\n    \"postalCode\": \"87654321\",\n    \"neighborhood\": \"Bela Vista\",\n    \"stateProvince\": \"SP\",\n    \"main\": true\n  }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users"
-              ]
-            }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Criar Usuário - Senha Fraca",
@@ -236,7 +193,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -250,18 +210,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Teste Senha\",\n  \"email\": \"teste@email.com\",\n  \"login\": \"teste.senha\",\n  \"password\": \"123\",\n  \"profileType\": \"CLIENT\",\n  \"address\": {\n    \"streetName\": \"Rua Teste\",\n    \"number\": 1,\n    \"city\": \"São Paulo\",\n    \"postalCode\": \"12345678\",\n    \"neighborhood\": \"Centro\",\n    \"stateProvince\": \"SP\",\n    \"main\": true\n  }\n}"
+              "raw": "{\n    \"name\": \"Teste Senha\",\n    \"email\": \"teste@email.com\",\n    \"login\": \"teste.senha\",\n    \"password\": \"123\",\n    \"address\": {\n        \"streetName\": \"Rua Teste\",\n        \"number\": 1,\n        \"city\": \"São Paulo\",\n        \"postalCode\": \"12345678\",\n        \"neighborhood\": \"Centro\",\n        \"stateProvince\": \"SP\",\n        \"main\": true\n    }\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Criar Usuário - Email Inválido",
@@ -271,7 +232,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -285,18 +249,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Teste Email\",\n  \"email\": \"email-invalido\",\n  \"login\": \"teste.email\",\n  \"password\": \"SenhaForte@123456\",\n  \"profileType\": \"CLIENT\",\n  \"address\": {\n    \"streetName\": \"Rua Teste\",\n    \"number\": 1,\n    \"city\": \"São Paulo\",\n    \"postalCode\": \"12345678\",\n    \"neighborhood\": \"Centro\",\n    \"stateProvince\": \"SP\",\n    \"main\": true\n  }\n}"
+              "raw": "{\n    \"name\": \"Teste Email\",\n    \"email\": \"email-invalido\",\n    \"login\": \"teste.email\",\n    \"password\": \"SenhaForte@123456\",\n    \"address\": {\n        \"streetName\": \"Rua Teste\",\n        \"number\": 1,\n        \"city\": \"São Paulo\",\n        \"postalCode\": \"12345678\",\n        \"neighborhood\": \"Centro\",\n        \"stateProvince\": \"SP\",\n        \"main\": true\n    }\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Criar Usuário - Campos Obrigatórios Ausentes",
@@ -306,7 +271,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -320,18 +288,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Teste Incompleto\"\n}"
+              "raw": "{\n    \"name\": \"Teste Incompleto\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Listar Todos os Usuários",
@@ -345,7 +314,10 @@
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.be.an('array');",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -358,15 +330,16 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Buscar Usuário por ID",
@@ -381,7 +354,10 @@
                   "    pm.expect(json.id).to.exist;",
                   "    pm.expect(json.name).to.exist;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -394,16 +370,17 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
                 "{{userId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Buscar Usuário por Nome",
@@ -413,7 +390,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 200', () => pm.response.to.have.status(200));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -426,17 +406,38 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/name/{{name}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users?name=João&page=0&size=10&sortBy=name&direction=ASC",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
-                "users",
-                "name",
-                "{{name}}"
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "João"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "name"
+                },
+                {
+                  "key": "direction",
+                  "value": "ASC"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Buscar Usuário - Não Encontrado",
@@ -446,7 +447,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -459,16 +463,17 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/00000000-0000-0000-0000-000000000000",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/00000000-0000-0000-0000-000000000000",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
                 "00000000-0000-0000-0000-000000000000"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Buscar Usuário - Sem Token",
@@ -478,7 +483,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 403', () => pm.response.to.have.status(403));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -486,16 +494,17 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
                 "{{userId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Atualizar Usuário",
@@ -505,7 +514,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 204', () => pm.response.to.have.status(204));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -523,19 +535,20 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.novo@email.com\"\n}"
+              "raw": "{\n    \"name\": \"João Silva Atualizado\",\n    \"email\": \"joao.novo@email.com\",\n    \"login\": \"joao.novo\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
                 "{{userId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Atualizar Usuário - Email Inválido",
@@ -545,7 +558,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -566,16 +582,17 @@
               "raw": "{\n  \"email\": \"email-invalido\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
                 "{{userId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Atualizar Senha",
@@ -585,7 +602,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 200', () => pm.response.to.have.status(200));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -603,12 +623,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"password\": \"NovaSenhaForte@999\"\n}"
+              "raw": "{\n    \"password\": \"NovaSenha@123456\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/password",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/password",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -616,7 +636,8 @@
                 "password"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Atualizar Senha - Senha Fraca",
@@ -626,7 +647,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -647,9 +671,9 @@
               "raw": "{\n  \"password\": \"123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/password",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/password",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -657,7 +681,90 @@
                 "password"
               ]
             }
-          }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Desativar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/deactivate",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "deactivate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Reativar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/reactivate",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "reactivate"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -676,7 +783,10 @@
                   "    const addressId = pm.response.text();",
                   "    pm.collectionVariables.set('addressId', addressId);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -694,12 +804,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"streetName\": \"Rua Nova\",\n  \"number\": 456,\n  \"city\": \"Rio de Janeiro\",\n  \"postalCode\": \"20000000\",\n  \"neighborhood\": \"Copacabana\",\n  \"stateProvince\": \"RJ\",\n  \"main\": false\n}"
+              "raw": "{\n    \"streetName\": \"Rua Nova\",\n    \"number\": 456,\n    \"city\": \"Rio de Janeiro\",\n    \"postalCode\": \"20000000\",\n    \"neighborhood\": \"Copacabana\",\n    \"stateProvince\": \"RJ\",\n    \"main\": false\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -707,7 +817,8 @@
                 "addresses"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Adicionar Endereço - Campos Ausentes",
@@ -717,7 +828,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -738,9 +852,9 @@
               "raw": "{\n  \"streetName\": \"Rua Incompleta\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -748,7 +862,8 @@
                 "addresses"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Adicionar Endereço - Usuário Não Encontrado",
@@ -758,7 +873,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -779,9 +897,9 @@
               "raw": "{\n  \"streetName\": \"Rua Teste\",\n  \"number\": 1,\n  \"city\": \"São Paulo\",\n  \"postalCode\": \"12345678\",\n  \"neighborhood\": \"Centro\",\n  \"stateProvince\": \"SP\",\n  \"main\": false\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/00000000-0000-0000-0000-000000000000/addresses",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/00000000-0000-0000-0000-000000000000/addresses",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -789,7 +907,8 @@
                 "addresses"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Atualizar Endereço",
@@ -799,7 +918,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 204', () => pm.response.to.have.status(204));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -820,9 +942,9 @@
               "raw": "{\n  \"streetName\": \"Rua Atualizada\",\n  \"number\": 789,\n  \"city\": \"Rio de Janeiro\",\n  \"postalCode\": \"20000000\",\n  \"neighborhood\": \"Ipanema\",\n  \"stateProvince\": \"RJ\",\n  \"main\": false\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses/{{addressId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses/{{addressId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -831,7 +953,8 @@
                 "{{addressId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Atualizar Endereço - Não Encontrado",
@@ -841,7 +964,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -862,9 +988,9 @@
               "raw": "{\n  \"streetName\": \"Rua Teste\",\n  \"number\": 1,\n  \"city\": \"São Paulo\",\n  \"postalCode\": \"12345678\",\n  \"neighborhood\": \"Centro\",\n  \"stateProvince\": \"SP\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses/99999",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses/99999",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -873,7 +999,8 @@
                 "99999"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "✅ Remover Endereço",
@@ -883,7 +1010,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 204', () => pm.response.to.have.status(204));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -896,9 +1026,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses/{{addressId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses/{{addressId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -907,7 +1037,8 @@
                 "{{addressId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "❌ Remover Endereço - Não Encontrado",
@@ -917,7 +1048,10 @@
               "script": {
                 "exec": [
                   "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -930,9 +1064,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}/addresses/99999",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/users/{{userId}}/addresses/99999",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "users",
@@ -941,13 +1075,414 @@
                 "99999"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "4. Gerenciamento de Perfis",
+      "name": "4. Gerenciamento de Restaurantes",
       "item": [
+        {
+          "name": "✅ Registrar Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Create restaurant - Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('restaurantId', pm.response.text().replace(/\"/g, ''));",
+                  "}",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Restaurante Paris 5\",\n    \"culinary\": \"Mexicano 1\",\n    \"cnpj\": \"63.015.262/0001-40\",\n    \"openingTime\": \"09:30\",\n    \"closingTime\": \"24:00\",\n    \"zoneId\": \"America/Sao_Paulo\",\n    \"open24hours\": false,\n    \"address\": {\n        \"streetName\": \"Rua dos Restaurantes 4\",\n        \"number\": 50,\n        \"city\": \"São Paulo 4\",\n        \"postalCode\": \"01001000\",\n        \"neighborhood\": \"Centro 4\",\n        \"stateProvince\": \"MG\",\n        \"addressLine\": \"Loja 1\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{userId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Buscar Restaurante por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Atualizar Restaurante",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Restaurante Atualizado\",\n    \"culinary\": \"Italiana\",\n    \"openingTime\": \"09:00\",\n    \"closingTime\": \"23:00\",\n    \"zoneId\": \"America/Sao_Paulo\",\n    \"open24hours\": false\n}"
+            },
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}?userId={{userId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Desativar Restaurante",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}/deactivate?userId={{userId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "deactivate"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Reativar Restaurante",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}/reactivate?userId={{userId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "reactivate"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Gerenciamento de Cardápio",
+      "item": [
+        {
+          "name": "✅ Criar um Item de Comida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Create Food item - Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('foodItemId', json.id);",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Frango Grelhado\",\n    \"description\": \"Frango grelhado com legumes\",\n    \"price\": 29.90,\n    \"photoKey\": \"frango-grelhado.jpg\",\n    \"deliveryAvailable\": true,\n    \"available\": true,\n    \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}/food-items",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "food-items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Listar o Item de Comida por Restaurante",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}/food-items?page=0&size=10&sortBy=name&direction=ASC&includeInactive=false",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "food-items"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "name"
+                },
+                {
+                  "key": "direction",
+                  "value": "ASC"
+                },
+                {
+                  "key": "includeInactive",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Buscar Item de Comida por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "food-items",
+                "{{foodItemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Atualizar o Item de Comida",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Frango Grelhado Especial\",\n  \"description\": \"Frango grelhado com legumes e molho especial\",\n  \"price\": 34.90,\n  \"photoKey\": \"frango-especial.jpg\",\n  \"deliveryAvailable\": true,\n  \"available\": true,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}} /restaurants/{{restaurantId}}/food-items/{{foodItemId}}",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}} "
+              ],
+              "path": [
+                "restaurants",
+                "{{restaurantId}}",
+                "food-items",
+                "{{foodItemId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Gerenciamento de Perfis",
+      "item": [
+        {
+          "name": "✅ Criar Perfil",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array with profiles', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "    pm.expect(json.length).to.be.greaterThan(0);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Perfil de teste\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "profiles"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "✅ Listar Todos os Perfis",
           "event": [
@@ -961,7 +1496,10 @@
                   "    pm.expect(json).to.be.an('array');",
                   "    pm.expect(json.length).to.be.greaterThan(0);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -969,30 +1507,101 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/profiles",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
                 "profiles"
               ]
             }
-          }
-        }
-      ]
-    },
-    {
-      "name": "5. Limpeza",
-      "item": [
+          },
+          "response": []
+        },
         {
-          "name": "✅ Deletar Usuário",
+          "name": "✅ Buscar Perfil por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array with profiles', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "    pm.expect(json.length).to.be.greaterThan(0);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles/10004",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "profiles",
+                "10004"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Buscar Perfil - Não Encontrado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array with profiles', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "    pm.expect(json.length).to.be.greaterThan(0);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles/1",
+              "host": [
+                "{{protocol}}{{baseUrl}}{{path}}"
+              ],
+              "path": [
+                "profiles",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Remover Perfil por Id",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "pm.test('Status 204', () => pm.response.to.have.status(204));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1005,26 +1614,30 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles/{{profielId}}",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
-                "users",
-                "{{userId}}"
+                "profiles",
+                "{{profielId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "❌ Deletar Usuário - Não Encontrado",
+          "name": "❌ Remover Perfil - CLIENT",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1037,45 +1650,117 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/00000000-0000-0000-0000-000000000000",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles/10000",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
-                "users",
-                "00000000-0000-0000-0000-000000000000"
+                "profiles",
+                "10000"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "❌ Deletar Usuário - Sem Token",
+          "name": "❌ Remover Perfil - OWNER",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status 403', () => pm.response.to.have.status(403));"
-                ]
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{protocol}}{{baseUrl}}{{path}}/profiles/10001",
               "host": [
-                "{{baseUrl}}"
+                "{{protocol}}{{baseUrl}}{{path}}"
               ],
               "path": [
-                "users",
-                "{{userId}}"
+                "profiles",
+                "10001"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "protocol",
+      "value": ""
+    },
+    {
+      "key": "path",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "addressId",
+      "value": ""
+    },
+    {
+      "key": "name",
+      "value": "João Silva"
+    },
+    {
+      "key": "restaurantId",
+      "value": ""
+    },
+    {
+      "key": "foodItemId",
+      "value": ""
     }
   ]
 }

@@ -1,9 +1,10 @@
 package br.com.fiap.cheffy.application.user.usecase;
 
 import br.com.fiap.cheffy.application.user.dto.UserCommandPort;
+import br.com.fiap.cheffy.domain.profile.ProfileType;
 import br.com.fiap.cheffy.domain.profile.entity.Profile;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.profile.port.input.PasswordEncoderPort;
+import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import br.com.fiap.cheffy.domain.profile.port.output.ProfileRepository;
 import br.com.fiap.cheffy.domain.user.entity.Address;
 import br.com.fiap.cheffy.domain.user.entity.User;
@@ -11,8 +12,7 @@ import br.com.fiap.cheffy.domain.user.port.input.CreateUserInput;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
 import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
 
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.PROFILE_NOT_FOUND_EXCEPTION;
-import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.REGISTER_FAILED_EXCEPTION;
+import static br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys.*;
 
 public class CreateUserUseCase implements CreateUserInput {
 
@@ -31,24 +31,24 @@ public class CreateUserUseCase implements CreateUserInput {
     }
 
     public String execute(UserCommandPort command){
-        String profileType = command.profileType().name();
+        User user = createUserDomain(command);
 
-        Profile profile = findProfileOrFail(profileType);
+        checkLoginAndEmailAvailability(user);
 
-        User user = createUserDomain(command, profile);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Address address = createAddressDomain(command);
+        user.addAddress(address);
 
-        throwExceptionCaseLoginOrEmailAlreadyExists(user);
-
-        createAddressDomain(command, user);
-
-        return userRepository.save(user).toString();
+        return userRepository.save(user).getId().toString();
 
     }
 
-    private static void createAddressDomain(UserCommandPort command, User user) {
-        user.addAddress(
-               Address.create(
+    private Address createAddressDomain(UserCommandPort command) {
+
+        if(command.address().main().equals(Boolean.FALSE)){
+            throw new RegisterFailedException(FIRST_ADDRESS_MUST_BE_MAIN);
+        }
+
+               return Address.create(
                         command.address().streetName(),
                         command.address().number(),
                         command.address().city(),
@@ -56,30 +56,35 @@ public class CreateUserUseCase implements CreateUserInput {
                         command.address().neighborhood(),
                         command.address().stateProvince(),
                         command.address().addressLine(),
-                        true
-                )
-        );
+                        command.address().main()
+                );
     }
 
-    private static User createUserDomain(UserCommandPort command, Profile profile) {
-        User user = User.create(
+    private User createUserDomain(UserCommandPort command) {
+        return User.create(
                 command.name(),
                 command.email(),
                 command.login(),
-                command.password(),
-                profile
+                processPassword(command.password()),
+                findClientProfile()
         );
-        return user;
     }
 
-    private Profile findProfileOrFail(String profileType) {
-        Profile profile = profileRepository.findByType(profileType)
+    private Profile findClientProfile() {
+        String profileType = ProfileType.CLIENT.name();
+
+        return profileRepository.findByType(profileType)
                 .orElseThrow(() -> new ProfileNotFoundException(PROFILE_NOT_FOUND_EXCEPTION,
                         profileType));
-        return profile;
     }
 
-    private void throwExceptionCaseLoginOrEmailAlreadyExists(User user) {
+    private String processPassword(String rawPassword) {
+        User.validatePassword(rawPassword);
+
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    private void checkLoginAndEmailAvailability(User user) {
         if (userRepository.existsByEmailOrLogin(user.getEmail(), user.getLogin())) {
             throw new RegisterFailedException(REGISTER_FAILED_EXCEPTION);
         }

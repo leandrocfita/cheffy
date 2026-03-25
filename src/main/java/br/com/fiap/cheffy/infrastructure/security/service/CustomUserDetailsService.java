@@ -2,7 +2,7 @@ package br.com.fiap.cheffy.infrastructure.security.service;
 
 import br.com.fiap.cheffy.domain.user.entity.User;
 import br.com.fiap.cheffy.domain.user.port.output.UserRepository;
-import br.com.fiap.cheffy.infrastructure.security.model.AuthenticatedUser;
+import br.com.fiap.cheffy.infrastructure.security.model.SpringAuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return toAuthenticatedUser(user);
     }
 
-    public AuthenticatedUser loadUserById(UUID id)
+    public SpringAuthenticatedUser loadUserById(UUID id)
             throws UsernameNotFoundException {
 
         User user = userRepository.findById(id)
@@ -44,12 +44,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         return toAuthenticatedUser(user);
     }
 
-    private AuthenticatedUser toAuthenticatedUser(User user) {
-        return new AuthenticatedUser(
+    private SpringAuthenticatedUser toAuthenticatedUser(User user) {
+        return new SpringAuthenticatedUser(
                 user.getId(),
                 user.getLogin(),
                 user.getPassword(),
-                mapProfilesToAuthorities(user)
+                mapProfilesToAuthorities(user),
+                user.isActive()
         );
     }
 

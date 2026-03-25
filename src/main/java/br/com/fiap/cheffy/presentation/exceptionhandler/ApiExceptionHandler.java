@@ -1,16 +1,21 @@
 package br.com.fiap.cheffy.presentation.exceptionhandler;
 
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemAlreadyExistInRestaurant;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemDoesNotExist;
+import br.com.fiap.cheffy.domain.fooditem.exception.FoodItemNotFoundException;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileAlreadyExistException;
+import br.com.fiap.cheffy.domain.profile.exception.ProfileIsOwnerOrClientException;
 import br.com.fiap.cheffy.domain.profile.exception.ProfileNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.AddressNotFoundException;
-import br.com.fiap.cheffy.domain.user.exception.InvalidPasswordException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantInactiveException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantNotFoundException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantOperationNotAllowedException;
+import br.com.fiap.cheffy.domain.restaurant.exception.RestaurantDoesNotExistException;
+import br.com.fiap.cheffy.domain.user.exception.*;
 import br.com.fiap.cheffy.infrastructure.exception.TokenExpiredException;
 import br.com.fiap.cheffy.presentation.exception.ApiInternalServerErrorException;
 import br.com.fiap.cheffy.presentation.exception.DeserializationException;
 import br.com.fiap.cheffy.presentation.exceptionhandler.model.Problem;
-import br.com.fiap.cheffy.shared.exception.InvalidOperationException;
-import br.com.fiap.cheffy.shared.exception.LoginFailedException;
-import br.com.fiap.cheffy.shared.exception.OperationNotAllowedException;
-import br.com.fiap.cheffy.shared.exception.RegisterFailedException;
+import br.com.fiap.cheffy.shared.exception.*;
 import br.com.fiap.cheffy.shared.exception.keys.ExceptionsKeys;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -51,13 +56,110 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ERROR_ON_DESERIALIZATION = ExceptionsKeys.ERROR_ON_DESERIALIZATION.toString();
     private static final String INVALID_FORMAT_ERROR = ExceptionsKeys.INVALID_FORMAT_ERROR.toString();
     private static final String PROPERTY_BINDING_ERROR = ExceptionsKeys.PROPERTY_BINDING_ERROR.toString();
-    private static final String GENERIC_RESOURCE_NOT_FOUND = ExceptionsKeys.GENERIC_RESOURCE_NOT_FOUND.toString();
+    private static final String PROFILE_ALREADY_EXIST = ExceptionsKeys.PROFILE_ALREADY_EXIST_EXCEPTION.toString();
+
+    static class ApiExceptionHandlerService {
+
+    }
+
+    @ExceptionHandler(InvalidDataException.class)
+    private ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(GENERIC_ERROR_MESSAGE);
+        String detail = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.UNAUTHORIZED;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                detail)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
+
+    @ExceptionHandler(RestaurantOperationNotAllowedException.class)
+    private ResponseEntity<Object> handleRestaurantOperationNotAllowedException(RestaurantOperationNotAllowedException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(UserOperationNotAllowedException.class)
+    private ResponseEntity<Object> handleUserOperationNotAllowedException(UserOperationNotAllowedException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    private ResponseEntity<Object> handleRestaurantNotFoundException(RestaurantNotFoundException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    private ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+
+    }
 
     @ExceptionHandler(InvalidPasswordException.class)
     private ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getMinPasswordLength()) ) ;
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getMinPasswordLength());
 
         HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
 
@@ -72,11 +174,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidPostalCodeException.class)
+    private ResponseEntity<Object> handleInvalidPostalCodeException(InvalidPostalCodeException ex, WebRequest request) {
+        String title = getExceptionName(ex);
+
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getMinPostalCodeLength());
+
+        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
     @ExceptionHandler(AddressNotFoundException.class)
     private ResponseEntity<Object> handleAddressNotFoundException(AddressNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getId()) ) ;
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getId());
 
         HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
@@ -95,9 +218,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleProfileNotFoundException(ProfileNotFoundException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(String.format(ex.getMessage(), ex.getType()) ) ;
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getType());
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
@@ -114,9 +238,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleOperationNotAllowedException(OperationNotAllowedException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(ex.getMessage()) ;
+        String message = getMessage(ex.getMessage());
 
-        HttpStatus httpStatusCode = HttpStatus.BAD_REQUEST;
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
         Problem problem = createProblemBuilder(
                 httpStatusCode,
@@ -133,7 +257,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleTokenExpiredException(TokenExpiredException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(ex.getMessage()) ;
+        String message = getMessage(ex.getMessage());
 
         HttpStatus httpStatusCode = HttpStatus.UNAUTHORIZED;
 
@@ -152,7 +276,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleLoginFailedException(LoginFailedException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(ex.getMessage()) ;
+        String message = getMessage(ex.getMessage());
         String detail = ex.getOriginalMessage();
 
         HttpStatus httpStatusCode = HttpStatus.UNAUTHORIZED;
@@ -172,7 +296,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleRegisterFailedException(RegisterFailedException ex, WebRequest request) {
 
         String title = getExceptionName(ex);
-        String message = getMessage(ex.getMessage()) ;
+        String message = getMessage(ex.getMessage());
 
         HttpStatus httpStatusCode = HttpStatus.CONFLICT;
 
@@ -187,6 +311,93 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(ProfileAlreadyExistException.class)
+    public ResponseEntity<Object> handleProfileAlreadyExist(ProfileAlreadyExistException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(ProfileIsOwnerOrClientException.class)
+    public ResponseEntity<Object> handleProfileIsOwnerOrClientException(ProfileIsOwnerOrClientException ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(RestaurantInactiveException.class)
+    private ResponseEntity<Object> handleRestaurantInactiveException(RestaurantInactiveException ex, WebRequest request) {
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                getExceptionName(ex),
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(RestaurantDoesNotExistException.class)
+    public ResponseEntity<Object> handleRestaurantDoesNotExist(RestaurantDoesNotExistException ex, WebRequest request) {
+
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(FoodItemAlreadyExistInRestaurant.class)
+    public ResponseEntity<Object> handleFoodItemAlreadyExistInRestaurant(FoodItemAlreadyExistInRestaurant ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.CONFLICT;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
+    @ExceptionHandler(FoodItemDoesNotExist.class)
+    public ResponseEntity<Object> handleFoodItemDoesNotExist(FoodItemDoesNotExist ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+
+        message = String.format(message, ex.getType());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(httpStatusCode, title, message).userMessage(message).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
+
     @Override
     @Nullable
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -194,9 +405,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
 
-        if(rootCause instanceof InvalidFormatException invalidFormatException) {
+        if (rootCause instanceof InvalidFormatException invalidFormatException) {
             return handleInvalidFormat(invalidFormatException, headers, status, request);
-        } else if(rootCause instanceof PropertyBindingException propertyBindingException) {
+        } else if (rootCause instanceof PropertyBindingException propertyBindingException) {
             return handlePropertyBinding(propertyBindingException, headers, status, request);
         }
 
@@ -249,6 +460,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
+    @ExceptionHandler(FoodItemNotFoundException.class)
+    public ResponseEntity<Object> handleFoodItemNotFoundException(FoodItemNotFoundException ex, WebRequest request) {
+        String title = getExceptionName(ex);
+        String message = getMessage(ex.getMessage());
+        message = String.format(message, ex.getId().toString());
+
+        HttpStatus httpStatusCode = HttpStatus.NOT_FOUND;
+
+        Problem problem = createProblemBuilder(
+                httpStatusCode,
+                title,
+                message)
+                .userMessage(message)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatusCode, request);
+    }
 
     @Override
     @Nullable

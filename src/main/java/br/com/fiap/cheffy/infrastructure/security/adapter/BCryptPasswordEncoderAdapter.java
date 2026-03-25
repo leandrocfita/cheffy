@@ -1,6 +1,6 @@
 package br.com.fiap.cheffy.infrastructure.security.adapter;
 
-import br.com.fiap.cheffy.domain.profile.port.input.PasswordEncoderPort;
+import br.com.fiap.cheffy.domain.user.port.input.PasswordEncoderPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
